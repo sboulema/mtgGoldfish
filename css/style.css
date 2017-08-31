@@ -1,0 +1,61 @@
+.mtg-card {
+    height: 170px;
+    width: 125px;
+    background-size: cover;
+}
+
+#hand-container {
+    height: 200px;
+}
+
+.ui-background {
+    background-image: url("../img/playbg1.png");
+    color: #c8b472;
+}
+
+.mana-pool-counter {
+    position: relative;
+    color: white;
+    left: 10px;
+    top: -25px;
+}
+
+#table {
+    background-image: url("http://i.imgur.com/1UjtE9j.jpg");
+    position: relative;
+    height: calc(100vh - 228px - 56px);
+    border: 1px solid black;
+}
+
+#graveyard-placeholder,
+#exile-placeholder,
+#sideboard-placeholder,
+#library-placeholder {
+    width: 125px;
+    height: 172px;
+}
+
+#graveyard-title,
+#exile-title,
+#sideboard-title,
+#library-title,
+#custom-counter-label {
+    cursor: pointer;
+}
+
+#hand {
+    height: 172px;
+}
+
+.card-placeholder {
+    border: 1px dotted #c8b472;
+    border-radius: 5px;
+}
+
+body {
+    background-image: url("../img/playbg1.png");
+}
+
+.popover-body {
+    overflow-y: auto;
+}
