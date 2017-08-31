@@ -11,7 +11,7 @@ function createCardImageSrc(multiverseId) {
 }
 
 function getMultiverseId(el) {
-    return el.style.backgroundImage.slice(5, -2).substr(61).slice(0, -10);
+    return el[0].style.backgroundImage.slice(5, -2).substr(61).slice(0, -10);
 }
 
 function bindCardActions() {
@@ -28,15 +28,32 @@ function bindCardActions() {
         trigger: 'hover',
         content: function () { return '<img src="' + this.style.backgroundImage.slice(5, -2) + '" />'; }
     });
+
+    $(".mtg-card").draggable({
+        helper: "clone",
+        stop: function(event, ui) {
+            updateTotals();
+            bindCardActions();
+        }
+    });
 }
 
 function tapUntap(card) {
+    tap(card);
+    untap(card);
+}
+
+function tap(card) {
     if ($(card).getRotateAngle() == 0) {
         $(card).rotate({
             angle: 0,
             animateTo: 90
         })
-    } else {
+    }
+}
+
+function untap(card) {
+    if ($(card).getRotateAngle() >= 89 || $(card).getRotateAngle() <= 91) {
         $(card).rotate({
             angle: 90,
             animateTo: 0
@@ -46,6 +63,6 @@ function tapUntap(card) {
 
 function untapAll() {
     $("#table .mtg-card").each(function(index) {
-        tapUntap(this);
+        untap(this);
     });
 }

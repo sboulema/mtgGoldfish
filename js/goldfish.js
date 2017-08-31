@@ -12,21 +12,13 @@ function init() {
     setupManaPoolCounters();
     setupCustomCounters();
     setupTurnButton();
-    setupDragula();
 
-    $(document).mousemove(function (e) {
-        window.x = e.pageX;
-        window.y = e.pageY;
-    });
+    setupDragDrop();
 
     bindPlaceholderPopover("#exile-title", "exile", exileList);
     bindPlaceholderPopover("#sideboard-title", "sideboard", sideboardList);
     bindPlaceholderPopover("#library-title", "library", libraryList);
     bindPlaceholderPopover("#graveyard-title", "graveyard", graveyardList);
-
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-      })
 }
 
 function bindPlaceholderPopover(selector, id, list) {
@@ -49,7 +41,6 @@ function bindPlaceholderPopover(selector, id, list) {
 
     $(selector).on('shown.bs.popover', function () {
         bindCardActions();
-        setupDragula();
     });
 }
 
@@ -134,91 +125,106 @@ function updateTotals() {
     $("#graveyardTotal").html(graveyardList.length);
     $("#exileTotal").html(exileList.length);
     $("#sideboardTotal").html(sideboardList.length);
-    $("#handTotal").html($("#hand").children().length);
 }
 
-function setupDragula() {
-    dragula([document.querySelector('#table'),
-    document.querySelector('#hand'),
-    document.querySelector('#library'),
-    document.querySelector('#library-placeholder'),
-    document.querySelector('#graveyard-placeholder'),
-    document.querySelector('#exile-placeholder'),
-    document.querySelector('#sideboard-placeholder')])
-        .on('drop', function (el, target, source) {
-
-            // Cleanup any style properties on the card
-            $(el).css("left", "");
-            $(el).css("margin-bottom", "");
-            $(el).css("position", "");
-            $(el).css("top", "");
-
-            if (source.id === 'library-placeholder') {
-                el.style.backgroundImage = "url('" + createCardImageSrc(libraryList.splice(0, 1)) + "')";
-
+function setupDragDrop() {
+    $("#table").droppable({
+        drop: function(event, ui) {
+            ui.draggable.detach()
+                .css('left', ui.offset.left)
+                .css('top', ui.offset.top - 60)
+                .css('position', "absolute")
+                .css("margin-bottom", "")
+                .appendTo($(this));
+        },
+        out: function(event, ui) {
+            ui.draggable
+                .css('left', "")
+                .css('top', "")
+                .css('position', "")
+                .css("margin-bottom", "")
+                .css("transform", "")
+        }
+    });
+    $("#hand").droppable({
+        drop: function(event, ui) {
+            ui.draggable.detach().appendTo($(this));
+        }
+    });
+    $("#library-placeholder").droppable({
+        drop: function(event, ui) {
+            $("#library-placeholder").empty();
+            libraryList.unshift(getMultiverseId(ui.draggable));
+            $("#library-placeholder").append(defaultCard("library-placeholder-card"));
+        },
+        out: function(event, ui) {
+            if (ui.draggable[0].parentElement.id === "library-placeholder") {
+                ui.draggable[0].style.backgroundImage = "url('" + createCardImageSrc(libraryList.splice(0, 1)) + "')";
+                
                 if (libraryList.length > 0) {
                     $("#library-placeholder").append(defaultCard("library-placeholder-card"))
                 }
             }
-
-            if (source.id === 'table') {
-                $(el).css("left", "");
-                $(el).css("top", "");
-                $(el).css("position", "");
-            }
-
-            dragFromZone("#library", el, libraryList, source)
-            dragFromZone("#graveyard", el, graveyardList, source)
-            dragFromZone("#exile", el, exileList, source)
-            dragFromZone("#sideboard", el, sideboardList, source)
-
-            dragFromPlaceholder("#graveyard-placeholder", graveyardList, source);
-            dragFromPlaceholder("#exile-placeholder", exileList, source);
-            dragFromPlaceholder("#sideboard-placeholder", sideboardList, source);
-
-            dragToPlaceholder("#graveyard-placeholder", el, graveyardList, target);
-            dragToPlaceholder("#exile-placeholder", el, exileList, target);
-            dragToPlaceholder("#sideboard-placeholder", el, sideboardList, target);
-
-            if (target.id === 'library-placeholder') {
-                $("#library-placeholder").empty();
-                libraryList.unshift(getMultiverseId(el));
-                $("#library-placeholder").append(defaultCard("library-placeholder-card"));
-            }
-
-            if (target.id === 'table') {
-                $(el).css("left", x);
-                $(el).css("top", y - 50);
-                $(el).css("position", "absolute");
-            }
-
-            // Update Game State
-            updateTotals();
-            bindCardActions();
-        });
-}
-
-function dragFromPlaceholder(selector, list, source) {
-    if (source.id === selector.substr(1)) {
-        list.splice(-1, 1);
-
-        if (list.length > 0) {
-            $(selector).append(createCard(list[list.length - 1], ""));
         }
-    }
+    });
+
+    setupDroppablePlaceholder("#graveyard-placeholder", graveyardList);
+    setupDroppablePlaceholder("#exile-placeholder", exileList);
+    setupDroppablePlaceholder("#sideboard-placeholder", sideboardList);
+
+    setupDroppableZones("#library", libraryList);
+    setupDroppableZones("#graveyard", graveyardList);
+    setupDroppableZones("#exile", exileList);
+    setupDroppableZones("#sideboard", sideboardList);
 }
 
-function dragToPlaceholder(selector, el, list, target) {
-    if (target.id === selector.substr(1)) {
-        // Updating game state
-        $(selector).empty();
-        list.push(getMultiverseId(el));
-        $(selector).append(el);
-    }
+function setupDroppablePlaceholder(selector, list) {
+    $(selector).droppable({
+        drop: function(event, ui) {
+            if ($(selector).children().length != 0) {
+                $($(selector).children()[0]).popover('hide')
+            }
+            
+            $(selector).empty();        
+
+            ui.draggable.detach().appendTo($(this));
+
+            list.push(getMultiverseId(ui.draggable));
+        },
+        out: function(event, ui) {
+            if (ui.draggable[0].parentElement.id === selector.substr(1)) {
+                list.splice(-1, 1);
+                
+                if (list.length > 0) {
+                    $(selector).append(createCard(list[list.length - 1], ""));
+                }
+            }
+        }
+    });   
 }
 
-function dragFromZone(selector, el, list, source) {
-    if (source.id === selector.substr(1)) {
-        list.splice(list.indexOf(getMultiverseId(el)), 1);
-    }
+function setupDroppableZones(selector, list) {
+    $(selector).droppable({
+        out: function(event, ui) {
+            list.splice(list.indexOf(getMultiverseId(ui.draggable)), 1);
+        }
+    });  
+}
+
+function restart() {
+    // Clear all
+    exileList = [];
+    graveyardList = [];
+    libraryList = deck.slice();
+    sideboardList = sideboard.slice();
+    $("#hand").empty;
+    $("#table").empty;
+
+    // Reset
+    $('#life-you').val("20");
+    $('#life-opponent').val("20");
+    $("#turn-counter").html("1");
+
+    // Start over
+    draw(7);
 }

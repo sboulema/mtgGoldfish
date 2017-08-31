@@ -1,5 +1,5 @@
 function loadDeck() {
-    var lines = $("#deck-list").val().split('\n');
+    var lines = $("#deck-list").val().trim().split('\n');
 
     // Mainboard
     $.when.apply($, lines.map(function (line) {
@@ -69,6 +69,7 @@ function draw(amount) {
     for (var index = 0; index < amount; index++) {
         $("#hand").append(createCard(libraryList.splice(0, 1)));      
     }
+    $(".mtg-card").draggable({helper: "clone"});
     updateTotals();
 }
 

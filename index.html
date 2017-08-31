@@ -26,15 +26,7 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#">Disabled</a>
-                    </li>
+                    <!-- Links to come here? -->
                 </ul>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#deckModal">Load deck</button>
             </div>
@@ -46,7 +38,7 @@
 
                 <div class="row ui-background">
                     <div class="col-sm-8">
-                        <strong>Hand</strong> (<span id="handTotal">0</span>)
+                        <strong>Hand</strong>
                         <div id="hand-container" class="container-fluid">
                             <div id="hand" class="row flex-row flex-nowrap card-placeholder">
                             </div>
@@ -83,7 +75,7 @@
                             <input id="life-you" class="form-control life-counter" type="number" value="20" min="0" />
                         </div>
                         <div class="form-group">
-                            <label id="custom-counter-label" data-toggle="tooltip" data-placement="bottom" title="Click to edit name" class="pull-left">Custom counter:</label>
+                            <label id="custom-counter-label">Custom counter:</label>
                             <input class="form-control clickedit" type="text" />
                             <input id="custom-counter" class="form-control custom-counter" type="number" value="0" min="0" />
                         </div>                   
@@ -131,7 +123,7 @@
                             <input class="form-control btn btn-block btn-primary" type="button" value="Shuffle deck" onclick="shuffleDeck();" />
                             <input class="form-control btn btn-block btn-primary" type="button" value="Mulligan" onclick="mulligan();" />
                             <input class="form-control btn btn-block btn-primary" type="button" value="Untap all" onclick="untapAll();" />
-                            <input class="form-control btn btn-block btn-danger" type="button" value="Restart" />
+                            <input class="form-control btn btn-block btn-danger" type="button" value="Restart" onclick="restart();" />
                         </div>
                     </fieldset>
                 </form>
@@ -185,7 +177,7 @@
         crossorigin="anonymous"></script>
 
     <!-- External JavaScript libraries -->
-    <script src='https://unpkg.com/dragula@3.7.2/dist/dragula.min.js'></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>   
     <script src='https://unpkg.com/jqueryrotate-slevomat-fork@1.0.0/jQueryRotateCompressed.js'></script>
     <script src="js/bootstrap-number-input.js"></script>
     <script src="https://unpkg.com/knuth-shuffle@1.0.1"></script>   
