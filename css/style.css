@@ -22,6 +22,7 @@
 
 #table {
     background-image: url("http://i.imgur.com/1UjtE9j.jpg");
+    background-size: cover;
     position: relative;
     height: calc(100vh - 228px - 56px);
     border: 1px solid black;
