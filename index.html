@@ -29,6 +29,7 @@
                     <!-- Links to come here? -->
                 </ul>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#deckModal">Load deck</button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#shuffleDeckModal">Shuffle deck</button>
             </div>
         </nav>
 
@@ -121,8 +122,10 @@
                         <div class="form-group">
                             <label class="control-label">Actions:</label>
                             <input class="form-control btn btn-block btn-primary" type="button" value="Shuffle deck" onclick="shuffleDeck();" />
+                            <input class="form-control btn btn-block btn-primary" type="button" value="Shuffle hand" onclick="shuffleHand();" />
                             <input class="form-control btn btn-block btn-primary" type="button" value="Mulligan" onclick="mulligan();" />
                             <input class="form-control btn btn-block btn-primary" type="button" value="Untap all" onclick="untapAll();" />
+                            <input class="form-control btn btn-block btn-primary" type="button" value="Flip hand" onclick="flipHand();" />
                             <input class="form-control btn btn-block btn-danger" type="button" value="Restart" onclick="restart();" />
                         </div>
                     </fieldset>
@@ -166,6 +169,30 @@
         </div>
     </div>
 
+    <!-- Shuffle to card Modal -->
+    <div class="modal fade" id="shuffleDeckModal" tabindex="-1" role="dialog" aria-labelledby="shuffleDeckModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deckModalLabel">Shuffle to have card in hand</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="control-label">Card name:</label>
+                        <input type="text" class="form-control" id="shuffle-card-name" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="startShuffleDeckToCard();">Shuffle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -181,6 +208,7 @@
     <script src='https://unpkg.com/jqueryrotate-slevomat-fork@1.0.0/jQueryRotateCompressed.js'></script>
     <script src="js/bootstrap-number-input.js"></script>
     <script src="https://unpkg.com/knuth-shuffle@1.0.1"></script>   
+    <script src="https://cdn.rawgit.com/vaidik/jquery-longpress/master/jquery.longpress.js"></script>   
 
     <!-- Custom Javascript functions -->
     <script src="js/card.js"></script>  

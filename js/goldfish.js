@@ -61,25 +61,28 @@ function setupCustomCounters() {
         downClass: 'danger'
     });
 
-    var defaultText = 'Custom counter:';
-    
+    setupEditable();
+}
+
+function setupEditable() {  
     $('.clickedit').hide()
     .focusout(endEdit)
     .keyup(function (e) {
+        var defaultText = 'Custom counter:';
         if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
-            endEdit(e);
+            endEdit(e, defaultText);
             return false;
         } else {
             return true;
         }
     })
-    .prev().click(function () {
+    .prev().click(function (event) {
         $(this).hide();
         $(this).next().show().focus();
     });
 }
 
-function endEdit(e) {
+function endEdit(e, defaultText) {
     var input = $(e.target),
         label = input && input.prev();
 
@@ -129,6 +132,7 @@ function updateTotals() {
 
 function setupDragDrop() {
     $("#table").droppable({
+        accept: ".mtg-card",
         drop: function(event, ui) {
             ui.draggable.detach()
                 .css('left', ui.offset.left)
@@ -147,11 +151,13 @@ function setupDragDrop() {
         }
     });
     $("#hand").droppable({
+        accept: ".mtg-card",
         drop: function(event, ui) {
             ui.draggable.detach().appendTo($(this));
         }
     });
     $("#library-placeholder").droppable({
+        accept: ".mtg-card",
         drop: function(event, ui) {
             $("#library-placeholder").empty();
             libraryList.unshift(getMultiverseId(ui.draggable));
@@ -180,6 +186,7 @@ function setupDragDrop() {
 
 function setupDroppablePlaceholder(selector, list) {
     $(selector).droppable({
+        accept: ".mtg-card",
         drop: function(event, ui) {
             if ($(selector).children().length != 0) {
                 $($(selector).children()[0]).popover('hide')
@@ -205,6 +212,7 @@ function setupDroppablePlaceholder(selector, list) {
 
 function setupDroppableZones(selector, list) {
     $(selector).droppable({
+        accept: ".mtg-card",
         out: function(event, ui) {
             list.splice(list.indexOf(getMultiverseId(ui.draggable)), 1);
         }
@@ -217,8 +225,8 @@ function restart() {
     graveyardList = [];
     libraryList = deck.slice();
     sideboardList = sideboard.slice();
-    $("#hand").empty;
-    $("#table").empty;
+    $(".card-placeholder").empty();
+    $("#table").empty(); 
 
     // Reset
     $('#life-you').val("20");
@@ -226,5 +234,9 @@ function restart() {
     $("#turn-counter").html("1");
 
     // Start over
+    $("#library-placeholder").html(defaultCard("library-placeholder-card"));
+    shuffleDeck();
     draw(7);
+
+    bindCardActions();
 }

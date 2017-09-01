@@ -78,3 +78,33 @@ function setupClickToDraw() {
         draw(1);
     });
 }
+
+function startShuffleDeckToCard() {
+    var cardName = $("#shuffle-card-name").val().trim();   
+
+    $('#shuffleDeckModal').modal('hide');
+
+    $.getJSON("https://api.magicthegathering.io/v1/cards?rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + cardName).then(function (data) {
+        shuffleDeckToCard(data.cards[0].multiverseid);
+    });  
+}
+
+function shuffleDeckToCard(multiverseId) {
+    var found = false;
+
+    $("#hand").empty();
+    libraryList = deck.slice();
+
+    shuffleDeck();
+    draw(7);
+
+    $.when.apply($, $("#hand").children().map(function (index, card) {
+        if (parseInt($(card).data("multiverseId")) === multiverseId) {
+            return found = true;
+        }
+    })).then(function () {
+        if (!found) {
+            shuffleDeckToCard(multiverseId);
+        }
+    });
+}
