@@ -29,7 +29,6 @@
                     <!-- Links to come here? -->
                 </ul>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#deckModal">Load deck</button>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#shuffleDeckModal">Shuffle deck</button>
             </div>
         </nav>
 
@@ -123,6 +122,7 @@
                             <label class="control-label">Actions:</label>
                             <input class="form-control btn btn-block btn-primary" type="button" value="Shuffle deck" onclick="shuffleDeck();" />
                             <input class="form-control btn btn-block btn-primary" type="button" value="Shuffle hand" onclick="shuffleHand();" />
+                            <input class="form-control btn btn-block btn-primary" type="button" value="Start with card" data-toggle="modal" data-target="#shuffleDeckModal" />
                             <input class="form-control btn btn-block btn-primary" type="button" value="Mulligan" onclick="mulligan();" />
                             <input class="form-control btn btn-block btn-primary" type="button" value="Untap all" onclick="untapAll();" />
                             <input class="form-control btn btn-block btn-primary" type="button" value="Flip hand" onclick="flipHand();" />
