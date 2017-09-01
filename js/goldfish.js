@@ -100,22 +100,24 @@ function setupTurnButton() {
 }
 
 function setupManaPoolCounters() {
+	$('body').on('contextmenu', '.mana-pool', function(e){ return false; });
+	
     $(".mana-pool").mousedown(function (event) {
         var counter = $(this).find(".mana-pool-counter");
-        var value = counter.attr('class').match(/\bms-(\d+)\b/)[1]
-
-        if (value === 0 || value === 20) {
-            return;
-        }
+        var value = parseInt(counter.attr('class').match(/\bms-(\d+)\b/)[1]);
 
         counter.removeClass("ms-" + value);
-
+		
         switch (event.which) {
             case 1:
-                counter.addClass("ms-" + ++value);
+				value++;
+				if (value >= 20) value = 20;
+                counter.addClass("ms-" + value);
                 break;
             case 3:
-                counter.addClass("ms-" + --value);
+				value--;
+				if (value <= 0) value = 0;
+                counter.addClass("ms-" + value);
                 break;
             default:
                 break;
