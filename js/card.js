@@ -1,4 +1,3 @@
-var isLongPress = false;
 var isCounterClick = false;
 
 function defaultCard(cssClass) {
@@ -36,51 +35,13 @@ function getMultiverseId(el) {
 }
 
 function bindCardActions() {
-    $("#table .mtg-card").longpress(function(event) {
-        $(this).append("<label class='ms ms-e ms-3x counter'></label><input class='form-control clickedit' type='text' />");
-        
-        $('.mtg-card .clickedit').hide()
-        .focusout(endEdit)
-        .keyup(function (e) {
-            var defaultText = '';
-            if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
-                endEdit(e, defaultText);
-                return false;
-            } else {
-                return true;
-            }
-        })
-        .prev().click(function (event) {
-            $(this).hide();
-            $(this).next().show().focus();
-            isCounterClick = true;
-        });
-
-        $(".counter").draggable({
-            revert: "invalid"
-        });
-
-        $(".counter").mousedown(function (event) {
-            switch (event.which) {
-                case 3:
-                    $(this).remove();
-                    break;
-                default:
-                    break;
-            }
-        });
-
-        isLongPress = true;
-    });
-
     $("#table .mtg-card").rotate({
         bind: {
             click: function (event) {
-                if (isLongPress || isCounterClick) {
-                    isLongPress = false;
+                if (isCounterClick) {
                     isCounterClick = false;
                 } else {
-                    tapUntap(this);
+                    tap(this);
                 }               
             }
         }
@@ -111,21 +72,6 @@ function bindCardActions() {
             .appendTo($(this));
         }
     });
-
-    $("body").keypress(function(e) {
-        if (e.keyCode == 102) { // f   
-             flip($(".mtg-card:hover")[0]);
-             e.preventDefault();
-        }
-    });
-}
-
-function tapUntap(card) {
-    if ($(card).getRotateAngle() == 0) {
-        tap(card);
-    } else {
-        untap(card);
-    }
 }
 
 function tap(card) {
@@ -135,11 +81,7 @@ function tap(card) {
             animateTo: 90
         })
         $(card).addClass("tapped");
-    }
-}
-
-function untap(card) {
-    if ($(card).hasClass("tapped")) {
+    } else {
         $(card).rotate({
             angle: 90,
             animateTo: 0
@@ -173,4 +115,39 @@ function flipHand() {
 function shuffleHand() {
     var cards = window.knuthShuffle($("#hand").children()).slice();
     $("#hand").append(cards);
+}
+
+function addCounter(card) {
+    $(card).append("<label class='ms ms-e ms-3x counter'></label><input class='form-control clickedit' type='text' />");
+    
+    $('.mtg-card .clickedit').hide()
+    .focusout(endEdit)
+    .keyup(function (e) {
+        var defaultText = '';
+        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+            endEdit(e, defaultText);
+            return false;
+        } else {
+            return true;
+        }
+    })
+    .prev().click(function (event) {
+        $(this).hide();
+        $(this).next().show().focus();
+        isCounterClick = true;
+    });
+
+    $(".counter").draggable({
+        revert: "invalid"
+    });
+
+    $(".counter").mousedown(function (event) {
+        switch (event.which) {
+            case 3:
+                $(this).remove();
+                break;
+            default:
+                break;
+        }
+    });
 }

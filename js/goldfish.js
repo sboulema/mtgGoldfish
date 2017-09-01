@@ -19,6 +19,22 @@ function init() {
     bindPlaceholderPopover("#sideboard-title", "sideboard", sideboardList);
     bindPlaceholderPopover("#library-title", "library", libraryList);
     bindPlaceholderPopover("#graveyard-title", "graveyard", graveyardList);
+
+    $("body").keypress(function(e) {
+        if (e.keyCode == 102) { // f   
+             flip($(".mtg-card:hover")[0]);
+             e.preventDefault();
+        }
+        if (e.keyCode == 99) { // c   
+            addCounter($(".mtg-card:hover")[0]);
+            e.preventDefault();
+       }
+    });
+
+    $(document).on('shown.bs.modal', function(e) {
+        $('input:visible:enabled:first', e.target).focus();
+        $('textarea:visible:enabled:first', e.target).focus();
+    });
 }
 
 function bindPlaceholderPopover(selector, id, list) {

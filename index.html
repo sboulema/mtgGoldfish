@@ -26,11 +26,13 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
-                    <!-- Links to come here? -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#helpModal">Help</a>
+                    </li>
                 </ul>
             </div>
 
-            <button type="button" id="show-deck-modal" class="btn btn-primary" data-toggle="modal" data-target="#deckModal">Load deck</button>            
+            <button type="button" id="show-deck-modal" class="btn btn-primary" data-toggle="modal" data-target="#deckModal">Load deck</button>                    
         </nav>
 
         <div class="row">
@@ -194,6 +196,27 @@
         </div>
     </div>
 
+    <!-- Help Modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="helpModalLabel">Help</h5>
+                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h4>Card shortcuts</h4>
+                    <ul>
+                        <li><strong>c</strong>: add counter to card</li>
+                        <li><strong>f</strong>: flip card</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -208,8 +231,7 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>   
     <script src='https://unpkg.com/jqueryrotate-slevomat-fork@1.0.0/jQueryRotateCompressed.js'></script>
     <script src="js/bootstrap-number-input.js"></script>
-    <script src="https://unpkg.com/knuth-shuffle@1.0.1"></script>   
-    <script src="https://cdn.rawgit.com/vaidik/jquery-longpress/master/jquery.longpress.js"></script>   
+    <script src="https://unpkg.com/knuth-shuffle@1.0.1"></script>    
 
     <!-- Custom Javascript functions -->
     <script src="js/card.js"></script>  

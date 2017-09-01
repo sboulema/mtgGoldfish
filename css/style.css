@@ -78,3 +78,8 @@ body {
     position: absolute;
     right: 0px;
 }
+
+#helpModal .modal-content {
+    background-image: url("../img/playbg1.png");
+    color: #c8b472;    
+}

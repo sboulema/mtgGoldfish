@@ -7,7 +7,7 @@ function loadDeck() {
         var count = matches[1];
         var name = matches[2];
 
-        return $.getJSON("https://api.magicthegathering.io/v1/cards?rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + name).then(function (data) {
+        return $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + name).then(function (data) {
             for (var j = 0; j < count; j++) {
                 libraryList.push(data.cards[0].multiverseid);
             }
@@ -31,7 +31,7 @@ function loadDeck() {
             var count = matches[1];
             var name = matches[2];
     
-            return $.getJSON("https://api.magicthegathering.io/v1/cards?rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + name).then(function (data) {
+            return $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + name).then(function (data) {
                 for (var j = 0; j < count; j++) {
                     sideboardList.push(data.cards[0].multiverseid);
                 }
@@ -71,6 +71,7 @@ function draw(amount) {
     }
     $(".mtg-card").draggable({helper: "clone"});
     updateTotals();
+    bindCardActions();
 }
 
 function setupClickToDraw() {
@@ -84,7 +85,7 @@ function startShuffleDeckToCard() {
 
     $('#shuffleDeckModal').modal('hide');
 
-    $.getJSON("https://api.magicthegathering.io/v1/cards?rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + cardName).then(function (data) {
+    $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + cardName).then(function (data) {
         shuffleDeckToCard(data.cards[0].multiverseid);
     });  
 }
