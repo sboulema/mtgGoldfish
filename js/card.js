@@ -12,18 +12,39 @@ function defaultCard(cssClass) {
     return card;
 }
 
-function createCard(multiverseId, style) {
-    var card = $('<div/>')
-        .addClass("mtg-card")
-        .addClass("mtg-card-preview")
-        .css("background-image", "url('" + createCardImageSrc(multiverseId) + "')")
-        .data("multiverseId", multiverseId);
+function createCard(card, style) {
+    var cardDiv = $('<div/>')
+    .addClass("mtg-card");
 
     if (typeof style !== 'undefined') {
-        card.attr("style", card.attr("style") + "; " + style);
+        cardDiv.attr("style", cardDiv.attr("style") + "; " + style);
     }
 
-    return card;
+    var front = $('<div/>')
+        .addClass("front")
+        .addClass("mtg-card-side")
+        .addClass("mtg-card-preview")
+        .css("background-image", "url('" + createCardImageSrc(card.multiverseId) + "')")
+        .data("multiverseId", card.multiverseId)
+        .appendTo(cardDiv);
+
+    if (card.layout === "double-faced") {
+        var back = $('<div/>')
+            .addClass("back")
+            .addClass("mtg-card-side")
+            .addClass("mtg-card-preview")
+            .css("background-image", "url('" + createCardImageSrc(card.multiverseIdBack) + "')")
+            .data("multiverseId", card.multiverseIdBack)
+            .appendTo(cardDiv);
+    } else {
+        var back = $('<div/>')
+            .addClass("back")
+            .addClass("mtg-card-side")
+            .css("background-image", "url('img/backside.jpg')")
+            .appendTo(cardDiv);
+    }
+
+    return cardDiv;
 }
 
 function createCardImageSrc(multiverseId) {
@@ -50,7 +71,9 @@ function bindCardActions() {
     $('.mtg-card-preview').popover({
         html: true,
         trigger: 'hover',
-        content: function () { return '<img src="' + this.style.backgroundImage.slice(5, -2) + '" />'; }
+        content: function () { 
+            return '<img src="' + $(this)[0].style.backgroundImage.slice(5, -2) + '" />'; 
+        }
     });
 
     $(".mtg-card").draggable({
@@ -72,6 +95,8 @@ function bindCardActions() {
             .appendTo($(this));
         }
     });
+
+    $(".mtg-card").flip({trigger: "manual"});
 }
 
 function tap(card) {
@@ -97,13 +122,7 @@ function untapAll() {
 }
 
 function flip(card) {
-    if ($(card).hasClass("flipped")) {
-        card.style.backgroundImage = "url('" + createCardImageSrc($(card).data("multiverseId")) + "')";
-        $(card).removeClass("flipped");
-    } else {
-        card.style.backgroundImage = "url('img/backside.jpg')";
-        $(card).addClass("flipped");
-    }
+    $(card).flip('toggle');
 }
 
 function flipHand() {

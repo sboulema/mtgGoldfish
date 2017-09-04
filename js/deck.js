@@ -8,9 +8,23 @@ function loadDeck() {
         var name = matches[2];
 
         return $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + name).then(function (data) {
-            for (var j = 0; j < count; j++) {
-                libraryList.push(data.cards[0].multiverseid);
-            }
+            var card = {};
+            card.name = data.cards[0].name;
+            card.layout = data.cards[0].layout;
+            card.multiverseId = data.cards[0].multiverseid;    
+        
+            if (card.layout === "double-faced") {
+                return $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + data.cards[0].names[1]).then(function (data) {
+                    card.multiverseIdBack = data.cards[0].multiverseid;
+                    for (var j = 0; j < count; j++) {
+                        libraryList.push(card);
+                    } 
+                });
+            } else {
+                for (var j = 0; j < count; j++) {
+                    libraryList.push(card);
+                }
+            }        
         });
     })).then(function () {
         $("#library-placeholder").html(defaultCard("library-placeholder-card"));
@@ -67,7 +81,7 @@ function mulligan() {
 
 function draw(amount) {
     for (var index = 0; index < amount; index++) {
-        $("#hand").append(createCard(libraryList.splice(0, 1)));      
+        $("#hand").append(createCard(libraryList.splice(0, 1)[0]));      
     }
     $(".mtg-card").draggable({helper: "clone"});
     updateTotals();

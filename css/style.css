@@ -9,6 +9,13 @@
     box-shadow: 0 0 10px #c8b472;
 }
 
+.mtg-card-side {
+    height: 173px !important;
+    width: 125px !important;
+    background-size: cover;
+    border-radius: 5px;
+}
+
 #hand-container {
     height: 200px;
 }

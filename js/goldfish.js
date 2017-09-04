@@ -204,9 +204,13 @@ function setupDragDrop() {
         },
         out: function(event, ui) {
             if (ui.draggable[0].parentElement.id === "library-placeholder") {
-                var multiverseId = libraryList.splice(0, 1);
-                ui.draggable[0].style.backgroundImage = "url('" + createCardImageSrc(multiverseId) + "')";
-                $(ui.draggable[0]).data("multiverseId", multiverseId);
+                var card = libraryList.splice(0, 1)[0];
+                $(ui.draggable[0]).html(createCard(card)[0].innerHTML);
+                $(ui.draggable[0]).removeClass("library-placeholder-card");
+                $(ui.draggable[0]).removeData("flip-model");
+                $(ui.draggable[0]).css("background-image", "");
+
+                $(ui.draggable[0]).flip({trigger:"manual"});
 
                 if (libraryList.length > 0) {
                     $("#library-placeholder").append(defaultCard("library-placeholder-card"))
