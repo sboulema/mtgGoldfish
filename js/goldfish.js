@@ -22,19 +22,42 @@ function init() {
 
     $("body").keypress(function(e) {
         if (e.keyCode == 102) { // f   
-             flip($(".mtg-card:hover")[0]);
-             e.preventDefault();
+            flip($(".mtg-card:hover")[0]);          
         }
         if (e.keyCode == 99) { // c   
             addCounter($(".mtg-card:hover")[0]);
-            e.preventDefault();
-       }
+        }
+        if (e.keyCode == 116) { // t   
+            tap($(".mtg-card:hover")[0]);
+        }
+        if (e.keyCode == 100) { // d 
+            draw(1);
+        }
+        if (e.keyCode == 108) { // l 
+            putCardOnLibrary($(".mtg-card:hover")[0])
+        }
+        if (e.keyCode == 98) { // b
+            putCardOnLibrary($(".mtg-card:hover")[0], true)
+        }
+        e.preventDefault();
     });
 
     $(document).on('shown.bs.modal', function(e) {
         $('input:visible:enabled:first', e.target).focus();
         $('textarea:visible:enabled:first', e.target).focus();
     });
+
+    retrieveSettings();
+}
+
+function retrieveSettings() {
+    var backgroundUrl = localStorage.getItem("background");
+    if (backgroundUrl === null || backgroundUrl === "") {
+        $("#table").css("background-image", "url('http://i.imgur.com/1UjtE9j.jpg')");
+    } else {
+        $("#table").css("background-image", "url('" + backgroundUrl + "')");
+        $("#background-url").val(backgroundUrl);
+    } 
 }
 
 function bindPlaceholderPopover(selector, id, list) {
@@ -46,9 +69,9 @@ function bindPlaceholderPopover(selector, id, list) {
             var html = "<div id='" + id + "' style='max-height: 600px; width: 125px;'>";
             for (var index = 0; index < list.length; index++) {
                 if (index === 0) {
-                    html += createCard(list[index], "position: relative; top: 0px; margin-bottom: 0px;");
+                    html += createCard(list[index], "position: relative; top: 0px; margin-bottom: 0px;")[0].outerHTML;
                 } else {
-                    html += createCard(list[index], "position: relative; top: -130px; margin-bottom: -130px;");
+                    html += createCard(list[index], "position: relative; top: -130px; margin-bottom: -130px;")[0].outerHTML;
                 }
             }
             return html += "</div>";
@@ -177,14 +200,14 @@ function setupDragDrop() {
     $("#library-placeholder").droppable({
         accept: ".mtg-card",
         drop: function(event, ui) {
-            $("#library-placeholder").empty();
-            libraryList.unshift(getMultiverseId(ui.draggable));
-            $("#library-placeholder").append(defaultCard("library-placeholder-card"));
+            putCardOnLibrary(ui.draggable[0]);
         },
         out: function(event, ui) {
             if (ui.draggable[0].parentElement.id === "library-placeholder") {
-                ui.draggable[0].style.backgroundImage = "url('" + createCardImageSrc(libraryList.splice(0, 1)) + "')";
-                
+                var multiverseId = libraryList.splice(0, 1);
+                ui.draggable[0].style.backgroundImage = "url('" + createCardImageSrc(multiverseId) + "')";
+                $(ui.draggable[0]).data("multiverseId", multiverseId);
+
                 if (libraryList.length > 0) {
                     $("#library-placeholder").append(defaultCard("library-placeholder-card"))
                 }
@@ -244,7 +267,7 @@ function restart() {
     libraryList = deck.slice();
     sideboardList = sideboard.slice();
     $(".card-placeholder").empty();
-    $("#table").empty(); 
+    $("#table").empty();
 
     // Reset
     $('#life-you').val("20");
@@ -257,4 +280,12 @@ function restart() {
     draw(7);
 
     bindCardActions();
+}
+
+function saveSettings() {
+    localStorage.setItem("background", $("#background-url").val());
+
+    retrieveSettings();
+
+    $('#settingsModal').modal('toggle');
 }

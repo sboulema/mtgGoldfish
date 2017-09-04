@@ -20,7 +20,7 @@ function createCard(multiverseId, style) {
         .data("multiverseId", multiverseId);
 
     if (typeof style !== 'undefined') {
-        card.css(style);
+        card.attr("style", card.attr("style") + "; " + style);
     }
 
     return card;

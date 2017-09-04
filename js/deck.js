@@ -109,3 +109,19 @@ function shuffleDeckToCard(multiverseId) {
         }
     });
 }
+
+function putCardOnLibrary(card, onBottom) {
+    if (onBottom) {
+        libraryList.push($(card).data("multiverseId"))
+    } else {
+        $("#library-placeholder").empty();
+        libraryList.unshift($(card).data("multiverseId"));
+        $("#library-placeholder").append(defaultCard("library-placeholder-card"));
+    }
+
+    $(card).mouseout();
+    $(card).remove();
+
+    updateTotals();
+    bindCardActions();
+} 

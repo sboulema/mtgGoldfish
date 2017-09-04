@@ -2,6 +2,11 @@
     height: 173px;
     width: 125px;
     background-size: cover;
+    border-radius: 5px;
+}
+
+.mtg-card:hover {
+    box-shadow: 0 0 10px #c8b472;
 }
 
 #hand-container {
