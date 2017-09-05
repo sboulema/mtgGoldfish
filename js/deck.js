@@ -1,31 +1,34 @@
+function importDeck() {
+    var dfrd1 = $.Deferred();
+    
+    var mtgStocksDeckId = $("#mtgstocks-deck-id").val();
+
+    $.getJSON("https://cors-anywhere.herokuapp.com/https://api.mtgstocks.com/decks/" + mtgStocksDeckId).then(function (data) {
+        var deck = "";    
+        var sideboard = "";
+
+        $.each(data.mainboard, function(key, card) {
+            deck += card.quantity + " " + card.card.name + "\n";
+        });
+
+        $.each(data.sideboard, function(key, card) {
+            sideboard += card.quantity + " " + card.card.name + "\n";
+        })
+
+        $("#deck-list").val(deck);
+        $("#sideboard-list").val(sideboard);
+        dfrd1.resolve();
+    });
+
+    return dfrd1.promise();
+}
+
 function loadDeck() {
     var lines = $("#deck-list").val().trim().split('\n');
 
     // Mainboard
     $.when.apply($, lines.map(function (line) {
-        var matches = line.match(/\b(\d+)\s+(.*)\b/);
-        var count = matches[1];
-        var name = matches[2];
-
-        return $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + name).then(function (data) {
-            var card = {};
-            card.name = data.cards[0].name;
-            card.layout = data.cards[0].layout;
-            card.multiverseId = data.cards[0].multiverseid;    
-        
-            if (card.layout === "double-faced") {
-                return $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + data.cards[0].names[1]).then(function (data) {
-                    card.multiverseIdBack = data.cards[0].multiverseid;
-                    for (var j = 0; j < count; j++) {
-                        libraryList.push(card);
-                    } 
-                });
-            } else {
-                for (var j = 0; j < count; j++) {
-                    libraryList.push(card);
-                }
-            }        
-        });
+        return lineToCard(line, libraryList);
     })).then(function () {
         $("#library-placeholder").html(defaultCard("library-placeholder-card"));
         deck = libraryList.slice();
@@ -38,18 +41,10 @@ function loadDeck() {
 
     // Sideboard
     if ($("#sideboard-list").val() != '') {
-        var lines = $("#sideboard-list").val().split('\n');
+        var lines = $("#sideboard-list").val().trim().split('\n');
 
         $.when.apply($, lines.map(function (line) {
-            var matches = line.match(/\b(\d+)\s+(.*)\b/);
-            var count = matches[1];
-            var name = matches[2];
-    
-            return $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + name).then(function (data) {
-                for (var j = 0; j < count; j++) {
-                    sideboardList.push(data.cards[0].multiverseid);
-                }
-            });
+            return lineToCard(line, sideboardList);
         })).then(function () {
             $("#sideboard-placeholder").html(defaultCard());
             sideboard = sideboardList.slice();
@@ -58,7 +53,36 @@ function loadDeck() {
         });       
     }
 
-    $('#deckModal').modal('toggle');
+    $('#deckModal').modal('hide');
+}
+
+function lineToCard(line, list) {
+    var matches = line.match(/\b(\d+)\s+(.*)\b/);
+    var count = matches[1];
+    var name = matches[2];
+
+    return $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + name).then(function (data) {   
+        var result = data.cards.find(function(element) { return typeof element.multiverseid != 'undefined'});
+
+        var card = {};
+        card.name = result.name;
+        card.layout = result.layout;
+        card.multiverseId = result.multiverseid;    
+
+        if (card.layout === "double-faced") {
+            return $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + data.cards[0].names[1]).then(function (data) {
+                var result = data.cards.find(function(element) { return typeof element.multiverseid != 'undefined'}); 
+                card.multiverseIdBack = result.multiverseid;
+                for (var j = 0; j < count; j++) {
+                    list.push(card);
+                } 
+            });
+        } else {
+            for (var j = 0; j < count; j++) {
+                list.push(card);
+            }
+        }        
+    });
 }
 
 function shuffleDeck() {

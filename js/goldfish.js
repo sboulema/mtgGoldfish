@@ -39,7 +39,6 @@ function init() {
         if (e.keyCode == 98) { // b
             putCardOnLibrary($(".mtg-card:hover")[0], true)
         }
-        e.preventDefault();
     });
 
     $(document).on('shown.bs.modal', function(e) {
@@ -48,6 +47,18 @@ function init() {
     });
 
     retrieveSettings();
+
+    // Load deck based on url param
+    var url = new URL(window.location);  
+    var params = new URLSearchParams(url.search.slice(1));
+    if (params.has('deckid')) {
+        $('#loadingModal').modal('show');
+        $("#mtgstocks-deck-id").val(params.get('deckid'));
+        importDeck().done(function(){
+            loadDeck();
+            $('#loadingModal').modal('hide');
+        });        
+    }   
 }
 
 function retrieveSettings() {

@@ -27,7 +27,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                            <a class="nav-link" href="#" data-toggle="modal" data-target="#settingsModal">Settings</a>
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#settingsModal">Settings</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-toggle="modal" data-target="#helpModal">Help</a>
@@ -35,7 +35,7 @@
                 </ul>
             </div>
 
-            <button type="button" id="show-deck-modal" class="btn btn-primary" data-toggle="modal" data-target="#deckModal">Load deck</button>                    
+            <button type="button" id="show-deck-modal" class="btn btn-primary" data-toggle="modal" data-target="#deckModal">Load deck</button>
         </nav>
 
         <div class="row">
@@ -84,7 +84,7 @@
                             <label id="custom-counter-label">Custom counter:</label>
                             <input class="form-control clickedit" type="text" />
                             <input id="custom-counter" class="form-control custom-counter" type="number" value="0" min="0" />
-                        </div>                   
+                        </div>
                     </fieldset>
                 </form>
 
@@ -128,7 +128,8 @@
                             <label class="control-label">Actions:</label>
                             <input class="form-control btn btn-block btn-primary" type="button" value="Shuffle deck" onclick="shuffleDeck();" />
                             <input class="form-control btn btn-block btn-primary" type="button" value="Shuffle hand" onclick="shuffleHand();" />
-                            <input class="form-control btn btn-block btn-primary" type="button" value="Start with card" data-toggle="modal" data-target="#shuffleDeckModal" />
+                            <input class="form-control btn btn-block btn-primary" type="button" value="Start with card" data-toggle="modal" data-target="#shuffleDeckModal"
+                            />
                             <input class="form-control btn btn-block btn-primary" type="button" value="Mulligan" onclick="mulligan();" />
                             <input class="form-control btn btn-block btn-primary" type="button" value="Untap all" onclick="untapAll();" />
                             <input class="form-control btn btn-block btn-primary" type="button" value="Flip hand" onclick="flipHand();" />
@@ -163,6 +164,17 @@
                             <div class="form-group">
                                 <label class="control-label">Sideboard:</label>
                                 <textarea class="form-control" rows="15" id="sideboard-list"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="control-label">MTGStocks deck id:</label>
+                            <div class="input-group">                            
+                                <input type="text" class="form-control" id="mtgstocks-deck-id" />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="button" onclick="importDeck();">Import</button>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -241,8 +253,28 @@
                         <li><strong>d</strong>: draw a card</li>
                         <li><strong>f</strong>: flip card</li>
                         <li><strong>l</strong>: put card on the top of library</li>
-                        <li><strong>t</strong>: tap card</li>                       
+                        <li><strong>t</strong>: tap card</li>
                     </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div class="modal fade" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="loadingModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loadingModalLabel">Loading</h5>
+                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <center>
+                        <i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
+                        <span class="sr-only">Loading...</span>
+                    </center>
                 </div>
             </div>
         </div>
@@ -259,19 +291,17 @@
         crossorigin="anonymous"></script>
 
     <!-- External JavaScript libraries -->
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>   
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src='https://unpkg.com/jqueryrotate-slevomat-fork@1.0.0/jQueryRotateCompressed.js'></script>
     <script src="js/bootstrap-number-input.js"></script>
-    <script src="https://unpkg.com/knuth-shuffle@1.0.1"></script>    
-
-    
+    <script src="https://unpkg.com/knuth-shuffle@1.0.1"></script>
     <script src="https://cdn.rawgit.com/nnattawat/flip/master/dist/jquery.flip.min.js"></script>
 
     <!-- Custom Javascript functions -->
-    <script src="js/card.js"></script>  
+    <script src="js/card.js"></script>
     <script src="js/goldfish.js"></script>
-    <script src="js/deck.js"></script>  
-       
+    <script src="js/deck.js"></script>
+
     <script>
         $(document).ready(function () {
             init();
