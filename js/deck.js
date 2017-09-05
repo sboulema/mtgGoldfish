@@ -62,7 +62,7 @@ function lineToCard(line, list) {
     var name = matches[2];
 
     return $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + name).then(function (data) {   
-        var result = data.cards.find(function(element) { return typeof element.multiverseid != 'undefined'});
+        var result = data.cards.find(function(element) { return (typeof element.multiverseid != 'undefined') && (element.name === name)});
 
         var card = {};
         card.name = result.name;
@@ -71,7 +71,7 @@ function lineToCard(line, list) {
 
         if (card.layout === "double-faced") {
             return $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + data.cards[0].names[1]).then(function (data) {
-                var result = data.cards.find(function(element) { return typeof element.multiverseid != 'undefined'}); 
+                var result = data.cards.find(function(element) { return (typeof element.multiverseid != 'undefined') && (element.name === name)}); 
                 card.multiverseIdBack = result.multiverseid;
                 for (var j = 0; j < count; j++) {
                     list.push(card);
@@ -107,7 +107,6 @@ function draw(amount) {
     for (var index = 0; index < amount; index++) {
         $("#hand").append(createCard(libraryList.splice(0, 1)[0]));      
     }
-    $(".mtg-card").draggable({helper: "clone"});
     updateTotals();
     bindCardActions();
 }
@@ -163,3 +162,22 @@ function putCardOnLibrary(card, onBottom) {
     updateTotals();
     bindCardActions();
 } 
+
+function putCardinPlaceholder(card, selector, list) {
+    $(selector).empty();  
+    $(card).mouseout();
+    $(card).detach().appendTo($(selector));
+
+    $(card)
+        .css('left', "")
+        .css('top', "")
+        .css('position', "")
+        .css("margin-bottom", "")
+        .css("transform", "")
+        .unbind("click");
+
+    list.push(getCardObject(card));
+
+    updateTotals();
+    bindCardActions();
+}

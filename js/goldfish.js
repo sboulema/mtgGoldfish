@@ -34,10 +34,16 @@ function init() {
             draw(1);
         }
         if (e.keyCode == 108) { // l 
-            putCardOnLibrary($(".mtg-card:hover")[0])
+            putCardOnLibrary($(".mtg-card:hover")[0]);
         }
         if (e.keyCode == 98) { // b
-            putCardOnLibrary($(".mtg-card:hover")[0], true)
+            putCardOnLibrary($(".mtg-card:hover")[0], true);
+        }
+        if (e.keyCode == 103) { // g
+            putCardinPlaceholder($(".mtg-card:hover")[0], "#graveyard-placeholder", graveyardList);
+        }
+        if (e.keyCode == 101) { // e
+            putCardinPlaceholder($(".mtg-card:hover")[0], "#exile-placeholder", exileList);
         }
     });
 
@@ -90,6 +96,7 @@ function bindPlaceholderPopover(selector, id, list) {
     });
 
     $(selector).on('shown.bs.popover', function () {
+        setupDroppableZone(selector.slice(0, -6), list);
         bindCardActions();
     });
 }
@@ -143,9 +150,9 @@ function endEdit(e, defaultText) {
 
 function setupTurnButton() {
     $("#btn-next-turn").click(function (event) {
-        $("#turn-counter").html(parseInt($("#turn-counter").html()) + 1);
-        untapAll();
+        $("#turn-counter").html(parseInt($("#turn-counter").html()) + 1);     
         draw(1);
+        untapAll();
     });
 }
 
@@ -233,26 +240,20 @@ function setupDragDrop() {
     setupDroppablePlaceholder("#graveyard-placeholder", graveyardList);
     setupDroppablePlaceholder("#exile-placeholder", exileList);
     setupDroppablePlaceholder("#sideboard-placeholder", sideboardList);
-
-    setupDroppableZones("#library", libraryList);
-    setupDroppableZones("#graveyard", graveyardList);
-    setupDroppableZones("#exile", exileList);
-    setupDroppableZones("#sideboard", sideboardList);
 }
 
 function setupDroppablePlaceholder(selector, list) {
     $(selector).droppable({
         accept: ".mtg-card",
         drop: function(event, ui) {
-            if ($(selector).children().length != 0) {
-                $($(selector).children()[0]).popover('hide')
-            }
+            $(selector).children().mouseout();
+            $(ui.draggable).mouseout();
             
             $(selector).empty();        
 
             ui.draggable.detach().appendTo($(this));
 
-            list.push(getMultiverseId(ui.draggable));
+            list.push(getCardObject(ui.draggable));
         },
         out: function(event, ui) {
             if (ui.draggable[0].parentElement.id === selector.substr(1)) {
@@ -266,11 +267,15 @@ function setupDroppablePlaceholder(selector, list) {
     });   
 }
 
-function setupDroppableZones(selector, list) {
+function setupDroppableZone(selector, list) {
     $(selector).droppable({
         accept: ".mtg-card",
         out: function(event, ui) {
-            list.splice(list.indexOf(getMultiverseId(ui.draggable)), 1);
+            var needle = getFrontMultiverseId(ui.draggable);
+            var index = list.findIndex(function(element) { 
+                element.multiverseId === needle;
+            });
+            list.splice(index, 1);
         }
     });  
 }

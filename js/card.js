@@ -51,8 +51,15 @@ function createCardImageSrc(multiverseId) {
     return "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + multiverseId + "&type=card";
 }
 
-function getMultiverseId(el) {
-    return el[0].style.backgroundImage.slice(5, -2).substr(61).slice(0, -10);
+function getCardObject(el) {
+    return {
+        multiverseId: $(el[0]).children(".front").data("multiverseId"),
+        multiverseIdBack: $(el[0]).children(".back").data("multiverseId")
+    };
+}
+
+function getFrontMultiverseId(el) {
+    return parseInt($(el.children(".front")).css("background-image").slice(5, -2).substr(61).slice(0, -10));
 }
 
 function bindCardActions() {
@@ -117,7 +124,7 @@ function tap(card) {
 
 function untapAll() {
     $("#table .mtg-card").each(function(index) {
-        untap(this);
+        tap(this);
     });
 }
 
