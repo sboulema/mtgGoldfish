@@ -14,7 +14,8 @@ function defaultCard(cssClass) {
 
 function createCard(card, style) {
     var cardDiv = $('<div/>')
-    .addClass("mtg-card");
+    .addClass("mtg-card")
+    .addClass(card.layout);
 
     if (typeof style !== 'undefined') {
         cardDiv.attr("style", cardDiv.attr("style") + "; " + style);

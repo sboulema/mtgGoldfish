@@ -64,7 +64,9 @@ function init() {
             loadDeck();
             $('#loadingModal').modal('hide');
         });        
-    }   
+    }
+    
+    setupTokens();
 }
 
 function retrieveSettings() {
@@ -249,11 +251,13 @@ function setupDroppablePlaceholder(selector, list) {
             $(selector).children().mouseout();
             $(ui.draggable).mouseout();
             
-            $(selector).empty();        
-
-            ui.draggable.detach().appendTo($(this));
-
-            list.push(getCardObject(ui.draggable));
+            if(!$(ui.draggable).hasClass("token")) {
+                $(selector).empty();        
+                ui.draggable.detach().appendTo($(this));
+                list.push(getCardObject(ui.draggable));
+            } else {
+                $(ui.draggable).remove();
+            }
         },
         out: function(event, ui) {
             if (ui.draggable[0].parentElement.id === selector.substr(1)) {

@@ -120,19 +120,26 @@
                 <form>
                     <fieldset>
                         <div class="form-group">
+                            <label class="control-label">Tokens:</label>
+                            <select id="token-select" class="form-control">
+                            </select>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <div class="form-group">
                             <label class="control-label">Turn: <span id="turn-counter">1</span></label>
                             <input id="btn-next-turn" class="form-control btn btn-primary" type="button" value="Next turn" />
                         </div>
                         <div class="form-group">
                             <label class="control-label">Actions:</label>
-                            <input class="form-control btn btn-block btn-primary" type="button" value="Shuffle deck" onclick="shuffleDeck();" />
-                            <input class="form-control btn btn-block btn-primary" type="button" value="Shuffle hand" onclick="shuffleHand();" />
-                            <input class="form-control btn btn-block btn-primary" type="button" value="Start with card" data-toggle="modal" data-target="#shuffleDeckModal"
+                            <input class="form-control btn btn-sm btn-block btn-primary" type="button" value="Shuffle deck" onclick="shuffleDeck();" />
+                            <input class="form-control btn btn-sm btn-block btn-primary" type="button" value="Shuffle hand" onclick="shuffleHand();" />
+                            <input class="form-control btn btn-sm btn-block btn-primary" type="button" value="Start with card" data-toggle="modal" data-target="#shuffleDeckModal"
                             />
-                            <input class="form-control btn btn-block btn-primary" type="button" value="Mulligan" onclick="mulligan();" />
-                            <input class="form-control btn btn-block btn-primary" type="button" value="Untap all" onclick="untapAll();" />
-                            <input class="form-control btn btn-block btn-primary" type="button" value="Flip hand" onclick="flipHand();" />
-                            <input class="form-control btn btn-block btn-danger" type="button" value="Restart" onclick="restart();" />
+                            <input class="form-control btn btn-sm btn-block btn-primary" type="button" value="Mulligan" onclick="mulligan();" />
+                            <input class="form-control btn btn-sm btn-block btn-primary" type="button" value="Untap all" onclick="untapAll();" />
+                            <input class="form-control btn btn-sm btn-block btn-primary" type="button" value="Flip hand" onclick="flipHand();" />
+                            <input class="form-control btn btn-sm btn-block btn-danger" type="button" value="Restart" onclick="restart();" />
                         </div>
                     </fieldset>
                 </form>
@@ -160,6 +167,7 @@
 
     <!-- Custom Javascript functions -->
     <script src="js/card.js"></script>
+    <script src="js/token.js"></script>
     <script src="js/goldfish.js"></script>
     <script src="js/deck.js"></script>
 
