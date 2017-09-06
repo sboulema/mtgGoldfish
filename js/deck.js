@@ -165,8 +165,9 @@ function putCardOnLibrary(card, onBottom) {
 } 
 
 function putCardinPlaceholder(card, selector, list) {
+    $('.popover').popover('hide');
+
     $(selector).empty();  
-    $(card).mouseout();
     $(card).detach().appendTo($(selector));
 
     $(card)

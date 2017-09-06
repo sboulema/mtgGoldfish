@@ -40,10 +40,10 @@ function init() {
             putCardOnLibrary($(".mtg-card:hover")[0], true);
         }
         if (e.keyCode == 103) { // g
-            putCardinPlaceholder($(".mtg-card:hover")[0], "#graveyard-placeholder", graveyardList);
+            putCardinPlaceholder($(".mtg-card:hover"), "#graveyard-placeholder", graveyardList);
         }
         if (e.keyCode == 101) { // e
-            putCardinPlaceholder($(".mtg-card:hover")[0], "#exile-placeholder", exileList);
+            putCardinPlaceholder($(".mtg-card:hover"), "#exile-placeholder", exileList);
         }
     });
 
