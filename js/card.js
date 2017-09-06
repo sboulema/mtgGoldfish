@@ -26,7 +26,7 @@ function createCard(card, style) {
         .addClass("mtg-card-side")
         .addClass("mtg-card-preview")
         .css("background-image", "url('" + createCardImageSrc(card.multiverseId) + "')")
-        .data("multiverseId", card.multiverseId)
+        .attr("data-multiverseid", card.multiverseId)
         .appendTo(cardDiv);
 
     if (card.layout === "double-faced") {
@@ -35,7 +35,7 @@ function createCard(card, style) {
             .addClass("mtg-card-side")
             .addClass("mtg-card-preview")
             .css("background-image", "url('" + createCardImageSrc(card.multiverseIdBack) + "')")
-            .data("multiverseId", card.multiverseIdBack)
+            .attr("data-multiverseid", card.multiverseId)
             .appendTo(cardDiv);
     } else {
         var back = $('<div/>')
@@ -54,13 +54,13 @@ function createCardImageSrc(multiverseId) {
 
 function getCardObject(el) {
     return {
-        multiverseId: $(el[0]).children(".front").data("multiverseId"),
-        multiverseIdBack: $(el[0]).children(".back").data("multiverseId")
+        multiverseId: $(el[0]).children(".front").attr('data-multiverseid'),
+        multiverseIdBack: $(el[0]).children(".back").attr("data-multiverseid")
     };
 }
 
 function getFrontMultiverseId(el) {
-    return parseInt($(el.children(".front")).css("background-image").slice(5, -2).substr(61).slice(0, -10));
+    return parseInt($(el).children(".front").attr("data-multiverseid"));
 }
 
 function bindCardActions() {
@@ -92,7 +92,7 @@ function bindCardActions() {
         }
     });
 
-    $(".mtg-card").droppable({
+    $("#table .mtg-card-side.mtg-card-preview").droppable({
         accept: ".counter",        
         drop: function(event, ui) {
             ui.draggable.detach()
@@ -108,24 +108,28 @@ function bindCardActions() {
 }
 
 function tap(card) {
-    if (!$(card).hasClass("tapped")) {
+    if (!$(card).hasClass("tapped") || $(card).getRotateAngle() == 0) {
+        $(card).addClass("tapped");
         $(card).rotate({
             angle: 0,
             animateTo: 90
-        })
-        $(card).addClass("tapped");
+        })       
     } else {
-        $(card).rotate({
-            angle: 90,
-            animateTo: 0
-        })
-        $(card).removeClass("tapped");
+        untap(card);
     }
 }
 
+function untap(card) {
+    $(card).removeClass("tapped");
+    $(card).rotate({
+        angle: 90,
+        animateTo: 0
+    }) 
+}
+
 function untapAll() {
-    $("#table .mtg-card").each(function(index) {
-        tap(this);
+    $("#table .mtg-card.tapped").each(function(index) {
+        untap(this);
     });
 }
 
@@ -145,7 +149,10 @@ function shuffleHand() {
 }
 
 function addCounter(card) {
-    $(card).append("<label class='ms ms-e ms-3x counter'></label><input class='form-control clickedit' type='text' />");
+    var flip = $(card).data("flip-model");
+
+    $(card).children((flip.isFlipped ? ".back" : ".front"))
+        .append("<label class='ms ms-e ms-3x counter'></label><input class='form-control clickedit' type='text' />");
     
     $('.mtg-card .clickedit').hide()
     .focusout(endEdit)

@@ -137,7 +137,7 @@ function shuffleDeckToCard(multiverseId) {
     draw(7);
 
     $.when.apply($, $("#hand").children().map(function (index, card) {
-        if (parseInt($(card).data("multiverseId")) === multiverseId) {
+        if (parseInt($(card).attr('data-multiverseid')) === multiverseId) {
             return found = true;
         }
     })).then(function () {
@@ -149,16 +149,17 @@ function shuffleDeckToCard(multiverseId) {
 
 function putCardOnLibrary(card, onBottom) {
     if (onBottom) {
-        libraryList.push($(card).data("multiverseId"))
+        libraryList.push($(card).attr('data-multiverseid'))
     } else {
         $("#library-placeholder").empty();
-        libraryList.unshift($(card).data("multiverseId"));
+        libraryList.unshift($(card).attr('data-multiverseid'));
         $("#library-placeholder").append(defaultCard("library-placeholder-card"));
     }
 
     $(card).mouseout();
     $(card).remove();
 
+    setupClickToDraw();
     updateTotals();
     bindCardActions();
 } 

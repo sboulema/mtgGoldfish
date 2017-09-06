@@ -18,6 +18,7 @@
 
 #hand-container {
     height: 200px;
+    overflow-x: auto;
 }
 
 .ui-background {
@@ -91,7 +92,7 @@ body {
     right: 0px;
 }
 
-#helpModal .modal-content {
+#helpModal .modal-content, #aboutModal .modal-content {
     background-image: url("../img/playbg1.png");
     color: #c8b472;    
 }

@@ -85,15 +85,19 @@ function bindPlaceholderPopover(selector, id, list) {
         trigger: 'click',
         placement: 'top',
         content: function () {
-            var html = "<div id='" + id + "' style='max-height: 600px; width: 125px;'>";
+            var cardList = $('<div/>')
+                .attr('id', id)
+                .css("max-height", "600px")
+                .css("width", "125px");
+
             for (var index = 0; index < list.length; index++) {
                 if (index === 0) {
-                    html += createCard(list[index], "position: relative; top: 0px; margin-bottom: 0px;")[0].outerHTML;
+                    cardList.append(createCard(list[index], "position: relative; top: 0px; margin-bottom: 0px;"));
                 } else {
-                    html += createCard(list[index], "position: relative; top: -130px; margin-bottom: -130px;")[0].outerHTML;
+                    cardList.append(createCard(list[index], "position: relative; top: -130px; margin-bottom: -130px;"))
                 }
             }
-            return html += "</div>";
+            return cardList[0].outerHTML;
         }
     });
 
@@ -225,15 +229,19 @@ function setupDragDrop() {
         out: function(event, ui) {
             if (ui.draggable[0].parentElement.id === "library-placeholder") {
                 var card = libraryList.splice(0, 1)[0];
-                $(ui.draggable[0]).html(createCard(card)[0].innerHTML);
-                $(ui.draggable[0]).removeClass("library-placeholder-card");
-                $(ui.draggable[0]).removeData("flip-model");
-                $(ui.draggable[0]).css("background-image", "");
 
-                $(ui.draggable[0]).flip({trigger:"manual"});
+                $(ui.draggable[0])
+                    .html(createCard(card)[0].innerHTML)
+                    .removeClass("library-placeholder-card")
+                    .removeData("flip-model")
+                    .css("background-image", "")
+                    // .children(".front").data("multiverseId", card.multiverseId)
+                    .flip({trigger:"manual"})
+                    .unbind("click");
 
                 if (libraryList.length > 0) {
                     $("#library-placeholder").append(defaultCard("library-placeholder-card"))
+                    setupClickToDraw();
                 }
             }
         }
@@ -248,13 +256,10 @@ function setupDroppablePlaceholder(selector, list) {
     $(selector).droppable({
         accept: ".mtg-card",
         drop: function(event, ui) {
-            $(selector).children().mouseout();
-            $(ui.draggable).mouseout();
-            
+            $('.popover').popover('hide');
+
             if(!$(ui.draggable).hasClass("token")) {
-                $(selector).empty();        
-                ui.draggable.detach().appendTo($(this));
-                list.push(getCardObject(ui.draggable));
+                putCardinPlaceholder(ui.draggable, selector, list);
             } else {
                 $(ui.draggable).remove();
             }
@@ -277,9 +282,14 @@ function setupDroppableZone(selector, list) {
         out: function(event, ui) {
             var needle = getFrontMultiverseId(ui.draggable);
             var index = list.findIndex(function(element) { 
-                element.multiverseId === needle;
+                return element.multiverseId === needle;
             });
             list.splice(index, 1);
+
+            if (list.length === 0) {
+                $(selector + "-placeholder").empty();
+                $('.popover').popover('hide');
+            }
         }
     });  
 }
