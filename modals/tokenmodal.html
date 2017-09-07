@@ -1,0 +1,31 @@
+<!-- Token Modal -->
+<div class="modal fade" id="tokenModal" tabindex="-1" role="dialog" aria-labelledby="tokenModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tokenModalLabel">Custom token</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label">Name:</label>
+                    <input type="text" class="form-control" id="token-name" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Rules:</label>
+                    <input type="text" class="form-control" id="token-rules" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Power/Toughness:</label>
+                    <input type="text" class="form-control" id="token-powerToughness" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="addCustomToken();">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
