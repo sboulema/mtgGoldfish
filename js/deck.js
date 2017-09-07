@@ -24,7 +24,13 @@ function importDeck() {
 }
 
 function loadDeck() {
+    var dfrd1 = $.Deferred();
+
     var lines = $("#deck-list").val().trim().split('\n');
+
+    // Clear any existing deck and sideboard
+    libraryList.length = 0;
+    sideboardList.length = 0;
 
     // Mainboard
     $.when.apply($, lines.map(function (line) {
@@ -37,6 +43,10 @@ function loadDeck() {
         updateTotals();
         bindCardActions();
         setupClickToDraw();
+
+        if ($("#sideboard-list").val() === '') {
+            dfrd1.resolve();
+        }
     });
 
     // Sideboard
@@ -50,14 +60,16 @@ function loadDeck() {
             sideboard = sideboardList.slice();
             updateTotals();
             bindCardActions();
+            dfrd1.resolve();
         });       
     }
 
     $('#deckModal').modal('hide');
+    return dfrd1.promise();
 }
 
 function lineToCard(line, list) {
-    var matches = line.match(/\b(\d+)\s+(.*)\b/);
+    var matches = line.match(/\b(\d+)x?\s+(.*)\b/);
     var count = matches[1];
     var name = matches[2];
 

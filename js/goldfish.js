@@ -60,9 +60,10 @@ function init() {
     if (params.has('deckid')) {
         $('#loadingModal').modal('show');
         $("#mtgstocks-deck-id").val(params.get('deckid'));
-        importDeck().done(function(){
-            loadDeck();
-            $('#loadingModal').modal('hide');
+        importDeck().done(function() {
+            loadDeck().done(function () {
+                $('#loadingModal').modal('hide');
+            });           
         });        
     }
     
@@ -159,6 +160,14 @@ function setupTurnButton() {
         $("#turn-counter").html(parseInt($("#turn-counter").html()) + 1);     
         draw(1);
         untapAll();
+    });
+}
+
+function startLoadDeck() {
+    $('#loadingModal').modal('show');
+    reset();
+    loadDeck().done(function() {
+        $('#loadingModal').modal('hide');
     });
 }
 
@@ -286,30 +295,43 @@ function setupDroppableZone(selector, list) {
             });
             list.splice(index, 1);
 
-            if (list.length === 0) {
-                $(selector + "-placeholder").empty();
+            $(selector + "-placeholder").empty();
+            if (list.length === 0) {               
                 $('.popover').popover('hide');
+            } else {
+                $(selector + "-placeholder").append(createCard(list[list.length - 1], ""));
             }
         }
     });  
 }
 
-function restart() {
+function reset() {
     // Clear all
-    exileList = [];
-    graveyardList = [];
+    exileList.length = 0;
+    graveyardList.length = 0;
     libraryList = deck.slice();
     sideboardList = sideboard.slice();
     $(".card-placeholder").empty();
     $("#table").empty();
 
     // Reset
+    if (sideboardList.length > 0) {
+        $("#sideboard-placeholder").html(defaultCard());
+    }
+    if (libraryList.length > 0) {
+        $("#library-placeholder").html(defaultCard("library-placeholder-card"));
+    }
     $('#life-you').val("20");
     $('#life-opponent').val("20");
     $("#turn-counter").html("1");
 
+    init();
+}
+
+function restart() {
+    reset();
+
     // Start over
-    $("#library-placeholder").html(defaultCard("library-placeholder-card"));
     shuffleDeck();
     draw(7);
 

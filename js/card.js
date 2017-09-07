@@ -60,7 +60,7 @@ function getCardObject(el) {
 }
 
 function getFrontMultiverseId(el) {
-    return parseInt($(el).children(".front").attr("data-multiverseid"));
+    return $(el).children(".front").attr("data-multiverseid");
 }
 
 function bindCardActions() {
