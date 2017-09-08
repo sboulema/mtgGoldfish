@@ -1,9 +1,7 @@
-function importDeck() {
+function importMtgStocksDeck(deckid) {
     var dfrd1 = $.Deferred();
-    
-    var mtgStocksDeckId = $("#mtgstocks-deck-id").val();
 
-    $.getJSON("https://cors-anywhere.herokuapp.com/https://api.mtgstocks.com/decks/" + mtgStocksDeckId).then(function (data) {
+    $.getJSON("https://cors-anywhere.herokuapp.com/https://api.mtgstocks.com/decks/" + deckid).then(function (data) {
         var deck = "";    
         var sideboard = "";
 

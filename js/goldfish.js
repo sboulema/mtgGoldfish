@@ -64,8 +64,7 @@ function init() {
     var params = new URLSearchParams(url.search.slice(1));
     if (params.has('mtgstocksdeckid')) {
         $('#loadingModal').modal('show');
-        $("#mtgstocks-deck-id").val(params.get('mtgstocksdeckid'));
-        importDeck().done(function() {
+        importMtgStocksDeck(params.get('mtgstocksdeckid')).done(function() {
             loadDeck().done(function () {
                 $('#loadingModal').modal('hide');
             });           
