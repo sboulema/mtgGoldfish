@@ -283,6 +283,7 @@ function setupDragDrop() {
                     .removeData("flip-model")
                     .css("background-image", "")
                     .attr("data-goldfishid", card.goldfishId)
+                    .attr("data-layout", card.layout)
                     .flip({trigger:"manual"})
                     .unbind("click");
 

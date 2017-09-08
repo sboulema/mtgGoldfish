@@ -16,7 +16,8 @@ function createCard(card, style) {
     var cardDiv = $('<div/>')
     .addClass("mtg-card")
     .addClass(card.layout)
-    .attr("data-goldfishid", card.goldfishId);
+    .attr("data-goldfishid", card.goldfishId)
+    .attr("data-layout", card.layout);
 
     if (typeof style !== 'undefined') {
         cardDiv.attr("style", cardDiv.attr("style") + "; " + style);
@@ -57,7 +58,8 @@ function getCardObject(el) {
     return {
         multiverseId: $(el[0]).children(".front").attr('data-multiverseid'),
         multiverseIdBack: $(el[0]).children(".back").attr("data-multiverseid"),
-        goldfishId: $(el[0]).attr("data-goldfishid")
+        goldfishId: $(el[0]).attr("data-goldfishid"),
+        layout: $(el[0]).attr("data-layout")
     };
 }
 
