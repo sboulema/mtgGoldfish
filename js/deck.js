@@ -23,6 +23,42 @@ function importDeck() {
     return dfrd1.promise();
 }
 
+function importMtgGolfdishDeck(deckId) {
+    var dfrd1 = $.Deferred();
+
+    $.ajax({
+        url: "https://wrapapi.com/use/sboulema/mtggoldfish/deck/0.0.1",
+        method: "POST",
+        data: {
+          "deckId": deckId,
+          "wrapAPIKey": "HXhWGELDSQ84wmTd2FYKxtTnqKjeRtQb"
+        }
+      }).done(function(data) {
+        var deck = "";
+        var sideboard = "";
+        var loadingDeck = true;
+
+        $.each(data.data.Line, function(key, card) {
+            if (card.Amount === null) {
+                if (card.Header.includes("Sideboard")) {
+                    loadingDeck = false;
+                }
+            } else {
+                if (loadingDeck) {
+                    deck += card.Amount + " " + card.Name + "\n";                  
+                } else {
+                    sideboard += card.Amount + " " + card.Name + "\n";
+                }
+            }
+        });
+
+        $("#deck-list").val(deck);
+        $("#sideboard-list").val(sideboard);
+        dfrd1.resolve();
+      });
+      return dfrd1.promise();
+}
+
 function loadDeck() {
     var dfrd1 = $.Deferred();
 

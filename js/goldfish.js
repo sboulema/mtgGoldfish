@@ -62,14 +62,22 @@ function init() {
     // Load deck based on url param
     var url = new URL(window.location);  
     var params = new URLSearchParams(url.search.slice(1));
-    if (params.has('deckid')) {
+    if (params.has('mtgstocksdeckid')) {
         $('#loadingModal').modal('show');
-        $("#mtgstocks-deck-id").val(params.get('deckid'));
+        $("#mtgstocks-deck-id").val(params.get('mtgstocksdeckid'));
         importDeck().done(function() {
             loadDeck().done(function () {
                 $('#loadingModal').modal('hide');
             });           
         });        
+    }
+    if (params.has("mtggoldfishdeckid")) {
+        $('#loadingModal').modal('show');     
+        importMtgGolfdishDeck(params.get('mtggoldfishdeckid')).done(function() {
+            loadDeck().done(function () {
+                $('#loadingModal').modal('hide');
+            });           
+        });   
     }
     
     setupTokens();
