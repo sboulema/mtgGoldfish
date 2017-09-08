@@ -193,11 +193,12 @@ function addCounter(card) {
 }
 
 function markCard(card) {
-    var index = $.inArray(card.goldfishId, markedList)
+    var goldfishId = $(card).attr("data-goldfishid");
+    var index = $.inArray(goldfishId, markedList)
     if (index > -1) {
         markedList.slice(index, 1);
     } else {
-        markedList.push($(card).attr("data-goldfishid"));
+        markedList.push(goldfishId);
     }   
     $(card).toggleClass("marked");
 }

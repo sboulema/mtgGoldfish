@@ -177,17 +177,20 @@
     <script src="js/deck.js"></script>
 
     <script>
-        $(document).ready(function () {
-            init();
-
+        $(document).ready(function () {          
+            $("<div>").load("modals/loadingmodal.html", function(response) {
+                $("body").append(response);
+                init();
+            });
+            
             // Load all Modals
-            $("body").append($("<div>").load("modals/deckmodal.html"));
-            $("body").append($("<div>").load("modals/helpmodal.html"));
-            $("body").append($("<div>").load("modals/loadingmodal.html"));
-            $("body").append($("<div>").load("modals/settingsmodal.html"));
-            $("body").append($("<div>").load("modals/shuffletocardmodal.html"));
-            $("body").append($("<div>").load("modals/aboutmodal.html"));
-            $("body").append($("<div>").load("modals/tokenmodal.html"));
+            $("body")
+                .append($("<div>").load("modals/deckmodal.html"))
+                .append($("<div>").load("modals/helpmodal.html"))           
+                .append($("<div>").load("modals/settingsmodal.html"))
+                .append($("<div>").load("modals/shuffletocardmodal.html"))
+                .append($("<div>").load("modals/aboutmodal.html"))
+                .append($("<div>").load("modals/tokenmodal.html"));           
         });
     </script>
 
