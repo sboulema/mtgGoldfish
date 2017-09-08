@@ -15,7 +15,8 @@ function defaultCard(cssClass) {
 function createCard(card, style) {
     var cardDiv = $('<div/>')
     .addClass("mtg-card")
-    .addClass(card.layout);
+    .addClass(card.layout)
+    .attr("data-goldfishid", card.goldfishId);
 
     if (typeof style !== 'undefined') {
         cardDiv.attr("style", cardDiv.attr("style") + "; " + style);
@@ -55,12 +56,17 @@ function createCardImageSrc(multiverseId) {
 function getCardObject(el) {
     return {
         multiverseId: $(el[0]).children(".front").attr('data-multiverseid'),
-        multiverseIdBack: $(el[0]).children(".back").attr("data-multiverseid")
+        multiverseIdBack: $(el[0]).children(".back").attr("data-multiverseid"),
+        goldfishId: $(el[0]).attr("data-goldfishid")
     };
 }
 
 function getFrontMultiverseId(el) {
     return $(el).children(".front").attr("data-multiverseid");
+}
+
+function getGoldfishId(el) {
+    return $(el).attr("data-goldfishid");
 }
 
 function bindCardActions() {
@@ -184,4 +190,24 @@ function addCounter(card) {
                 break;
         }
     });
+}
+
+function markCard(card) {
+    var index = $.inArray(card.goldfishId, markedList)
+    if (index > -1) {
+        markedList.slice(index, 1);
+    } else {
+        markedList.push($(card).attr("data-goldfishid"));
+    }   
+    $(card).toggleClass("marked");
+}
+
+function markAllCards() {
+    $.each(markedList, function(key, goldfishId) {
+        $(".mtg-card[data-goldfishid='" + goldfishId + "']").toggleClass("marked");
+    });
+}
+
+function createGoldfishId() {
+    return Date.now() + Math.random();
 }

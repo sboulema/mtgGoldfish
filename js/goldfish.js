@@ -6,6 +6,8 @@ var sideboardList = [];
 var deck = [];
 var sideboard = [];
 
+var markedList = [];
+
 function init() {
     bindCardActions();
     setupLifeCounters();
@@ -20,7 +22,7 @@ function init() {
     bindPlaceholderPopover("#library-title", "library", libraryList);
     bindPlaceholderPopover("#graveyard-title", "graveyard", graveyardList);
 
-    $("body").keypress(function(e) {
+    $("body").unbind('keypress').keypress(function(e) {
         if (e.keyCode == 102) { // f   
             flip($(".mtg-card:hover")[0]);          
         }
@@ -44,6 +46,9 @@ function init() {
         }
         if (e.keyCode == 101) { // e
             putCardinPlaceholder($(".mtg-card:hover"), "#exile-placeholder", exileList);
+        }
+        if (e.keyCode == 109) { // m
+            markCard($(".mtg-card:hover")[0]);
         }
     });
 
@@ -91,6 +96,25 @@ function bindPlaceholderPopover(selector, id, list) {
                 .css("max-height", "600px")
                 .css("width", "125px");
 
+            var list;
+
+            switch (id) {
+                case "library":
+                    list = libraryList;
+                    break;
+                case "graveyard":
+                    list = graveyardList;
+                    break;  
+                case "exile":
+                    list = exileList;
+                    break;
+                case "sideboard":
+                    list = sideboardList;
+                    break;            
+                default:
+                    break;
+            }
+
             for (var index = 0; index < list.length; index++) {
                 if (index === 0) {
                     cardList.append(createCard(list[index], "position: relative; top: 0px; margin-bottom: 0px;"));
@@ -102,28 +126,35 @@ function bindPlaceholderPopover(selector, id, list) {
         }
     });
 
-    $(selector).on('shown.bs.popover', function () {
+    $(selector).unbind('shown.bs.popover').on('shown.bs.popover', function () {
         setupDroppableZone(selector.slice(0, -6), list);
         bindCardActions();
+        markAllCards();
     });
 }
 
 function setupLifeCounters() {
-    $('#life-you').bootstrapNumber({
-        upClass: 'success',
-        downClass: 'danger'
-    });
-    $('#life-opponent').bootstrapNumber({
-        upClass: 'success',
-        downClass: 'danger'
-    });
+    if($('#life-you')[0].style.textAlign !== "center") {
+        $('#life-you').bootstrapNumber({
+            upClass: 'success',
+            downClass: 'danger'
+        });
+    }
+    if($('#life-opponent')[0].style.textAlign !== "center") {
+        $('#life-opponent').bootstrapNumber({
+            upClass: 'success',
+            downClass: 'danger'
+        });
+    }
 }
 
 function setupCustomCounters() {
-    $('#custom-counter').bootstrapNumber({
-        upClass: 'success',
-        downClass: 'danger'
-    });
+    if($('#custom-counter')[0].style.textAlign !== "center") {
+        $('#custom-counter').bootstrapNumber({
+            upClass: 'success',
+            downClass: 'danger'
+        });
+    }
 
     setupEditable();
 }
@@ -156,7 +187,7 @@ function endEdit(e, defaultText) {
 }
 
 function setupTurnButton() {
-    $("#btn-next-turn").click(function (event) {
+    $("#btn-next-turn").unbind("click").click(function (event) {
         $("#turn-counter").html(parseInt($("#turn-counter").html()) + 1);     
         draw(1);
         untapAll();
@@ -174,7 +205,7 @@ function startLoadDeck() {
 function setupManaPoolCounters() {
 	$('body').on('contextmenu', '.mana-pool', function(e){ return false; });
 	
-    $(".mana-pool").mousedown(function (event) {
+    $(".mana-pool").unbind("mousedown").mousedown(function (event) {
         var counter = $(this).find(".mana-pool-counter");
         var value = parseInt(counter.attr('class').match(/\bms-(\d+)\b/)[1]);
 
@@ -244,7 +275,7 @@ function setupDragDrop() {
                     .removeClass("library-placeholder-card")
                     .removeData("flip-model")
                     .css("background-image", "")
-                    // .children(".front").data("multiverseId", card.multiverseId)
+                    .attr("data-goldfishid", card.goldfishId)
                     .flip({trigger:"manual"})
                     .unbind("click");
 
@@ -289,9 +320,9 @@ function setupDroppableZone(selector, list) {
     $(selector).droppable({
         accept: ".mtg-card",
         out: function(event, ui) {
-            var needle = getFrontMultiverseId(ui.draggable);
+            var needle = getGoldfishId(ui.draggable);
             var index = list.findIndex(function(element) { 
-                return element.multiverseId === needle;
+                return element.goldfishId === needle;
             });
             list.splice(index, 1);
 
@@ -309,6 +340,7 @@ function reset() {
     // Clear all
     exileList.length = 0;
     graveyardList.length = 0;
+    markedList.length = 0;
     libraryList = deck.slice();
     sideboardList = sideboard.slice();
     $(".card-placeholder").empty();

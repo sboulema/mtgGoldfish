@@ -125,6 +125,7 @@
                         <div class="form-group">
                             <label class="control-label">Tokens:</label>
                             <select id="token-select" class="form-control">
+                                <option value="-1">Tokens</option>
                                 <option value="0">Custom</option>
                             </select>
                         </div>
@@ -136,7 +137,7 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label">Actions:</label>
-                            <input class="form-control btn btn-sm btn-block btn-primary" type="button" value="Shuffle deck" onclick="shuffleDeck();" />
+                            <input class="form-control btn btn-sm btn-block btn-primary" type="button" value="Shuffle library" onclick="shuffleDeck();" />
                             <input class="form-control btn btn-sm btn-block btn-primary" type="button" value="Shuffle hand" onclick="shuffleHand();" />
                             <input class="form-control btn btn-sm btn-block btn-primary" type="button" value="Start with card" data-toggle="modal" data-target="#shuffleDeckModal"
                             />

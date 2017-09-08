@@ -75,9 +75,6 @@ body {
 }
 
 .counter {
-    /* position: relative;
-    top: 30px;
-    left: 30px; */
     color: #c8b472;
     cursor: pointer;
     -webkit-text-stroke: 1px black;
@@ -134,4 +131,8 @@ body {
 @font-face {
     font-family: Magic;
     src: url('../font/MAGIC.TTF'); 
+}
+
+.marked {
+    border: 3px solid #c8b472;
 }

@@ -13,15 +13,20 @@ function setupTokens() {
     addTokensToSelect();
 
     $('#token-select').on('change', function() {
-        if (this.value === "0") {
-            $('#tokenModal').modal('show');
-        } else {
-            createCard({
-                multiverseId: this.value,
-                layout: "token"
-            }).appendTo("#table");
-            bindCardActions();
-        }     
+        switch (this.value) {
+            case -1:              
+                break;
+            case 0:
+                $('#tokenModal').modal('show');
+                break;
+            default:
+                createCard({
+                    multiverseId: this.value,
+                    layout: "token"
+                }).appendTo("#table");
+                bindCardActions();
+                break;
+        }   
     })
 }
 

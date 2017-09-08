@@ -80,6 +80,7 @@ function lineToCard(line, list) {
         card.name = result.name;
         card.layout = result.layout;
         card.multiverseId = result.multiverseid;    
+        card.goldfishId = createGoldfishId();
 
         if (card.layout === "double-faced") {
             return $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + data.cards[0].names[1]).then(function (data) {
