@@ -113,19 +113,20 @@ function lineToCard(line, list) {
         var card = {};
         card.name = result.name;
         card.layout = result.layout;
-        card.multiverseId = result.multiverseid;    
-        card.goldfishId = createGoldfishId();
+        card.multiverseId = result.multiverseid;
 
         if (card.layout === "double-faced") {
             return $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + data.cards[0].names[1]).then(function (data) {
                 var result = data.cards.find(function(element) { return (typeof element.multiverseid != 'undefined') && (element.name === name)}); 
                 card.multiverseIdBack = result.multiverseid;
                 for (var j = 0; j < count; j++) {
+                    card.goldfishId = createGoldfishId();
                     list.push(card);
                 } 
             });
         } else {
             for (var j = 0; j < count; j++) {
+                card.goldfishId = createGoldfishId();
                 list.push(card);
             }
         }        
@@ -196,10 +197,10 @@ function shuffleDeckToCard(multiverseId) {
 
 function putCardOnLibrary(card, onBottom) {
     if (onBottom) {
-        libraryList.push($(card).attr('data-multiverseid'))
+        libraryList.push(getCardObject(card))
     } else {
         $("#library-placeholder").empty();
-        libraryList.unshift($(card).attr('data-multiverseid'));
+        libraryList.unshift(getCardObject(card));
         $("#library-placeholder").append(defaultCard("library-placeholder-card"));
     }
 
@@ -223,7 +224,8 @@ function putCardinPlaceholder(card, selector, list) {
         .css('position', "")
         .css("margin-bottom", "")
         .css("transform", "")
-        .unbind("click");
+        .unbind("click")
+        .flip(false);
 
     list.push(getCardObject(card));
 

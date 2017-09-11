@@ -271,7 +271,7 @@ function setupDragDrop() {
     $("#library-placeholder").droppable({
         accept: ".mtg-card",
         drop: function(event, ui) {
-            putCardOnLibrary(ui.draggable[0]);
+            putCardOnLibrary(ui.draggable);
         },
         out: function(event, ui) {
             if (ui.draggable[0].parentElement.id === "library-placeholder") {
