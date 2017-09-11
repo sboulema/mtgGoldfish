@@ -110,24 +110,27 @@ function lineToCard(line, list) {
     return $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + name).then(function (data) {   
         var result = data.cards.find(function(element) { return (typeof element.multiverseid != 'undefined') && (element.name === name)});
 
-        var card = {};
-        card.name = result.name;
-        card.layout = result.layout;
-        card.multiverseId = result.multiverseid;
-
-        if (card.layout === "double-faced") {
+        if (result.layout === "double-faced") {
             return $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + data.cards[0].names[1]).then(function (data) {
                 var result = data.cards.find(function(element) { return (typeof element.multiverseid != 'undefined') && (element.name === name)}); 
-                card.multiverseIdBack = result.multiverseid;
                 for (var j = 0; j < count; j++) {
-                    card.goldfishId = createGoldfishId();
-                    list.push(card);
+                    list.push({
+                        name: result.name,
+                        layout: result.layout,
+                        multiverseId: multiverseid,
+                        multiverseIdBack: result.multiverseid,
+                        goldfishId: createGoldfishId()
+                    });
                 } 
             });
         } else {
             for (var j = 0; j < count; j++) {
-                card.goldfishId = createGoldfishId();
-                list.push(card);
+                list.push({
+                    name: result.name,
+                    layout: result.layout,
+                    multiverseId: result.multiverseid,
+                    goldfishId: createGoldfishId()
+                });
             }
         }        
     });

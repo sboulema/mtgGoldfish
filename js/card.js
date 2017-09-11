@@ -68,7 +68,7 @@ function getFrontMultiverseId(el) {
 }
 
 function getGoldfishId(el) {
-    return $(el).attr("data-goldfishid");
+    return parseInt($(el).attr("data-goldfishid"));
 }
 
 function bindCardActions() {
