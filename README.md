@@ -3,7 +3,7 @@
 # ![logo](http://goldfish.sboulema.nl/img/goldfish.png) MTG Goldfish
 Website to playtest (goldfish) Magic The Gathering decks
 
-[screenshot](http://goldfish.sboulema.nl/img/screenshot.png)
+![screenshot](http://goldfish.sboulema.nl/img/screenshot.png)
 
 ## Features
 - Load deck and sideboard from text, [MTGStocks](https://www.mtgstocks.com/) or [MTGGoldfish](https://www.mtggoldfish.com/)
