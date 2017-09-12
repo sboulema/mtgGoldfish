@@ -155,6 +155,8 @@ function mulligan() {
 }
 
 function draw(amount) {
+    if (libraryList.length === 0) return;
+
     for (var index = 0; index < amount; index++) {
         $("#hand").append(createCard(libraryList.splice(0, 1)[0]));      
     }
@@ -199,6 +201,8 @@ function shuffleDeckToCard(multiverseId) {
 }
 
 function putCardOnLibrary(card, onBottom) {
+    if (typeof card === 'undefined') return;
+
     if (onBottom) {
         libraryList.push(getCardObject(card))
     } else {

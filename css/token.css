@@ -1,0 +1,63 @@
+.mtg-card-token-name {
+    color: #ffeb87;
+    display: flex;
+    justify-content: center;
+    font-family: Magic;
+    font-size: x-small;
+    position: relative;
+    top: 8px;
+}
+
+.mtg-card-token-rules {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    top: 105px;
+    font-family: Magic;
+}
+
+.mtg-card-token-powerToughness {
+    position: relative;
+    top: 101px;
+    left: 102px;
+    font-family: Magic;
+    font-size: x-small;
+}
+
+.mtg-card-token-type {
+    position: relative;
+    top: 102px;
+    left: 58px;
+    font-family: Magic;
+    font-size: xx-small;
+}
+
+@font-face {
+    font-family: Magic;
+    src: url('../font/MAGIC.TTF'); 
+}
+
+.mtg-card-token-frame-green {
+    position: absolute;
+    background-image: url(../img/token-green.png);
+}
+
+.mtg-card-token-frame-white {
+    position: absolute;
+    background-image: url(../img/token-white.png);
+}
+
+.mtg-card-token-frame-blue {
+    position: absolute;
+    background-image: url(../img/token-blue.png);
+}
+
+.mtg-card-token-frame-black {
+    position: absolute;
+    background-image: url(../img/token-black.png);
+}
+
+.mtg-card-token-frame-red {
+    position: absolute;
+    background-image: url(../img/token-red.png);
+}

@@ -94,45 +94,6 @@ body {
     color: #c8b472;    
 }
 
-.mtg-card-token-name {
-    color: #ffeb87;
-    display: flex;
-    justify-content: center;
-    font-family: Magic;
-    font-size: x-small;
-    position: relative;
-    top: 8px;
-}
-
-.mtg-card-token-rules {
-    display: flex;
-    justify-content: center;
-    position: relative;
-    top: 105px;
-    font-family: Magic;
-}
-
-.mtg-card-token-powerToughness {
-    position: relative;
-    top: 101px;
-    left: 102px;
-    font-family: Magic;
-    font-size: x-small;
-}
-
-.mtg-card-token-type {
-    position: relative;
-    top: 102px;
-    left: 58px;
-    font-family: Magic;
-    font-size: xx-small;
-}
-
-@font-face {
-    font-family: Magic;
-    src: url('../font/MAGIC.TTF'); 
-}
-
 .marked {
     border: 3px solid #c8b472;
 }
