@@ -220,6 +220,8 @@ function putCardOnLibrary(card, onBottom) {
 } 
 
 function putCardinPlaceholder(card, selector, list) {
+    if(typeof card === 'undefined') return;
+
     $('.popover').popover('hide');
 
     $(selector).empty();  
