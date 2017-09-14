@@ -53,11 +53,12 @@
 #exile-title,
 #sideboard-title,
 #library-title,
+#hand-title,
 #custom-counter-label {
     cursor: pointer;
 }
 
-#hand {
+#hand-placeholder {
     height: 172px;
 }
 

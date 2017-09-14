@@ -68,7 +68,7 @@ function getFrontMultiverseId(el) {
 }
 
 function getGoldfishId(el) {
-    return parseInt($(el).attr("data-goldfishid"));
+    return $(el).attr("data-goldfishid");
 }
 
 function bindCardActions() {
@@ -146,14 +146,14 @@ function flip(card) {
 }
 
 function flipHand() {
-    $("#hand").children().each(function(index) {
+    $("#hand-placeholder").children().each(function(index) {
         flip(this);
     });
 }
 
 function shuffleHand() {
-    var cards = window.knuthShuffle($("#hand").children()).slice();
-    $("#hand").append(cards);
+    var cards = window.knuthShuffle($("#hand-placeholder").children()).slice();
+    $("#hand-placeholder").append(cards);
 }
 
 function addCounter(card) {
@@ -212,5 +212,6 @@ function markAllCards() {
 }
 
 function createGoldfishId() {
-    return Date.now() + Math.random();
+    var id = Date.now() + Math.random();
+    return id.toString();
 }

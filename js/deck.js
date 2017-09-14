@@ -158,7 +158,9 @@ function draw(amount) {
     if (libraryList.length === 0) return;
 
     for (var index = 0; index < amount; index++) {
-        $("#hand").append(createCard(libraryList.splice(0, 1)[0]));      
+        var card = libraryList.splice(0, 1)[0];
+        handList.push(card);
+        $("#hand-placeholder").append(createCard(card));      
     }
     updateTotals();
     bindCardActions();

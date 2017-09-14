@@ -2,6 +2,7 @@ var libraryList = [];
 var graveyardList = [];
 var exileList = [];
 var sideboardList = [];
+var handList = [];
 
 var deck = [];
 var sideboard = [];
@@ -21,6 +22,7 @@ function init() {
     bindPlaceholderPopover("#sideboard-title", "sideboard", sideboardList);
     bindPlaceholderPopover("#library-title", "library", libraryList);
     bindPlaceholderPopover("#graveyard-title", "graveyard", graveyardList);
+    bindPlaceholderPopover("#hand-title", "hand", handList);
 
     $("body").unbind('keypress').keypress(function(e) {
         if (e.keyCode == 102) { // f   
@@ -117,6 +119,9 @@ function bindPlaceholderPopover(selector, id, list) {
                     break;
                 case "sideboard":
                     list = sideboardList;
+                    break;   
+                case "hand":
+                    list = handList;
                     break;            
                 default:
                     break;
@@ -240,6 +245,7 @@ function updateTotals() {
     $("#graveyardTotal").html(graveyardList.length);
     $("#exileTotal").html(exileList.length);
     $("#sideboardTotal").html(sideboardList.length);
+    $("#handTotal").html(handList.length);
 }
 
 function setupDragDrop() {
@@ -262,10 +268,23 @@ function setupDragDrop() {
                 .css("transform", "")
         }
     });
-    $("#hand").droppable({
+    $("#hand-placeholder").droppable({
         accept: ".mtg-card",
         drop: function(event, ui) {
             ui.draggable.detach().appendTo($(this));
+
+            handList.push(getCardObject(ui.draggable));
+            
+            updateTotals();
+        },
+        out: function(event, ui) {
+            var needle = getGoldfishId(ui.draggable);
+            var index = handList.findIndex(function(element) { 
+                return element.goldfishId === needle;
+            });
+            handList.splice(index, 1);
+
+            updateTotals();
         }
     });
     $("#library-placeholder").droppable({
