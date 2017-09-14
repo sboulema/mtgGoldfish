@@ -271,11 +271,7 @@ function setupDragDrop() {
     $("#hand-placeholder").droppable({
         accept: ".mtg-card",
         drop: function(event, ui) {
-            ui.draggable.detach().appendTo($(this));
-
-            handList.push(getCardObject(ui.draggable));
-            
-            updateTotals();
+            putCardinHand(ui.draggable);
         },
         out: function(event, ui) {
             var needle = getGoldfishId(ui.draggable);

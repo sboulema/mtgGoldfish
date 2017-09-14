@@ -243,3 +243,18 @@ function putCardinPlaceholder(card, selector, list) {
     updateTotals();
     bindCardActions();
 }
+
+function putCardinHand(card) {
+    card.detach().appendTo($("#hand-placeholder"));
+    
+    var needle = getGoldfishId(card);
+    var index = handList.findIndex(function(element) { 
+        return element.goldfishId === needle;
+    });
+
+    if (index === -1) {
+        handList.push(getCardObject(card));
+    }    
+    
+    updateTotals();
+}
