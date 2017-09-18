@@ -104,6 +104,10 @@ function bindCardActions() {
         }
     });
 
+    if (jQuery.browser.mobile) {
+        $(".mtg-card").draggable("option", "handle", ".handle");
+    }
+
     $("#table .mtg-card-side.mtg-card-preview").droppable({
         accept: ".counter",        
         drop: function(event, ui) {

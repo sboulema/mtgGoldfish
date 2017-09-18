@@ -5,7 +5,5 @@ $(window).on('beforeunload', function(e) {
 $(document).ready(function(){
     if (jQuery.browser.mobile) {
         $(".life-counter").prop("disabled", true);
-
-        $(".mtg-card").draggable("option", "handle", ".handle");
     }
 });
