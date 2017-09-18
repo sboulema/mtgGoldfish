@@ -3,11 +3,11 @@ function addTokensToSelect() {
         $.each(data.cards, function(key, token) {
             $('<option/>', {
                 'value': token.multiverseid,
-                'text': token.name
+                'text': token.name + " (" + token.power + "/" + token.toughness + ")"
             }).appendTo('#token-select');
             $('<option/>', {
                 'value': token.multiverseid,
-                'text': token.name
+                'text': token.name + " (" + token.power + "/" + token.toughness + ")"
             }).appendTo('#token-art');
         });
     }); 

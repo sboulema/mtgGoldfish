@@ -157,6 +157,8 @@ function shuffleHand() {
 }
 
 function addCounter(card) {
+    if (typeof card === 'undefined') return;
+
     var flip = $(card).data("flip-model");
 
     $(card).children((flip.isFlipped ? ".back" : ".front"))

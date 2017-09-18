@@ -183,27 +183,26 @@ function startShuffleDeckToCard() {
 }
 
 function shuffleDeckToCard(multiverseId) {
-    var found = false;
+    handList.length = 0;
+    $("#hand-placeholder").empty();
 
-    $("#hand").empty();
     libraryList = deck.slice();
-
     shuffleDeck();
     draw(7);
 
-    $.when.apply($, $("#hand").children().map(function (index, card) {
-        if (parseInt($(card).attr('data-multiverseid')) === multiverseId) {
-            return found = true;
-        }
-    })).then(function () {
-        if (!found) {
-            shuffleDeckToCard(multiverseId);
-        }
+    var index = handList.findIndex(function(element) {
+        return element.multiverseId === multiverseId;
     });
+
+    if (index === -1) {
+        shuffleDeckToCard(multiverseId);
+    }
 }
 
 function putCardOnLibrary(card, onBottom) {
     if (typeof card === 'undefined') return;
+
+    $('.popover').popover('hide');
 
     if (onBottom) {
         libraryList.push(getCardObject(card))
