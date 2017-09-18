@@ -85,11 +85,6 @@ body {
 	padding-right: 20px;
 }
 
-#show-deck-modal {
-    position: absolute;
-    right: 0px;
-}
-
 #helpModal .modal-content, #aboutModal .modal-content {
     background-image: url("../img/playbg1.png");
     color: #c8b472;    

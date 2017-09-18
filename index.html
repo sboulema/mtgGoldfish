@@ -38,7 +38,10 @@
                 </ul>
             </div>
 
-            <button type="button" id="show-deck-modal" class="btn btn-primary" data-toggle="modal" data-target="#deckModal">Load deck</button>
+            <div>
+                <button type="button" id="btn-fullscreen" class="btn btn-secondary">Fullscreen</button>
+                <button type="button" id="show-deck-modal" class="btn btn-primary" data-toggle="modal" data-target="#deckModal">Load deck</button>
+            </div>
         </nav>
 
         <div class="row">
@@ -170,7 +173,8 @@
     <script src="https://unpkg.com/knuth-shuffle@1.0.1"></script>
     <script src="https://cdn.rawgit.com/nnattawat/flip/master/dist/jquery.flip.min.js"></script>
     <script src="https://unpkg.com/jquery-ui-touch-punch@0.2.3/jquery.ui.touch-punch.min.js"></script>
-    
+    <script src="https://unpkg.com/screenfull@3.3.1/dist/screenfull.js"></script>
+
     <!-- Local/Custom Javascript functions -->
     <!-- build:js -->
     <script src="js/bootstrap-number-input.js"></script>
@@ -178,6 +182,8 @@
     <script src="js/token.js"></script>
     <script src="js/goldfish.js"></script>
     <script src="js/deck.js"></script>
+    <script src="js/mobile.js"></script>
+    <script src="js/detectmobilebrowser.js"></script>
     <!-- endbuild -->
 
     <!-- build:modals -->
