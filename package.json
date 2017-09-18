@@ -1,7 +1,7 @@
 {
   "name": "mtggoldfish",
   "version": "1.0.0",
-  "description": "[![Codefresh build status]( https://g.codefresh.io/api/badges/build?repoOwner=sboulema&repoName=mtgGoldfish&branch=master&pipelineName=mtgGoldfish&accountName=sboulema&type=cf-1)](https://g.codefresh.io/repositories/sboulema/mtgGoldfish/builds?filter=trigger:build;branch:master;service:59a9ac54361cb400013d0f1d~mtgGoldfish)",
+  "description": "Website to playtest (goldfish) Magic The Gathering decks",
   "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,18 +10,17 @@
     "type": "git",
     "url": "git+https://github.com/sboulema/mtgGoldfish.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Samir L. Boulema",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/sboulema/mtgGoldfish/issues"
   },
   "homepage": "https://github.com/sboulema/mtgGoldfish#readme",
   "dependencies": {
-    "del": "^3.0.0",
-    "gulp": "^3.9.1",
-    "gulp-html-replace": "^1.6.2"
+    "gulp": "^3.9.1"
   },
   "devDependencies": {
+    "gulp-html-replace": "^1.6.2", 
     "gulp-concat": "^2.6.1",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^3.0.0"
