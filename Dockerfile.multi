@@ -3,7 +3,7 @@
 FROM node:alpine
 WORKDIR src
 
-COPY . .
+COPY . /src
 
 RUN npm install
 RUN gulp build
