@@ -93,3 +93,11 @@ body {
 .marked {
     border: 3px solid #c8b472;
 }
+
+.handle {
+    width: 25%;
+    height: 25%;
+    position: absolute;
+    z-index: 10;
+    right: 0px;
+}

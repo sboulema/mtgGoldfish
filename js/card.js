@@ -31,6 +31,10 @@ function createCard(card, style) {
         .attr("data-multiverseid", card.multiverseId)
         .appendTo(cardDiv);
 
+    var handle = $('<div/>')
+        .addClass("handle")
+        .appendTo(cardDiv);
+
     if (card.layout === "double-faced") {
         var back = $('<div/>')
             .addClass("back")
