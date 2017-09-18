@@ -9,6 +9,10 @@ var sideboard = [];
 
 var markedList = [];
 
+$(document).ready(function(){
+    init();
+});
+
 function init() {
     bindCardActions();
     setupLifeCounters();

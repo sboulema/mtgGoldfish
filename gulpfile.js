@@ -18,7 +18,10 @@ gulp.task('scripts', function () {
 gulp.task('replace', function () {
   return gulp.src('index.html')
     .pipe(htmlreplace({
-      'js': 'js/scripts.min.js'
+      'js': 'js/scripts.min.js',
+      'modals': {
+        src: gulp.src('modals/*.html')
+      }
     }))
     .pipe(gulp.dest('dist/'));
 });
@@ -27,7 +30,6 @@ gulp.task('copy', function () {
   gulp.src('css/*').pipe(gulp.dest('dist/css'));
   gulp.src('font/*').pipe(gulp.dest('dist/font'));
   gulp.src('img/*').pipe(gulp.dest('dist/img'));
-  gulp.src('modals/*').pipe(gulp.dest('dist/modals'));
   gulp.src('favicon.ico').pipe(gulp.dest('dist'));
 });
 
