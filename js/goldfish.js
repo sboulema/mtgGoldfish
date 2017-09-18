@@ -8,6 +8,7 @@ var deck = [];
 var sideboard = [];
 
 var markedList = [];
+var isDragging = false;
 
 $(document).ready(function(){
     init();
@@ -256,6 +257,7 @@ function setupDragDrop() {
     $("#table").droppable({
         accept: ".mtg-card",
         drop: function(event, ui) {
+            isDragging = false;
             ui.draggable.detach()
                 .css('left', ui.offset.left)
                 .css('top', ui.offset.top - 60)
@@ -264,6 +266,7 @@ function setupDragDrop() {
                 .appendTo($(this));
         },
         out: function(event, ui) {
+            isDragging = true;
             ui.draggable
                 .css('left', "")
                 .css('top', "")
@@ -275,25 +278,30 @@ function setupDragDrop() {
     $("#hand-placeholder").droppable({
         accept: ".mtg-card",
         drop: function(event, ui) {
+            isDragging = false;
             putCardinHand(ui.draggable);
         },
-        out: function(event, ui) {
-            var needle = getGoldfishId(ui.draggable);
-            var index = handList.findIndex(function(element) { 
-                return element.goldfishId === needle;
-            });
-            handList.splice(index, 1);
-
-            updateTotals();
+        out: function(event, ui) {           
+            if (ui.draggable[0].parentElement.id === "hand-placeholder" && isDragging === false) {
+                var needle = getGoldfishId(ui.draggable);
+                var index = handList.findIndex(function(element) { 
+                    return element.goldfishId === needle;
+                });
+                handList.splice(index, 1);
+    
+                updateTotals();
+            }
+            isDragging = true;
         }
     });
     $("#library-placeholder").droppable({
         accept: ".mtg-card",
         drop: function(event, ui) {
+            isDragging = false;
             putCardOnLibrary(ui.draggable);
         },
         out: function(event, ui) {
-            if (ui.draggable[0].parentElement.id === "library-placeholder") {
+            if (ui.draggable[0].parentElement.id === "library-placeholder" && isDragging === false) {
                 var card = libraryList.splice(0, 1)[0];
 
                 $(ui.draggable[0])
@@ -311,6 +319,7 @@ function setupDragDrop() {
                     setupClickToDraw();
                 }
             }
+            isDragging = true;
         }
     });
 
@@ -323,6 +332,7 @@ function setupDroppablePlaceholder(selector, list) {
     $(selector).droppable({
         accept: ".mtg-card",
         drop: function(event, ui) {
+            isDragging = false;
             $('.popover').popover('hide');
 
             if(!$(ui.draggable).hasClass("token")) {
@@ -332,13 +342,14 @@ function setupDroppablePlaceholder(selector, list) {
             }
         },
         out: function(event, ui) {
-            if (ui.draggable[0].parentElement.id === selector.substr(1)) {
+            if (ui.draggable[0].parentElement.id === selector.substr(1) && isDragging === false) {
                 list.splice(-1, 1);
                 
                 if (list.length > 0) {
                     $(selector).append(createCard(list[list.length - 1], ""));
                 }
             }
+            isDragging = true;
         }
     });   
 }
@@ -368,10 +379,12 @@ function reset() {
     exileList.length = 0;
     graveyardList.length = 0;
     markedList.length = 0;
+    handList.length = 0;
     libraryList = deck.slice();
     sideboardList = sideboard.slice();
     $(".card-placeholder").empty();
     $("#table").empty();
+    $("hand-placeholder").empty();
 
     // Reset
     if (sideboardList.length > 0) {

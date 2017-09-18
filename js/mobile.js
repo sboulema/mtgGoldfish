@@ -3,16 +3,7 @@ $(window).on('beforeunload', function(e) {
 });
 
 $(document).ready(function(){
-    $("#btn-fullscreen").hide();
-
     if (jQuery.browser.mobile) {
         $(".life-counter").prop("disabled", true);
-        $("#btn-fullscreen").show();
-
-        $("#btn-fullscreen").unbind("click").click(function (event) {
-            if (screenfull.enabled) {
-                screenfull.request();
-            }
-        });
     }
 });
