@@ -1,9 +1,7 @@
 # First Stage
-# FROM monostream/nodejs-gulp-bower
-FROM node:alpine
-WORKDIR src
+FROM monostream/nodejs-gulp-bower
 
-COPY . /src
+COPY . /workspace
 
 RUN npm install
 RUN gulp build
@@ -11,6 +9,6 @@ RUN gulp build
 # Second Stage
 FROM nginx
 
-COPY --from=0 /src/dist /usr/share/nginx/html/
+COPY --from=0 /workspace/dist /usr/share/nginx/html/
 
 EXPOSE 80
