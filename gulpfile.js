@@ -10,8 +10,7 @@ gulp.task('scripts', function () {
     jsDest = 'dist/js';
 
   return gulp.src(jsFiles)
-    .pipe(concat('scripts.js'))
-    .pipe(rename('scripts.min.js'))
+    .pipe(concat('scripts.min.js'))
     .pipe(uglify({ mangle: true, compress: true }))
     .pipe(gulp.dest(jsDest));
 });
@@ -28,7 +27,7 @@ gulp.task('copy', function () {
   gulp.src('css/*').pipe(gulp.dest('dist/css'));
   gulp.src('font/*').pipe(gulp.dest('dist/font'));
   gulp.src('img/*').pipe(gulp.dest('dist/img'));
-  gulp.src('modals/*').pipe(gulp.dest('dist/modal'));
+  gulp.src('modals/*').pipe(gulp.dest('dist/modals'));
   gulp.src('favicon.ico').pipe(gulp.dest('dist'));
 });
 
