@@ -27,9 +27,14 @@ function createCard(card, style) {
         .addClass("front")
         .addClass("mtg-card-side")
         .addClass("mtg-card-preview")
-        .css("background-image", "url('" + createCardImageSrc(card.multiverseId) + "')")
         .attr("data-multiverseid", card.multiverseId)
         .appendTo(cardDiv);
+
+    if (typeof card.backgroundImage !== 'undefined') {
+        $(front).css("background-image", "url('" + card.backgroundImage + "')")
+    } else {
+        $(front).css("background-image", "url('" + createCardImageSrc(card.multiverseId) + "')")
+    }
 
     var handle = $('<div/>')
         .addClass("handle")
@@ -92,7 +97,7 @@ function bindCardActions() {
         html: true,
         trigger: 'hover',
         content: function () { 
-            return '<img src="' + $(this)[0].style.backgroundImage.slice(5, -2) + '" />'; 
+            return '<img width="223" height="310" src="' + $(this)[0].style.backgroundImage.slice(5, -2) + '" />'; 
         }
     });
 

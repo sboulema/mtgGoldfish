@@ -1,16 +1,29 @@
 function addTokensToSelect() {
-    $.getJSON("https://api.magicthegathering.io/v1/cards?layout=token&type=creature").then(function (data) {   
-        $.each(data.cards, function(key, token) {
-            $('<option/>', {
-                'value': token.multiverseid,
-                'text': token.name + " (" + token.power + "/" + token.toughness + ")"
-            }).appendTo('#token-select');
-            $('<option/>', {
-                'value': token.multiverseid,
-                'text': token.name + " (" + token.power + "/" + token.toughness + ")"
-            }).appendTo('#token-art');
-        });
-    }); 
+    var tmpSubject, tmpDate, tmpThumb;
+    $.ajax({
+        url: 'https://raw.githubusercontent.com/Cockatrice/Magic-Token/master/tokens.xml',
+        type: 'GET', 
+        dataType: 'xml',
+        success: function(returnedXMLResponse){
+            $('card', returnedXMLResponse).each(function(){
+                $('<option/>', {
+                    'value': $('set', this).attr('picURL'),
+                    'text': getTokenName(this)
+                }).appendTo('#token-art, #token-select');
+            })
+        }  
+    });
+}
+
+function getTokenName(token) {
+    var name = $('name', token).text();
+
+    if ($('pt', token).text() !== '') {
+        name += " (" + $('pt', token).text() + ")";
+    }
+
+    name += " " + $('color', token).text();
+    return name;
 }
 
 function setupTokens() {
@@ -25,7 +38,9 @@ function setupTokens() {
                 break;
             default:
                 createCard({
-                    multiverseId: this.value,
+                    multiverseId: 0,
+                    backgroundImage: this.value,
+                    goldfishId: createGoldfishId(),
                     layout: "token"
                 }).appendTo("#table");
                 bindCardActions();
@@ -34,9 +49,9 @@ function setupTokens() {
     })
 }
 
-function createToken(name, rules, powerToughness, multiverseId, color) {
+function createToken(name, rules, powerToughness, backgroundImage, color) {
     var token = createCard({multiverseId: 0, layout: "token"});
-    token.children(".front")[0].style.backgroundImage = "url('http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid="  + multiverseId + "&type=card')";
+    token.children(".front")[0].style.backgroundImage = "url('" + backgroundImage + "')";
 
     $('<div/>')
     .addClass("mtg-card-token-frame-" + color)
