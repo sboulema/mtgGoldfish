@@ -92,7 +92,7 @@ function init() {
 function retrieveSettings() {
     var backgroundUrl = localStorage.getItem("background");
     if (backgroundUrl === null || backgroundUrl === "") {
-        $("#table").css("background-image", "url('http://i.imgur.com/1UjtE9j.jpg')");
+        $("#table").css("background-image", "url('../img/playmat.jpg')");
     } else {
         $("#table").css("background-image", "url('" + backgroundUrl + "')");
         $("#background-url").val(backgroundUrl);
