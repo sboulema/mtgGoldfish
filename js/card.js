@@ -60,7 +60,7 @@ function createCard(card, style) {
 }
 
 function createCardImageSrc(multiverseId) {
-    return "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + multiverseId + "&type=card";
+    return "https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + multiverseId + "&type=card";
 }
 
 function getCardObject(el) {

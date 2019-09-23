@@ -144,8 +144,8 @@ function mulligan() {
     libraryList = deck.slice();
     shuffleDeck();
 
-    var handSize = $("#hand").children().length;
-    $("#hand").empty();
+    var handSize = $("#hand-placeholder").children().length;
+    $("#hand-placeholder").empty();
 
     var newHandSize = handSize - 1;
     if (newHandSize === 0) newHandSize = 1;
