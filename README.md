@@ -23,6 +23,10 @@ Website to playtest (goldfish) Magic The Gathering decks - http://goldfish.sboul
 - Drag & drop cards between all zones
 - Custom background
 
-## Run
+## Building
+- npm install
+- npm run gulp
+
+## Running
 
 `docker run -p 80:80 sboulema/mtggoldfish`

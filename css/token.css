@@ -34,7 +34,7 @@
 
 @font-face {
     font-family: Magic;
-    src: url('../font/MAGIC.TTF'); 
+    src: url('../fonts/MAGIC.TTF'); 
 }
 
 .mtg-card-token-frame-green {

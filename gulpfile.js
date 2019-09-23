@@ -1,22 +1,48 @@
 var gulp = require('gulp');
 var concat = require('gulp-concat');
-var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var htmlreplace = require('gulp-html-replace');
 
-gulp.task('scripts', function () {
-  //script paths
+gulp.task('vendor', function(done) {
+  jsSources = [  
+    'node_modules/jquery/dist/jquery.min.js',
+    'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
+    'node_modules/flip/dist/jquery.flip.min.js',
+    'node_modules/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js',
+    'node_modules/jqueryrotate-slevomat-fork/jQueryRotateCompressed.js',
+    'node_modules/knuth-shuffle/index.js'
+  ];
+
+  cssSources = [
+    'node_modules/bootstrap/dist/css/bootstrap.min.css',
+    'node_modules/mana-font/css/mana.min.css'
+  ];
+
+  gulp.src(jsSources)
+    .pipe(concat('vendor.bundle.js'))  
+    .pipe(gulp.dest('dist/js'));
+
+  gulp.src(cssSources)
+    .pipe(concat('vendor.bundle.css'))  
+    .pipe(gulp.dest('dist/css'));
+
+  done();
+});
+
+gulp.task('scripts', function (done) {
   var jsFiles = 'js/*.js',
     jsDest = 'dist/js';
 
-  return gulp.src(jsFiles)
+  gulp.src(jsFiles)
     .pipe(concat('scripts.min.js'))
     .pipe(uglify({ mangle: true, compress: true }))
     .pipe(gulp.dest(jsDest));
+
+  done();
 });
 
-gulp.task('replace', function () {
-  return gulp.src('index.html')
+gulp.task('replace', function (done) {
+  gulp.src('index.html')
     .pipe(htmlreplace({
       'js': 'js/scripts.min.js',
       'modals': {
@@ -24,17 +50,20 @@ gulp.task('replace', function () {
       }
     }))
     .pipe(gulp.dest('dist/'));
+
+  done();
 });
 
-gulp.task('copy', function () {
+gulp.task('copy', function (done) {
   gulp.src('css/*').pipe(gulp.dest('dist/css'));
-  gulp.src('font/*').pipe(gulp.dest('dist/font'));
+  gulp.src('fonts/*').pipe(gulp.dest('dist/fonts'));
+  gulp.src('node_modules/mana-font/fonts/*').pipe(gulp.dest('dist/fonts'));
   gulp.src('img/*').pipe(gulp.dest('dist/img'));
   gulp.src('favicon.ico').pipe(gulp.dest('dist'));
+
+  done();
 });
 
-gulp.task('build', function () {
-  gulp.start('scripts');
-  gulp.start('replace');
-  gulp.start('copy');
-});
+gulp.task('build',
+  gulp.parallel('vendor', 'scripts', 'replace', 'copy')
+);

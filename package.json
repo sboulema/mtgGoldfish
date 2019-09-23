@@ -4,7 +4,7 @@
   "description": "Website to playtest (goldfish) Magic The Gathering decks",
   "main": "gulpfile.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "gulp": "node node_modules/gulp/bin/gulp.js build"
   },
   "repository": {
     "type": "git",
@@ -17,10 +17,20 @@
   },
   "homepage": "https://github.com/sboulema/mtgGoldfish#readme",
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-html-replace": "^1.6.2", 
+    "gulp": "^4.0.2",
+    "gulp-html-replace": "^1.6.2",
     "gulp-concat": "^2.6.1",
-    "gulp-rename": "^1.2.2",
     "gulp-uglify": "^3.0.0"
+  },
+  "dependencies": {
+    "bootstrap": "^4.3.1",
+    "flip": "github:nnattawat/flip",
+    "jquery": "^3.4.0",
+    "jquery-ui-touch-punch": "^0.2.3",
+    "jqueryrotate-slevomat-fork": "^1.0.0",
+    "knuth-shuffle": "1.0.8",
+    "popper.js": "^1.14.6",
+    "mana-font": "^1.4.1",
+    "@fortawesome/fontawesome-free": "^5.11.1"
   }
 }
