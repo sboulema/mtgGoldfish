@@ -5,25 +5,16 @@ queue:
   name: Hosted Ubuntu 1604
 
 steps:
-- task: Docker@1
-  displayName: 'Build an image'
+- task: Docker@2
   inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: 'Docker Hub'
-    imageName: sboulema/mtggoldfish
-    includeLatestTag: true
-
-- task: Docker@1
-  displayName: 'Push an image'
-  inputs:
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: 'Docker Hub'
-    command: 'Push an image'
-    imageName: sboulema/mtggoldfish
-    includeLatestTag: true
+    containerRegistry: 'Docker Hub'
+    repository: 'sboulema/mtggoldfish'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+    tags: 'latest'
 
 - task: SSH@0
   displayName: 'Deploy an image'
   inputs:
     sshEndpoint: CurleezBox
-    commands: /home/sboulema/deployDockerContainer MtgGoldfish MtgGoldfish
+    commands: /home/sboulema/deployDockerContainer MtgGoldfish mtggoldfish
