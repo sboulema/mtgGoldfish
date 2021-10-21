@@ -99,6 +99,7 @@ function loadDeck() {
     }
 
     $('#deckModal').modal('hide');
+
     return dfrd1.promise();
 }
 
@@ -107,28 +108,27 @@ function lineToCard(line, list) {
     var count = matches[1];
     var name = matches[2];
 
-    return $.getJSON("https://api.magicthegathering.io/v1/cards?rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + name).then(function (data) {   
-        var result = data.cards.find(function(element) { return (typeof element.multiverseid != 'undefined') && (element.name === name)});
-
-        if (result.layout === "double-faced") {
-            return $.getJSON("https://api.magicthegathering.io/v1/cards?rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + data.cards[0].names[1]).then(function (data) {
-                var resultBack = data.cards.find(function(element) { return (typeof element.multiverseid != 'undefined') && (element.name === data.cards[0].names[1])}); 
-                for (var j = 0; j < count; j++) {
-                    list.push({
-                        name: result.name,
-                        layout: result.layout,
-                        multiverseId: result.multiverseid,
-                        multiverseIdBack: resultBack.multiverseid,
-                        goldfishId: createGoldfishId()
-                    });
-                } 
-            });
+    return $.getJSON("https://api.scryfall.com/cards/named?fuzzy=" + name)
+    .then(function (card) {   
+        if (card.layout === "double-faced" ||
+            card.layout === "transform" ||
+            card.layout === "modal_dfc")
+        {
+            for (var j = 0; j < count; j++) {
+                list.push({
+                    name: card.name,
+                    layout: card.layout,
+                    imageUrl: card.card_faces[0].image_uris.large,
+                    imageUrlBack: card.card_faces[1].image_uris.large,
+                    goldfishId: createGoldfishId()
+                });
+            } 
         } else {
             for (var j = 0; j < count; j++) {
                 list.push({
-                    name: result.name,
-                    layout: result.layout,
-                    multiverseId: result.multiverseid,
+                    name: card.name,
+                    layout: card.layout,
+                    imageUrl: card.image_uris.large,
                     goldfishId: createGoldfishId()
                 });
             }
@@ -177,12 +177,10 @@ function startShuffleDeckToCard() {
 
     $('#shuffleDeckModal').modal('hide');
 
-    $.getJSON("https://api.magicthegathering.io/v1/cards?rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + cardName).then(function (data) {
-        shuffleDeckToCard(data.cards[0].multiverseid);
-    });  
+    shuffleDeckToCard(cardName);
 }
 
-function shuffleDeckToCard(multiverseId) {
+function shuffleDeckToCard(cardName) {
     handList.length = 0;
     $("#hand-placeholder").empty();
 
@@ -191,11 +189,11 @@ function shuffleDeckToCard(multiverseId) {
     draw(7);
 
     var index = handList.findIndex(function(element) {
-        return element.multiverseId === multiverseId;
+        return element.name === cardName;
     });
 
     if (index === -1) {
-        shuffleDeckToCard(multiverseId);
+        shuffleDeckToCard(cardName);
     }
 }
 

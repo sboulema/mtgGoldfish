@@ -27,29 +27,30 @@ function createCard(card, style) {
         .addClass("front")
         .addClass("mtg-card-side")
         .addClass("mtg-card-preview")
-        .attr("data-multiverseid", card.multiverseId)
         .appendTo(cardDiv);
 
     if (typeof card.backgroundImage !== 'undefined') {
         $(front).css("background-image", "url('" + card.backgroundImage + "')")
     } else {
-        $(front).css("background-image", "url('" + createCardImageSrc(card.multiverseId) + "')")
+        $(front).css("background-image", "url('" + card.imageUrl + "')")
     }
 
-    var handle = $('<div/>')
+    $('<div/>')
         .addClass("handle")
         .appendTo(cardDiv);
 
-    if (card.layout === "double-faced") {
-        var back = $('<div/>')
+    if (card.layout === "double-faced" ||
+        card.layout === "transform" ||
+        card.layout === "modal_dfc")
+    {
+        $('<div/>')
             .addClass("back")
             .addClass("mtg-card-side")
             .addClass("mtg-card-preview")
-            .css("background-image", "url('" + createCardImageSrc(card.multiverseIdBack) + "')")
-            .attr("data-multiverseid", card.multiverseId)
+            .css("background-image", "url('" + card.imageUrlBack + "')")
             .appendTo(cardDiv);
     } else {
-        var back = $('<div/>')
+        $('<div/>')
             .addClass("back")
             .addClass("mtg-card-side")
             .css("background-image", "url('img/backside.jpg')")
@@ -59,21 +60,11 @@ function createCard(card, style) {
     return cardDiv;
 }
 
-function createCardImageSrc(multiverseId) {
-    return "https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + multiverseId + "&type=card";
-}
-
 function getCardObject(el) {
     return {
-        multiverseId: $(el[0]).children(".front").attr('data-multiverseid'),
-        multiverseIdBack: $(el[0]).children(".back").attr("data-multiverseid"),
         goldfishId: $(el[0]).attr("data-goldfishid"),
         layout: $(el[0]).attr("data-layout")
     };
-}
-
-function getFrontMultiverseId(el) {
-    return $(el).children(".front").attr("data-multiverseid");
 }
 
 function getGoldfishId(el) {

@@ -1,5 +1,4 @@
 function addTokensToSelect() {
-    var tmpSubject, tmpDate, tmpThumb;
     $.ajax({
         url: 'https://raw.githubusercontent.com/Cockatrice/Magic-Token/master/tokens.xml',
         type: 'GET', 
@@ -38,7 +37,6 @@ function setupTokens() {
                 break;
             default:
                 createCard({
-                    multiverseId: 0,
                     backgroundImage: this.value,
                     goldfishId: createGoldfishId(),
                     layout: "token"
@@ -50,7 +48,7 @@ function setupTokens() {
 }
 
 function createToken(name, rules, powerToughness, backgroundImage, color) {
-    var token = createCard({multiverseId: 0, layout: "token"});
+    var token = createCard({layout: "token"});
     token.children(".front")[0].style.backgroundImage = "url('" + backgroundImage + "')";
 
     $('<div/>')
@@ -82,8 +80,15 @@ function createToken(name, rules, powerToughness, backgroundImage, color) {
 }
 
 function addCustomToken() {
-    createToken($("#token-name").val(), $("#token-rules").val(), $("#token-powerToughness").val(), $("#token-art").val(), $("#token-color").val())
+    createToken(
+        $("#token-name").val(),
+        $("#token-rules").val(),
+        $("#token-powerToughness").val(),
+        $("#token-art").val(),
+        $("#token-color").val())
         .appendTo("#table");
+
     $('#tokenModal').modal('hide');
+    
     bindCardActions();
 }
