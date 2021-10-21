@@ -10,5 +10,3 @@ RUN npm run gulp
 FROM lipanski/docker-static-website
 
 COPY --from=0 --chmod=0644 dist/ .
-
-RUN ls -la *
