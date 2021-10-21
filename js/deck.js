@@ -25,7 +25,7 @@ function importMtgGolfdishDeck(deckId) {
     var dfrd1 = $.Deferred();
 
     $.ajax({
-        url: "https://wrapapi.com/use/sboulema/mtggoldfish/deck/0.0.1",
+        url: "https://wrapapi.com/use/sboulema/mtggoldfish/deck/0.0.2",
         method: "POST",
         data: {
           "deckId": deckId,
@@ -107,11 +107,11 @@ function lineToCard(line, list) {
     var count = matches[1];
     var name = matches[2];
 
-    return $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + name).then(function (data) {   
+    return $.getJSON("https://api.magicthegathering.io/v1/cards?rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + name).then(function (data) {   
         var result = data.cards.find(function(element) { return (typeof element.multiverseid != 'undefined') && (element.name === name)});
 
         if (result.layout === "double-faced") {
-            return $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + data.cards[0].names[1]).then(function (data) {
+            return $.getJSON("https://api.magicthegathering.io/v1/cards?rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + data.cards[0].names[1]).then(function (data) {
                 var resultBack = data.cards.find(function(element) { return (typeof element.multiverseid != 'undefined') && (element.name === data.cards[0].names[1])}); 
                 for (var j = 0; j < count; j++) {
                     list.push({
@@ -177,7 +177,7 @@ function startShuffleDeckToCard() {
 
     $('#shuffleDeckModal').modal('hide');
 
-    $.getJSON("https://api.magicthegathering.io/v1/cards?orderBy=name&rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + cardName).then(function (data) {
+    $.getJSON("https://api.magicthegathering.io/v1/cards?rarity=Common|Uncommon|Rare|Mythic Rare|Basic Land&name=" + cardName).then(function (data) {
         shuffleDeckToCard(data.cards[0].multiverseid);
     });  
 }

@@ -7,8 +7,6 @@ RUN npm install
 RUN npm run gulp
 
 # Second Stage
-FROM nginx
+FROM lipanski/docker-static-website
 
-COPY --from=0 dist /usr/share/nginx/html/
-
-EXPOSE 80
+COPY --from=0 --chmod=0644 dist .
