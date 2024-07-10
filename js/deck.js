@@ -2,7 +2,7 @@ function importMtgStocksDeck(deckid) {
     var dfrd1 = $.Deferred();
 
     $.getJSON("https://cors-anywhere.herokuapp.com/https://api.mtgstocks.com/decks/" + deckid).then(function (data) {
-        var deck = "";    
+        var deck = "";
         var sideboard = "";
 
         $.each(data.mainboard, function(key, card) {
@@ -43,7 +43,7 @@ function importMtgGolfdishDeck(deckId) {
                 }
             } else {
                 if (loadingDeck) {
-                    deck += card.Amount + " " + card.Name + "\n";                  
+                    deck += card.Amount + " " + card.Name + "\n";
                 } else {
                     sideboard += card.Amount + " " + card.Name + "\n";
                 }
@@ -95,7 +95,7 @@ function loadDeck() {
             updateTotals();
             bindCardActions();
             dfrd1.resolve();
-        });       
+        });
     }
 
     $('#deckModal').modal('hide');
@@ -108,7 +108,7 @@ function lineToCard(line, list) {
     var count = matches[1];
     var name = matches[2];
 
-    return $.getJSON("https://api.scryfall.com/cards/named?fuzzy=" + name)
+    return $.getJSON(`https://api.scryfall.com/cards/named?fuzzy=${name}`)
     .then(function (card) {   
         if (card.layout === "double-faced" ||
             card.layout === "transform" ||
@@ -132,7 +132,7 @@ function lineToCard(line, list) {
                     goldfishId: createGoldfishId()
                 });
             }
-        }        
+        }
     });
 }
 
@@ -148,7 +148,10 @@ function mulligan() {
     $("#hand-placeholder").empty();
 
     var newHandSize = handSize - 1;
-    if (newHandSize === 0) newHandSize = 1;
+
+    if (newHandSize === 0) {
+        newHandSize = 1;
+    }
     
     draw(newHandSize);
     updateTotals();
@@ -160,20 +163,21 @@ function draw(amount) {
     for (var index = 0; index < amount; index++) {
         var card = libraryList.splice(0, 1)[0];
         handList.push(card);
-        $("#hand-placeholder").append(createCard(card));      
+        $("#hand-placeholder").append(createCard(card));
     }
+
     updateTotals();
     bindCardActions();
 }
 
 function setupClickToDraw() {
-    $(".library-placeholder-card").click(function (event) {
+    $(".library-placeholder-card").on("click", function() {
         draw(1);
     });
 }
 
 function startShuffleDeckToCard() {
-    var cardName = $("#shuffle-card-name").val().trim();   
+    var cardName = $("#shuffle-card-name").val().trim();
 
     $('#shuffleDeckModal').modal('hide');
 
@@ -198,7 +202,9 @@ function shuffleDeckToCard(cardName) {
 }
 
 function putCardOnLibrary(card, onBottom) {
-    if (typeof card === 'undefined') return;
+    if (typeof card === 'undefined') {
+        return;
+    }
 
     $('.popover').popover('hide');
 
@@ -210,7 +216,7 @@ function putCardOnLibrary(card, onBottom) {
         $("#library-placeholder").append(defaultCard("library-placeholder-card"));
     }
 
-    $(card).mouseout();
+    $(card).trigger("mouseout");
     $(card).remove();
 
     setupClickToDraw();
@@ -219,11 +225,13 @@ function putCardOnLibrary(card, onBottom) {
 } 
 
 function putCardinPlaceholder(card, selector, list) {
-    if(typeof card === 'undefined') return;
+    if(typeof card === 'undefined') {
+        return;
+    }
 
     $('.popover').popover('hide');
 
-    $(selector).empty();  
+    $(selector).empty();
     $(card).detach().appendTo($(selector));
 
     $(card)
@@ -232,7 +240,7 @@ function putCardinPlaceholder(card, selector, list) {
         .css('position', "")
         .css("margin-bottom", "")
         .css("transform", "")
-        .unbind("click")
+        .off("click")
         .flip(false);
 
     list.push(getCardObject(card));
@@ -245,13 +253,13 @@ function putCardinHand(card) {
     card.detach().appendTo($("#hand-placeholder"));
     
     var needle = getGoldfishId(card);
-    var index = handList.findIndex(function(element) { 
+    var index = handList.findIndex(function(element) {
         return element.goldfishId === needle;
     });
 
     if (index === -1) {
         handList.push(getCardObject(card));
-    }    
+    }
     
     updateTotals();
 }

@@ -1,9 +1,9 @@
-[![Codefresh build status]( https://g.codefresh.io/api/badges/build?repoOwner=sboulema&repoName=mtgGoldfish&branch=master&pipelineName=mtgGoldfish&accountName=sboulema&type=cf-1)](https://g.codefresh.io/repositories/sboulema/mtgGoldfish/builds?filter=trigger:build;branch:master;service:59a9ac54361cb400013d0f1d~mtgGoldfish) [![Website](https://img.shields.io/website-up-down-green-red/http/shields.io.svg?label=Goldfish)](http://goldfish.sboulema.nl) [![Docker Pulls](https://img.shields.io/docker/pulls/sboulema/mtggoldfish.svg)](https://store.docker.com/community/images/sboulema/mtggoldfish)
+[![mtgGoldfish](https://github.com/sboulema/mtgGoldfish/actions/workflows/workflow.yml/badge.svg)](https://github.com/sboulema/mtgGoldfish/actions/workflows/workflow.yml) [![Website](https://img.shields.io/website-up-down-green-red/http/shields.io.svg?label=Goldfish)](http://goldfish.sboulema.nl) [![Docker Pulls](https://img.shields.io/docker/pulls/sboulema/mtggoldfish.svg)](https://store.docker.com/community/images/sboulema/mtggoldfish)
 
-# ![logo](http://goldfish.sboulema.nl/img/goldfish.png) MTG Goldfish
+# ![logo](img/goldfish.png) MTG Goldfish
 Website to playtest (goldfish) Magic The Gathering decks - http://goldfish.sboulema.nl
 
-![screenshot](http://goldfish.sboulema.nl/img/screenshot.png)
+![screenshot](img/screenshot.png)
 
 ## Features
 - Load deck and sideboard from text, [MTGStocks](https://www.mtgstocks.com/) or [MTGGoldfish](https://www.mtggoldfish.com/)

@@ -12,28 +12,19 @@ function defaultCard(cssClass) {
     return card;
 }
 
-function createCard(card, style) {
+function createCard(card) {
     var cardDiv = $('<div/>')
-    .addClass("mtg-card")
-    .addClass(card.layout)
-    .attr("data-goldfishid", card.goldfishId)
-    .attr("data-layout", card.layout);
+        .addClass("mtg-card")
+        .addClass(card.layout)
+        .attr("data-goldfishid", card.goldfishId)
+        .attr("data-layout", card.layout);
 
-    if (typeof style !== 'undefined') {
-        cardDiv.attr("style", cardDiv.attr("style") + "; " + style);
-    }
-
-    var front = $('<div/>')
+    $('<div/>')
         .addClass("front")
         .addClass("mtg-card-side")
         .addClass("mtg-card-preview")
+        .css("background-image", `url(${typeof card.backgroundImage !== 'undefined' ? card.backgroundImage : card.imageUrl})`)
         .appendTo(cardDiv);
-
-    if (typeof card.backgroundImage !== 'undefined') {
-        $(front).css("background-image", "url('" + card.backgroundImage + "')")
-    } else {
-        $(front).css("background-image", "url('" + card.imageUrl + "')")
-    }
 
     $('<div/>')
         .addClass("handle")
@@ -60,41 +51,45 @@ function createCard(card, style) {
     return cardDiv;
 }
 
-function getCardObject(el) {
+function getCardObject(selector) {
     return {
-        goldfishId: $(el[0]).attr("data-goldfishid"),
-        layout: $(el[0]).attr("data-layout")
+        goldfishId: $(selector[0]).attr("data-goldfishid"),
+        layout: $(selector[0]).attr("data-layout"),
+        imageUrl: $(selector[0])[0].querySelector(".front.mtg-card-side.mtg-card-preview").style["background-image"].replace(/url\(("|')(.+)("|')\)/gi, '$2'),
     };
 }
 
-function getGoldfishId(el) {
-    return $(el).attr("data-goldfishid");
+function getGoldfishId(selector) {
+    return $(selector).attr("data-goldfishid");
 }
 
 function bindCardActions() {
+    // Tap
     $("#table .mtg-card").rotate({
         bind: {
-            click: function (event) {
+            click: function() {
                 if (isCounterClick) {
                     isCounterClick = false;
                 } else {
                     tap(this);
-                }               
+                }
             }
         }
     });
 
+    // Large preview
     $('.mtg-card-preview').popover({
         html: true,
         trigger: 'hover',
-        content: function () { 
+        content: function() { 
             return '<img width="223" height="310" src="' + $(this)[0].style.backgroundImage.slice(5, -2) + '" />'; 
         }
     });
 
+    // Drag & drop
     $(".mtg-card").draggable({
         helper: "clone",
-        stop: function(event, ui) {
+        stop: function() {
             updateTotals();
             bindCardActions();
         }
@@ -105,8 +100,8 @@ function bindCardActions() {
     }
 
     $("#table .mtg-card-side.mtg-card-preview").droppable({
-        accept: ".counter",        
-        drop: function(event, ui) {
+        accept: ".counter",
+        drop: function(_, ui) {
             ui.draggable.detach()
             .css('left', ui.offset.left - $(this).offset().left)
             .css('top', ui.offset.top - $(this).offset().top)
@@ -116,16 +111,15 @@ function bindCardActions() {
         }
     });
 
+    // Flip card
     $(".mtg-card").flip({trigger: "manual"});
 }
 
 function tap(card) {
-    if (!$(card).hasClass("tapped") || $(card).getRotateAngle() == 0) {
+    if (!$(card).hasClass("tapped") || $(card).getRotateAngle() == 0)
+    {
         $(card).addClass("tapped");
-        $(card).rotate({
-            angle: 0,
-            animateTo: 90
-        })       
+        $(card).rotate({ angle: 0, animateTo: 90 });
     } else {
         untap(card);
     }
@@ -140,7 +134,7 @@ function untap(card) {
 }
 
 function untapAll() {
-    $("#table .mtg-card.tapped").each(function(index) {
+    $("#table .mtg-card.tapped").each(function() {
         untap(this);
     });
 }
@@ -150,7 +144,7 @@ function flip(card) {
 }
 
 function flipHand() {
-    $("#hand-placeholder").children().each(function(index) {
+    $("#hand-placeholder").children().each(function() {
         flip(this);
     });
 }
@@ -161,11 +155,14 @@ function shuffleHand() {
 }
 
 function addCounter(card) {
-    if (typeof card === 'undefined') return;
+    if (typeof card === 'undefined') {
+        return;
+    }
 
     var flip = $(card).data("flip-model");
 
-    $(card).children((flip.isFlipped ? ".back" : ".front"))
+    $(card)
+        .children((flip.isFlipped ? ".back" : ".front"))
         .append("<label class='ms ms-e ms-3x counter'></label><input class='form-control clickedit' type='text' />");
     
     $('.mtg-card .clickedit').hide()
@@ -189,9 +186,9 @@ function addCounter(card) {
         revert: "invalid"
     });
 
-    $(".counter").mousedown(function (event) {
+    $(".counter").on("mousedown", function (event) {
         switch (event.which) {
-            case 3:
+            case 3: // right button
                 $(this).remove();
                 break;
             default:
@@ -203,17 +200,19 @@ function addCounter(card) {
 function markCard(card) {
     var goldfishId = $(card).attr("data-goldfishid");
     var index = $.inArray(goldfishId, markedList)
+
     if (index > -1) {
         markedList.slice(index, 1);
     } else {
         markedList.push(goldfishId);
-    }   
+    }
+
     $(card).toggleClass("marked");
 }
 
 function markAllCards() {
-    $.each(markedList, function(key, goldfishId) {
-        $(".mtg-card[data-goldfishid='" + goldfishId + "']").toggleClass("marked");
+    $.each(markedList, function(_, goldfishId) {
+        $(`.mtg-card[data-goldfishid='${goldfishId}']`).toggleClass("marked");
     });
 }
 

@@ -1,7 +1,9 @@
+<!doctype html>
+
 <html>
 
 <head>
-    <link rel="stylesheet" href="css/vendor.bundle.css">
+    <link rel="stylesheet" href="dist/css/vendor.bundle.css">
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/token.css">
@@ -140,8 +142,7 @@
                             <label class="control-label">Actions:</label>
                             <input class="form-control btn btn-sm btn-block btn-primary" type="button" value="Shuffle library" onclick="shuffleDeck();" />
                             <input class="form-control btn btn-sm btn-block btn-primary" type="button" value="Shuffle hand" onclick="shuffleHand();" />
-                            <input class="form-control btn btn-sm btn-block btn-primary" type="button" value="Start with card" data-toggle="modal" data-target="#shuffleDeckModal"
-                            />
+                            <input class="form-control btn btn-sm btn-block btn-primary" type="button" value="Start with card" data-toggle="modal" data-target="#shuffleDeckModal" />
                             <input class="form-control btn btn-sm btn-block btn-primary" type="button" value="Mulligan" onclick="mulligan();" />
                             <input class="form-control btn btn-sm btn-block btn-primary" type="button" value="Untap all" onclick="untapAll();" />
                             <input class="form-control btn btn-sm btn-block btn-primary" type="button" value="Flip hand" onclick="flipHand();" />
@@ -155,7 +156,7 @@
     </div>
 
     <!-- External JavaScript libraries -->
-    <script src='js/vendor.bundle.js'></script>
+    <script src='dist/js/vendor.bundle.js'></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
     <!-- Local/Custom Javascript functions -->
@@ -171,16 +172,17 @@
 
     <!-- build:modals -->
     <script>
-        $(document).ready(function () {          
+        $(document).ready(function () {
             // Load all Modals
             $("body")
                 .append($("<div>").load("modals/loadingmodal.html"))
                 .append($("<div>").load("modals/deckmodal.html"))
-                .append($("<div>").load("modals/helpmodal.html"))           
+                .append($("<div>").load("modals/helpmodal.html"))
                 .append($("<div>").load("modals/settingsmodal.html"))
                 .append($("<div>").load("modals/shuffletocardmodal.html"))
                 .append($("<div>").load("modals/aboutmodal.html"))
-                .append($("<div>").load("modals/tokenmodal.html"));           
+                .append($("<div>").load("modals/tokenmodal.html"))
+                .append($("<div>").load("modals/zonemodal.html"));
         });
     </script>
     <!-- endbuild -->

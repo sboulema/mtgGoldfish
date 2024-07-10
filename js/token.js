@@ -30,7 +30,7 @@ function setupTokens() {
 
     $('#token-select').on('change', function() {
         switch (this.value) {
-            case "-1":              
+            case "-1":
                 break;
             case "0":
                 $('#tokenModal').modal('show');
@@ -43,38 +43,39 @@ function setupTokens() {
                 }).appendTo("#table");
                 bindCardActions();
                 break;
-        }   
-    })
+        }
+    });
 }
 
 function createToken(name, rules, powerToughness, backgroundImage, color) {
     var token = createCard({layout: "token"});
-    token.children(".front")[0].style.backgroundImage = "url('" + backgroundImage + "')";
+
+    token.children(".front")[0].style.backgroundImage = `url('${backgroundImage}')`;
 
     $('<div/>')
-    .addClass("mtg-card-token-frame-" + color)
-    .addClass("mtg-card-side")
-    .appendTo(token.children(".front"));
+        .addClass("mtg-card-token-frame-" + color)
+        .addClass("mtg-card-side")
+        .appendTo(token.children(".front"));
 
     $('<div/>')
-    .addClass("mtg-card-token-name")
-    .html(name)
-    .appendTo(token.children(".front"));
+        .addClass("mtg-card-token-name")
+        .html(name)
+        .appendTo(token.children(".front"));
 
     $('<div/>')
-    .addClass("mtg-card-token-type")
-    .html(name)
-    .appendTo(token.children(".front"));
+        .addClass("mtg-card-token-type")
+        .html(name)
+        .appendTo(token.children(".front"));
 
     $('<div/>')
-    .addClass("mtg-card-token-rules")
-    .html(rules)
-    .appendTo(token.children(".front"));
+        .addClass("mtg-card-token-rules")
+        .html(rules)
+        .appendTo(token.children(".front"));
 
     $('<div/>')
-    .addClass("mtg-card-token-powerToughness")
-    .html(powerToughness)
-    .appendTo(token.children(".front"));
+        .addClass("mtg-card-token-powerToughness")
+        .html(powerToughness)
+        .appendTo(token.children(".front"));
 
     return token;
 }

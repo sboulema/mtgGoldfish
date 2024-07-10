@@ -85,9 +85,11 @@ body {
 	padding-right: 20px;
 }
 
-#helpModal .modal-content, #aboutModal .modal-content {
+#helpModal .modal-content,
+#aboutModal .modal-content,
+#zoneModal .modal-content {
     background-image: url("../img/playbg1.png");
-    color: #c8b472;    
+    color: #c8b472;
 }
 
 .marked {
