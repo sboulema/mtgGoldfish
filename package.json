@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/sboulema/mtgGoldfish#readme",
   "devDependencies": {
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.0",
     "gulp-html-replace": "^1.6.2",
     "gulp-concat": "^2.6.1",
     "gulp-uglify": "^3.0.2"
@@ -31,6 +31,6 @@
     "knuth-shuffle": "1.0.8",
     "popper.js": "^1.14.6",
     "mana-font": "^1.15.9",
-    "@fortawesome/fontawesome-free": "^5.15.4"
+    "@fortawesome/fontawesome-free": "^6.5.2"
   }
 }
