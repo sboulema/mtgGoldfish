@@ -139,8 +139,8 @@ function untapAll() {
     });
 }
 
-function flip(card) {
-    $(card).flip('toggle');
+function flip(selector) {
+    $(selector).flip('toggle');
 }
 
 function flipHand() {

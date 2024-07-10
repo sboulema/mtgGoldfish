@@ -70,7 +70,10 @@ function loadDeck() {
     $.when.apply($, lines.map(function (line) {
         return lineToCard(line, libraryList);
     })).then(function () {
-        $("#library-placeholder").html(defaultCard("library-placeholder-card"));
+        // Place card on top of library
+        var libraryTopCard = createCard(libraryList[0]);
+        $("#library-placeholder").html(libraryTopCard);
+
         deck = libraryList.slice();
         shuffleDeck();
         draw(7);
@@ -158,7 +161,9 @@ function mulligan() {
 }
 
 function draw(amount) {
-    if (libraryList.length === 0) return;
+    if (libraryList.length === 0) {
+        return;
+    }
 
     for (var index = 0; index < amount; index++) {
         var card = libraryList.splice(0, 1)[0];

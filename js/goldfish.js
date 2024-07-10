@@ -29,7 +29,7 @@ function init() {
     bindZoneModal("#graveyard-title", "Graveyard", graveyardList);
     bindZoneModal("#hand-title", "Hand", handList);
 
-    $(document).on("keypress", function(event) {
+    $(document).off("keypress").on("keypress", function(event) {
         switch (event.which) {
             case 98: // b
                 putCardOnLibrary($(".mtg-card:hover")[0], true);
@@ -241,9 +241,12 @@ function setupTurnButton() {
 
 function startLoadDeck() {
     $('#loadingModal').modal('show');
+
     reset();
+
     loadDeck().done(function() {
         $('#loadingModal').modal('hide');
+        flip($("#library-placeholder .mtg-card")[0]);
     });
 }
 
