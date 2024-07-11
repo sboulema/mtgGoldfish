@@ -30,25 +30,25 @@ function createCard(card) {
         .addClass("handle")
         .appendTo(cardDiv);
 
-    if (card.layout === "double-faced" ||
-        card.layout === "transform" ||
-        card.layout === "modal_dfc")
-    {
-        $('<div/>')
-            .addClass("back")
-            .addClass("mtg-card-side")
-            .addClass("mtg-card-preview")
-            .css("background-image", "url('" + card.imageUrlBack + "')")
-            .appendTo(cardDiv);
-    } else {
-        $('<div/>')
-            .addClass("back")
-            .addClass("mtg-card-side")
-            .css("background-image", "url('img/backside.jpg')")
-            .appendTo(cardDiv);
-    }
+    $('<div/>')
+        .addClass("back")
+        .addClass("mtg-card-side")
+        .addClass(isDoubleFaced(card.layout) ? "mtg-card-preview" : "")
+        .css("background-image", "url('" + card.imageUrlBack + "')")
+        .appendTo(cardDiv);
 
     return cardDiv;
+}
+
+function isDoubleFaced(layout) {
+    switch(layout) {
+        case "double-faced":
+        case "transform":
+        case "modal_dfc":
+            return true;
+        default:
+            return false;
+    }
 }
 
 function getCardObject(selector) {

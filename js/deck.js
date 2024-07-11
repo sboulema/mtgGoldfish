@@ -125,7 +125,7 @@ async function parseCardList(input) {
             name: card.name,
             layout: card.layout,
             imageUrl: isDoubleFaced(card.layout) ? card.card_faces[0].image_uris.large : card.image_uris.large,
-            imageUrlBack: isDoubleFaced(card.layout) ? card.card_faces[1].image_uris.large : null,
+            imageUrlBack: isDoubleFaced(card.layout) ? card.card_faces[1].image_uris.large : "img/backside.jpg",
             goldfishId: createGoldfishId(),
         }));
 
@@ -157,17 +157,6 @@ const mergeByProperty = (target, source, prop) => {
             targetElement ? Object.assign(targetElement, sourceElement) : target.push(sourceElement);
         })
     }
-
-function isDoubleFaced(layout) {
-    switch(layout) {
-        case "double-faced":
-        case "transform":
-        case "modal_dfc":
-            return true;
-        default:
-            return false;
-    }
-}
 
 function shuffleDeck() {
     window.knuthShuffle(libraryList);
