@@ -239,15 +239,14 @@ function setupTurnButton() {
         });
 }
 
-function startLoadDeck() {
-    $('#loadingModal').modal('show');
-
+async function startLoadDeck() {
     reset();
 
-    loadDeck().done(function() {
-        $('#loadingModal').modal('hide');
-        flip($("#library-placeholder .mtg-card")[0]);
-    });
+    await loadDeck();
+
+    $('#deckModal').modal('hide');
+
+    flip($("#library-placeholder .mtg-card")[0]);
 }
 
 function setupManaPoolCounters() {

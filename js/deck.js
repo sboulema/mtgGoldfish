@@ -57,86 +57,116 @@ function importMtgGolfdishDeck(deckId) {
       return dfrd1.promise();
 }
 
-function loadDeck() {
-    var dfrd1 = $.Deferred();
-
-    var lines = $("#deck-list").val().trim().split('\n');
-
+async function loadDeck() {
     // Clear any existing deck and sideboard
-    libraryList.length = 0;
-    sideboardList.length = 0;
+    libraryList = [];
+    sideboardList = [];
 
     // Mainboard
-    $.when.apply($, lines.map(function (line) {
-        return lineToCard(line, libraryList);
-    })).then(function () {
-        // Place card on top of library
-        var libraryTopCard = createCard(libraryList[0]);
-        $("#library-placeholder").html(libraryTopCard);
+    libraryList = await parseCardList($("#deck-list").val());
 
-        deck = libraryList.slice();
-        shuffleDeck();
-        draw(7);
-        updateTotals();
-        bindCardActions();
-        setupClickToDraw();
+    // Place card on top of library
+    var libraryTopCard = createCard(libraryList[0]);
+    $("#library-placeholder").html(libraryTopCard);
 
-        if ($("#sideboard-list").val() === '') {
-            dfrd1.resolve();
-        }
-    });
+    // Set start state
+    deck = libraryList.slice();
+    shuffleDeck();
+    draw(7);
+    updateTotals();
+    bindCardActions();
+    setupClickToDraw();
 
     // Sideboard
     if ($("#sideboard-list").val() != '') {
-        var lines = $("#sideboard-list").val().trim().split('\n');
+        sideboardList = await parseCardList($("#sideboard-list").val());
 
-        $.when.apply($, lines.map(function (line) {
-            return lineToCard(line, sideboardList);
-        })).then(function () {
-            $("#sideboard-placeholder").html(defaultCard());
-            sideboard = sideboardList.slice();
-            updateTotals();
-            bindCardActions();
-            dfrd1.resolve();
-        });
+        $("#sideboard-placeholder").html(defaultCard());
+        sideboard = sideboardList.slice();
+        updateTotals();
+        bindCardActions();
     }
-
-    $('#deckModal').modal('hide');
-
-    return dfrd1.promise();
 }
 
-function lineToCard(line, list) {
-    var matches = line.match(/\b(\d+)x?\s+(.*)\b/);
-    var count = matches[1];
-    var name = matches[2];
+async function parseCardList(input) {
+    var lines = input.trim().split("\n");
 
-    return $.getJSON(`https://api.scryfall.com/cards/named?fuzzy=${name}`)
-    .then(function (card) {   
-        if (card.layout === "double-faced" ||
-            card.layout === "transform" ||
-            card.layout === "modal_dfc")
-        {
-            for (var j = 0; j < count; j++) {
-                list.push({
-                    name: card.name,
-                    layout: card.layout,
-                    imageUrl: card.card_faces[0].image_uris.large,
-                    imageUrlBack: card.card_faces[1].image_uris.large,
-                    goldfishId: createGoldfishId()
-                });
-            } 
-        } else {
-            for (var j = 0; j < count; j++) {
-                list.push({
-                    name: card.name,
-                    layout: card.layout,
-                    imageUrl: card.image_uris.large,
-                    goldfishId: createGoldfishId()
-                });
-            }
+    var cards = [];
+
+    lines.forEach((line) => {
+        var matches = line.match(/\b(\d+)x?\s+(.*)\b/);
+
+        if (matches === null) {
+            return;
+        }
+
+        var count = matches[1];
+        var name = matches[2];
+
+        cards.push({
+            name: name,
+            count: count,
+        })
+    })
+
+    // split in batches of 75 (max batch size for Scryfall Collection API)
+    var batches = chunk(cards, 75);
+
+    // use scryfall api to get data
+    await Promise.all(batches.map(async (batch) => {
+        const response = await fetch("https://api.scryfall.com/cards/collection", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ identifiers: batch }),
+        })
+        const result = await response.json();
+
+        const scryfallCards = result.data.map((card) => ({
+            name: card.name,
+            layout: card.layout,
+            imageUrl: isDoubleFaced(card.layout) ? card.card_faces[0].image_uris.large : card.image_uris.large,
+            imageUrlBack: isDoubleFaced(card.layout) ? card.card_faces[1].image_uris.large : null,
+            goldfishId: createGoldfishId(),
+        }));
+
+        // merge count and scryfall data
+        mergeByProperty(cards, scryfallCards, "name");
+    }));
+
+    // duplicate cards based on count
+    cards.map((card) => {
+        for (let index = 0; index < card.count - 1; index++) {
+            cards.push(card);
         }
     });
+
+    // return completed card list
+    return cards;
+}
+
+const chunk = (arr, size) =>
+    Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+      arr.slice(i * size, i * size + size)
+    );
+
+const mergeByProperty = (target, source, prop) => {
+        source.forEach(sourceElement => {
+            let targetElement = target.find(targetElement => {
+            return sourceElement[prop] === targetElement[prop];
+            })
+            targetElement ? Object.assign(targetElement, sourceElement) : target.push(sourceElement);
+        })
+    }
+
+function isDoubleFaced(layout) {
+    switch(layout) {
+        case "double-faced":
+        case "transform":
+        case "modal_dfc":
+            return true;
+        default:
+            return false;
+    }
 }
 
 function shuffleDeck() {
