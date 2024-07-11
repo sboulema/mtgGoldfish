@@ -58,7 +58,7 @@ gulp.task('copy', function (done) {
   gulp.src('css/*').pipe(gulp.dest('dist/css'));
   gulp.src('fonts/*').pipe(gulp.dest('dist/fonts'));
   gulp.src('node_modules/mana-font/fonts/*', { removeBOM: false }).pipe(gulp.dest('dist/fonts'));
-  gulp.src('img/*').pipe(gulp.dest('dist/img'));
+  gulp.src('img/*', { removeBOM: false }).pipe(gulp.dest('dist/img'));
   gulp.src('favicon.ico').pipe(gulp.dest('dist'));
 
   done();
