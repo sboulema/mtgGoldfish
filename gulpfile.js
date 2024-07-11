@@ -45,6 +45,8 @@ gulp.task('replace', function (done) {
   gulp.src('index.html')
     .pipe(htmlreplace({
       'js': 'js/scripts.min.js',
+      'vendor-js': 'js/vendor.bundle.js',
+      'vendor-css': 'css/vendor.bundle.css',
       'modals': {
         src: gulp.src('modals/*.html')
       }
@@ -59,7 +61,7 @@ gulp.task('copy', function (done) {
   gulp.src('fonts/*').pipe(gulp.dest('dist/fonts'));
   gulp.src('node_modules/mana-font/fonts/*', { removeBOM: false }).pipe(gulp.dest('dist/fonts'));
   gulp.src('img/*', { removeBOM: false }).pipe(gulp.dest('dist/img'));
-  gulp.src('favicon.ico').pipe(gulp.dest('dist'));
+  gulp.src('favicon.ico', { removeBOM: false }).pipe(gulp.dest('dist'));
 
   done();
 });
