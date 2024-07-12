@@ -103,7 +103,7 @@ async function parseCardList(input) {
     }
 
     lines.forEach((line) => {
-        var matches = line.match(/(\d+)x?\s+([^(]*)(?:\((.*)\))?/);
+        var matches = line.match(/(\d+)x?\s+([^(]*)(?:\((.*)\))?(?:\s+(\d+))?/);
 
         if (matches === null) {
             return;
@@ -113,6 +113,7 @@ async function parseCardList(input) {
             name: matches[2].split("/")[0].trim(), // Take single name for split cards like "Commit / Memory"
             count: matches[1],
             set: matches[3],
+            collector_number: matches[4],
         })
     })
 
@@ -124,7 +125,11 @@ async function parseCardList(input) {
         const response = await fetch("https://api.scryfall.com/cards/collection", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ identifiers: batch }),
+            body: JSON.stringify({ identifiers: batch.map((card) => ({
+                name: typeof card.set !== "undefined" ? undefined: card.name,
+                set: card.set,
+                collector_number: card.collector_number
+            })) }),
         })
         const result = await response.json();
 
