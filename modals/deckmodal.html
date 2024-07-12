@@ -26,7 +26,10 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="btn-load-deck" type="button" class="btn btn-primary" onclick="startLoadDeck();">Load</button>
+                <button id="btn-load-deck" type="button" class="btn btn-primary" onclick="startLoadDeck();">
+                    <span id="btn-load-deck-spinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                    <span id="btn-load-deck-text">Load</span>
+                </button>
             </div>
         </div>
     </div>

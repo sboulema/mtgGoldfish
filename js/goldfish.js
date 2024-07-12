@@ -187,10 +187,15 @@ function setupTurnButton() {
 }
 
 async function startLoadDeck() {
+    $("#btn-load-deck-spinner").removeClass("d-none");
+    $("#btn-load-deck-text").text("Loading...");
+
     reset();
 
     await loadDeck();
 
+    $("#btn-load-deck-spinner").addClass("d-none");
+    $("#btn-load-deck-text").text("Load");
     $('#deckModal').modal('hide');
 
     flip($("#library-placeholder .mtg-card")[0]);
