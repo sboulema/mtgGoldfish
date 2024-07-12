@@ -47,16 +47,13 @@ function isDoubleFaced(layout) {
     }
 }
 
-function getCardObject(selector) {
-    return {
-        goldfishId: $(selector[0]).attr("data-goldfishid"),
-        layout: $(selector[0]).attr("data-layout"),
-        imageUrl: $(selector[0])[0]
-            .querySelector(".front.mtg-card-side.mtg-card-preview")
-            .style["background-image"]
-            .replace(/url\(("|')(.+)("|')\)/gi, '$2'),
-    };
-}
+/**
+ * Get the deck card object based on a DOM node
+ * @param {string} domNode - DOM node gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
+ * @returns card object
+ */
+const getCardObject = (domNode) =>
+    deck.find((card) => card.goldfishId == domNode.dataset.goldfishid);
 
 function getGoldfishId(selector) {
     return $(selector).attr("data-goldfishid");
