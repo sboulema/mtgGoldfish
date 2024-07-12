@@ -16,7 +16,6 @@ function createCard(card) {
     $('<div/>')
         .addClass("front")
         .addClass("mtg-card-side")
-        .addClass("mtg-card-preview")
         .css("background-image", `url(${typeof card.backgroundImage !== 'undefined' ? card.backgroundImage : card.imageUrl})`)
         .appendTo(cardDiv);
 
@@ -29,7 +28,6 @@ function createCard(card) {
     $('<div/>')
         .addClass("back")
         .addClass("mtg-card-side")
-        .addClass(isDoubleFaced(card.layout) ? "mtg-card-preview" : "")
         .css("background-image", "url('" + card.imageUrlBack + "')")
         .appendTo(cardDiv);
 
@@ -49,21 +47,31 @@ function isDoubleFaced(layout) {
 
 /**
  * Get the deck card object based on a DOM node
- * @param {domNode} domNode - DOM node gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
+ * @param {domNode} domNode - Div gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
  * @returns card object
  */
 const getCardObject = (domNode) =>
     deck.find((card) => card.goldfishId == domNode.dataset.goldfishid);
 
+/**
+ * Check if the DOM node has been flipped
+ * @param {domNode} domNode - Div gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
+ * @returns boolean
+ */
+const isFlipped = (domNode) =>
+    $(domNode).data("flip-model").isFlipped;
+
 function getGoldfishId(selector) {
     return $(selector).attr("data-goldfishid");
 }
 
-function getPreviewImage(selector) {
-    return $(selector)[0].style.backgroundImage
-        .replace(/url\(("|')(.+)("|')\)/gi, '$2')
-        .replace("small", "large");
-}
+/**
+ * Get the high quality preview image of the current shown card face
+ * @param {domNode} domNode - Div gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
+ * @returns string
+ */
+const getPreviewImageUrl = (domNode) =>
+    isFlipped(domNode) ? getCardObject(domNode).imageBackPreviewUrl : getCardObject(domNode).imageFrontPreviewUrl;
 
 function bindCardActions() {
     // Tap
@@ -80,11 +88,17 @@ function bindCardActions() {
     });
 
     // Large preview
-    $('.mtg-card-preview').popover({
+    $('.mtg-card').popover({
         html: true,
         trigger: 'hover',
         content: function() {
-            return `<img width="223" height="310" src="${getPreviewImage(this)}" />`;
+            var card = getCardObject(this);
+
+            if (!isDoubleFaced(card.layout) && isFlipped(this)) {
+                return null;
+            }
+
+            return `<img width="223" height="310" src="${getPreviewImageUrl(this)}" />`;
         }
     });
 
@@ -101,7 +115,7 @@ function bindCardActions() {
         $(".mtg-card").draggable("option", "handle", ".handle");
     }
 
-    $("#table .mtg-card-side.mtg-card-preview").droppable({
+    $("#table .mtg-card-side").droppable({
         accept: ".counter",
         drop: function(_, ui) {
             ui.draggable.detach()
