@@ -110,7 +110,9 @@ async function parseCardList(input) {
         }
 
         var count = matches[1];
-        var name = matches[2];
+
+        // Take single name for split cards like "Commit / Memory"
+        var name = matches[2].split("/")[0].trim(); 
 
         cardListResult.cards.push({
             name: name,
@@ -163,10 +165,21 @@ const chunk = (arr, size) =>
       arr.slice(i * size, i * size + size)
     );
 
+/**
+ * Merge two lists based on a matching property
+ * 
+ * Remarks:
+ * - Properties should match or match the first part of a split card
+ * - Objects in the source list that do not match a target object will be appended to the target list
+ * @param {Object[]} target - The list that will hold the merged set of lists.
+ * @param {Object[]} source - the list to merge with the target list.
+ * @param {string} prop - The name of the property to match on.
+ */
 const mergeByProperty = (target, source, prop) => {
         source.forEach(sourceElement => {
             let targetElement = target.find(targetElement => {
-            return sourceElement[prop] === targetElement[prop];
+                return sourceElement[prop] === targetElement[prop] ||
+                       sourceElement[prop].split("//")[0].trim() === targetElement[prop];
             })
             targetElement ? Object.assign(targetElement, sourceElement) : target.push(sourceElement);
         })

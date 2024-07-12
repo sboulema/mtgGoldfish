@@ -23,11 +23,11 @@ async function init() {
 
     setupDragDrop();
 
-    bindZoneModal("#exile-title", "Exile", exileList);
-    bindZoneModal("#sideboard-title", "Sideboard", sideboardList);
-    bindZoneModal("#library-title", "Library", libraryList);
-    bindZoneModal("#graveyard-title", "Graveyard", graveyardList);
-    bindZoneModal("#hand-title", "Hand", handList);
+    bindZoneModal("#exile-title", "Exile");
+    bindZoneModal("#sideboard-title", "Sideboard");
+    bindZoneModal("#library-title", "Library");
+    bindZoneModal("#graveyard-title", "Graveyard");
+    bindZoneModal("#hand-title", "Hand");
 
     $(document).off("keypress").on("keypress", function(event) {
         switch (event.which) {
@@ -108,13 +108,33 @@ function retrieveSettings() {
     } 
 }
 
-function bindZoneModal(selector, id, cards) {
+function bindZoneModal(selector, id) {
     $(selector).on("click", function() {
         $('#zoneModal .row').empty();
 
         document.querySelector("#zoneModal .modal-title").textContent = id;
 
-        cards.forEach((card) => $('#zoneModal .row').append(createCard(card)));
+        // Get the correct list of cards to show based on the id
+        var zoneCards = [];
+        switch (id) {
+            case "Library":
+                zoneCards = libraryList;
+                break;
+            case "Graveyard":
+                zoneCards = graveyardList;
+                break;
+            case "Exile":
+                zoneCards = exileList;
+                break;
+            case "Sideboard":
+                zoneCards = sideboardList;
+                break;
+            case "Hand":
+                zoneCards = handList;
+                break;
+        }
+
+        zoneCards.forEach((card) => $('#zoneModal .row').append(createCard(card)));
 
         // setupDroppableZone(selector.slice(0, -6), list);
         bindCardActions();
