@@ -28,23 +28,26 @@ function getTokenName(token) {
 function setupTokens() {
     addTokensToSelect();
 
-    $('#token-select').on('change', function() {
-        switch (this.value) {
-            case "-1":
-                break;
-            case "0":
-                $('#tokenModal').modal('show');
-                break;
-            default:
-                createCard({
-                    backgroundImage: this.value,
-                    goldfishId: createGoldfishId(),
-                    layout: "token"
-                }).appendTo("#table");
-                bindCardActions();
-                break;
-        }
-    });
+    $('#token-select')
+        .off('change')
+        .on('change', function() {
+            switch (this.value) {
+                case "-1":
+                    break;
+                case "0":
+                    $('#tokenModal').modal('show');
+                    break;
+                default:
+                    createCard({
+                        backgroundImage: this.value,
+                        imageUrlBack: "img/backside.jpg",
+                        goldfishId: createGoldfishId(),
+                        layout: "token"
+                    }).appendTo("#table");
+                    bindCardActions();
+                    break;
+            }
+        });
 }
 
 function createToken(name, rules, powerToughness, backgroundImage, color) {
