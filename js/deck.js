@@ -253,6 +253,16 @@ function shuffleDeckToCard(cardName) {
     }
 }
 
+/**
+ * Put a card on the library
+ * 
+ * Remarks:
+ * - By default the card will be put on top of the library
+ * - When putting on top of the library, the card will be flipped to the back 
+ * @param {domNode} card - DOM node gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
+ * @param {boolean} onBottom - Put card on the bottom of the library
+ * @returns 
+ */
 function putCardOnLibrary(card, onBottom) {
     if (typeof card === 'undefined') {
         return;
@@ -266,6 +276,10 @@ function putCardOnLibrary(card, onBottom) {
         $("#library-placeholder").empty();
         libraryList.unshift(getCardObject(card));
         $("#library-placeholder").html(createCard(libraryList[0]));
+
+        // Flip card to the back side
+        $("#library-placeholder .mtg-card").flip({trigger: "manual"});
+        $("#library-placeholder .mtg-card").flip(true);
     }
 
     $(card).trigger("mouseout");

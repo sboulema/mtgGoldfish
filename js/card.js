@@ -49,7 +49,7 @@ function isDoubleFaced(layout) {
 
 /**
  * Get the deck card object based on a DOM node
- * @param {string} domNode - DOM node gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
+ * @param {domNode} domNode - DOM node gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
  * @returns card object
  */
 const getCardObject = (domNode) =>
