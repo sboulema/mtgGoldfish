@@ -124,8 +124,8 @@ async function parseCardList(input) {
         const scryfallCards = result.data.map((card) => ({
             name: card.name,
             layout: card.layout,
-            imageUrl: isDoubleFaced(card.layout) ? card.card_faces[0].image_uris.large : card.image_uris.large,
-            imageUrlBack: isDoubleFaced(card.layout) ? card.card_faces[1].image_uris.large : "img/backside.jpg",
+            imageUrl: isDoubleFaced(card.layout) ? card.card_faces[0].image_uris.small : card.image_uris.small,
+            imageUrlBack: isDoubleFaced(card.layout) ? card.card_faces[1].image_uris.small : "img/backside.jpg",
             goldfishId: createGoldfishId(),
         }));
 

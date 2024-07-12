@@ -63,6 +63,12 @@ function getGoldfishId(selector) {
     return $(selector).attr("data-goldfishid");
 }
 
+function getPreviewImage(selector) {
+    return $(selector)[0].style.backgroundImage
+        .replace(/url\(("|')(.+)("|')\)/gi, '$2')
+        .replace("small", "large");
+}
+
 function bindCardActions() {
     // Tap
     $("#table .mtg-card").rotate({
@@ -81,8 +87,8 @@ function bindCardActions() {
     $('.mtg-card-preview').popover({
         html: true,
         trigger: 'hover',
-        content: function() { 
-            return '<img width="223" height="310" src="' + $(this)[0].style.backgroundImage.slice(5, -2) + '" />'; 
+        content: function() {
+            return `<img width="223" height="310" src="${getPreviewImage(this)}" />`;
         }
     });
 
