@@ -103,20 +103,16 @@ async function parseCardList(input) {
     }
 
     lines.forEach((line) => {
-        var matches = line.match(/\b(\d+)x?\s+(.*)\b/);
+        var matches = line.match(/(\d+)x?\s+([^(]*)(?:\((.*)\))?/);
 
         if (matches === null) {
             return;
         }
 
-        var count = matches[1];
-
-        // Take single name for split cards like "Commit / Memory"
-        var name = matches[2].split("/")[0].trim(); 
-
         cardListResult.cards.push({
-            name: name,
-            count: count,
+            name: matches[2].split("/")[0].trim(), // Take single name for split cards like "Commit / Memory"
+            count: matches[1],
+            set: matches[3],
         })
     })
 
