@@ -114,65 +114,12 @@ function bindZoneModal(selector, id, cards) {
 
         cards.forEach((card) => $('#zoneModal .row').append(createCard(card)));
 
+        // setupDroppableZone(selector.slice(0, -6), list);
         bindCardActions();
         markAllCards();
 
         $('#zoneModal').modal('toggle')
     });
-}
-
-function bindPlaceholderPopover(selector, id, list) {
-    $(selector).popover({
-        html: true,
-        trigger: 'click',
-        placement: 'top',
-        content: function () {
-            var cardList = $('<div/>')
-                .attr('id', id)
-                .css("max-height", "600px")
-                .css("width", "125px");
-
-            var list;
-
-            switch (id) {
-                case "library":
-                    list = libraryList;
-                    break;
-                case "graveyard":
-                    list = graveyardList;
-                    break;
-                case "exile":
-                    list = exileList;
-                    break;
-                case "sideboard":
-                    list = sideboardList;
-                    break;
-                case "hand":
-                    list = handList;
-                    break;
-                default:
-                    break;
-            }
-
-            for (var index = 0; index < list.length; index++) {
-                if (index === 0) {
-                    cardList.append(createCard(list[index], "position: relative; top: 0px; margin-bottom: 0px;"));
-                } else {
-                    cardList.append(createCard(list[index], "position: relative; top: -130px; margin-bottom: -130px;"))
-                }
-            }
-            return cardList[0].outerHTML;
-        }
-    });
-
-    //Setup card events
-    $(selector)
-        .off('shown.bs.popover')
-        .on('shown.bs.popover', function() {
-            setupDroppableZone(selector.slice(0, -6), list);
-            bindCardActions();
-            markAllCards();
-        });
 }
 
 function setupLifeCounters() {
@@ -355,7 +302,7 @@ function setupDragDrop() {
                     .unbind("click");
 
                 if (libraryList.length > 0) {
-                    $("#library-placeholder").append(defaultCard("library-placeholder-card"))
+                    $("#library-placeholder").html(createCard(libraryList[0]));
                     setupClickToDraw();
                 }
             }
@@ -431,7 +378,7 @@ function reset() {
         $("#sideboard-placeholder").html(defaultCard());
     }
     if (libraryList.length > 0) {
-        $("#library-placeholder").html(defaultCard("library-placeholder-card"));
+        $("#library-placeholder").html(createCard(libraryList[0]));
     }
     $('#life-you').val("20");
     $('#life-opponent').val("20");

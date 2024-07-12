@@ -237,7 +237,7 @@ function putCardOnLibrary(card, onBottom) {
     } else {
         $("#library-placeholder").empty();
         libraryList.unshift(getCardObject(card));
-        $("#library-placeholder").append(defaultCard("library-placeholder-card"));
+        $("#library-placeholder").html(createCard(libraryList[0]));
     }
 
     $(card).trigger("mouseout");
