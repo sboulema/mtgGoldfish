@@ -30,7 +30,6 @@
     "jqueryrotate-slevomat-fork": "^1.0.0",
     "knuth-shuffle": "1.0.8",
     "popper.js": "^1.14.6",
-    "mana-font": "^1.15.9",
-    "@fortawesome/fontawesome-free": "^6.5.2"
+    "mana-font": "^1.15.9"
   }
 }

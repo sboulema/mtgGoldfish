@@ -1,60 +1,55 @@
-function importMtgStocksDeck(deckid) {
-    var dfrd1 = $.Deferred();
+async function importMtgStocksDeck(deckId) {
+    const response = await fetch(`https://cors.sboulema.nl/https://api.mtgstocks.com/decks/${deckId}`)
+    const result = await response.json();
 
-    $.getJSON("https://cors-anywhere.herokuapp.com/https://api.mtgstocks.com/decks/" + deckid).then(function (data) {
-        var deck = "";
-        var sideboard = "";
+    $("#deck-list")
+        .val(
+            result.boards.mainboard.cards
+            .map((card) => `${card.quantity} ${card.card.name}`)
+            .join("\n")
+        );
 
-        $.each(data.mainboard, function(key, card) {
-            deck += card.quantity + " " + card.card.name + "\n";
-        });
-
-        $.each(data.sideboard, function(key, card) {
-            sideboard += card.quantity + " " + card.card.name + "\n";
-        })
-
-        $("#deck-list").val(deck);
-        $("#sideboard-list").val(sideboard);
-        dfrd1.resolve();
-    });
-
-    return dfrd1.promise();
+    if (typeof result.boards.sideboard !== 'undefined') {
+        $("#sideboard-list")
+        .val(
+            result.boards.sideboard.cards
+            .map((card) => `${card.quantity} ${card.card.name}`)
+            .join("\n")
+        );
+    }
 }
 
-function importMtgGolfdishDeck(deckId) {
-    var dfrd1 = $.Deferred();
-
-    $.ajax({
-        url: "https://wrapapi.com/use/sboulema/mtggoldfish/deck/0.0.2",
+async function importMtgGolfdishDeck(deckId) {
+    const response = await fetch("https://wrapapi.com/use/sboulema/mtggoldfish/deck/0.0.2", {
         method: "POST",
-        data: {
-          "deckId": deckId,
-          "wrapAPIKey": "HXhWGELDSQ84wmTd2FYKxtTnqKjeRtQb"
-        }
-      }).done(function(data) {
-        var deck = "";
-        var sideboard = "";
-        var loadingDeck = true;
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            "deckId": deckId,
+            "wrapAPIKey": "HXhWGELDSQ84wmTd2FYKxtTnqKjeRtQb"
+        }),
+    })
+    const result = await response.json();
 
-        $.each(data.data.Line, function(key, card) {
-            if (card.Amount === null) {
-                if (card.Header.includes("Sideboard")) {
-                    loadingDeck = false;
-                }
-            } else {
-                if (loadingDeck) {
-                    deck += card.Amount + " " + card.Name + "\n";
-                } else {
-                    sideboard += card.Amount + " " + card.Name + "\n";
-                }
+    var deck = "";
+    var sideboard = "";
+    var loadingDeck = true;
+
+    $.each(result.data.Line, function(key, card) {
+        if (card.Amount === null) {
+            if (card.Header.includes("Sideboard")) {
+                loadingDeck = false;
             }
-        });
+        } else {
+            if (loadingDeck) {
+                deck += card.Amount + " " + card.Name + "\n";
+            } else {
+                sideboard += card.Amount + " " + card.Name + "\n";
+            }
+        }
+    });
 
-        $("#deck-list").val(deck);
-        $("#sideboard-list").val(sideboard);
-        dfrd1.resolve();
-      });
-      return dfrd1.promise();
+    $("#deck-list").val(deck);
+    $("#sideboard-list").val(sideboard);
 }
 
 async function loadDeck() {

@@ -14,7 +14,7 @@ $(function() {
     init();
 });
 
-function init() {
+async function init() {
     bindCardActions();
     setupLifeCounters();
     setupManaPoolCounters();
@@ -73,21 +73,23 @@ function init() {
     var params = new URLSearchParams(url.search.slice(1));
 
     if (params.has('mtgstocksdeckid')) {
-        $('#loadingModal').modal('show');
-        importMtgStocksDeck(params.get('mtgstocksdeckid')).done(function() {
-            loadDeck().done(function () {
-                $('#loadingModal').modal('hide');
-            });
-        });
+        $('#deckModal').modal('show');
+
+        await importMtgStocksDeck(params.get('mtgstocksdeckid'));
+
+        await loadDeck();
+
+        $('#deckModal').modal('hide');
     }
 
     if (params.has("mtggoldfishdeckid")) {
-        $('#loadingModal').modal('show');
-        importMtgGolfdishDeck(params.get('mtggoldfishdeckid')).done(function() {
-            loadDeck().done(function () {
-                $('#loadingModal').modal('hide');
-            });
-        });
+        $('#deckModal').modal('show');
+
+        await importMtgGolfdishDeck(params.get('mtggoldfishdeckid'));
+
+        await loadDeck();
+
+        $('#deckModal').modal('hide');
     }
     
     setupTokens();
