@@ -194,13 +194,16 @@ async function startLoadDeck() {
 
     reset();
 
-    await loadDeck();
+    var success = await loadDeck();
 
     $("#btn-load-deck-spinner").addClass("d-none");
     $("#btn-load-deck-text").text("Load");
-    $('#deckModal').modal('hide');
 
     flip($("#library-placeholder .mtg-card")[0]);
+
+    if (success) {
+        $('#deckModal').modal('hide');
+    }
 }
 
 function setupManaPoolCounters() {

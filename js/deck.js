@@ -58,7 +58,14 @@ async function loadDeck() {
     sideboardList = [];
 
     // Mainboard
-    libraryList = await parseCardList($("#deck-list").val());
+    var result = await parseCardList($("#deck-list").val());
+    libraryList = result.cards;
+
+    if (!result.success) {
+        $("#alert-load-deck")
+            .removeClass("d-none")
+            .text(result.errorMessage);
+    }
 
     // Place card on top of library
     var libraryTopCard = createCard(libraryList[0]);
@@ -74,19 +81,26 @@ async function loadDeck() {
 
     // Sideboard
     if ($("#sideboard-list").val() != '') {
-        sideboardList = await parseCardList($("#sideboard-list").val());
+        result = await parseCardList($("#sideboard-list").val());
+        sideboardList = result.sideboardList;
 
         $("#sideboard-placeholder").html(defaultCard());
         sideboard = sideboardList.slice();
         updateTotals();
         bindCardActions();
     }
+
+    return result.success;
 }
 
 async function parseCardList(input) {
     var lines = input.trim().split("\n");
 
-    var cards = [];
+    var cardListResult = {
+        cards: [],
+        success: true,
+        errorMessage: "",
+    }
 
     lines.forEach((line) => {
         var matches = line.match(/\b(\d+)x?\s+(.*)\b/);
@@ -98,14 +112,14 @@ async function parseCardList(input) {
         var count = matches[1];
         var name = matches[2];
 
-        cards.push({
+        cardListResult.cards.push({
             name: name,
             count: count,
         })
     })
 
     // split in batches of 75 (max batch size for Scryfall Collection API)
-    var batches = chunk(cards, 75);
+    var batches = chunk(cardListResult.cards, 75);
 
     // use scryfall api to get data
     await Promise.all(batches.map(async (batch) => {
@@ -116,6 +130,11 @@ async function parseCardList(input) {
         })
         const result = await response.json();
 
+        if (result.not_found.length > 0) {
+            cardListResult.errorMessage = `The following cards could not be found: ${result.not_found.map((card) => card.name).join(", ")}`;
+            cardListResult.success = false;
+        }
+
         const scryfallCards = result.data.map((card) => ({
             name: card.name,
             layout: card.layout,
@@ -125,18 +144,18 @@ async function parseCardList(input) {
         }));
 
         // merge count and scryfall data
-        mergeByProperty(cards, scryfallCards, "name");
+        mergeByProperty(cardListResult.cards, scryfallCards, "name");
     }));
 
     // duplicate cards based on count
-    cards.map((card) => {
+    cardListResult.cards.map((card) => {
         for (let index = 0; index < card.count - 1; index++) {
-            cards.push(card);
+            cardListResult.cards.push(card);
         }
     });
 
     // return completed card list
-    return cards;
+    return cardListResult;
 }
 
 const chunk = (arr, size) =>
