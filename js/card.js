@@ -1,15 +1,9 @@
 var isCounterClick = false;
 
-function defaultCard(cssClass) {
-    var card = $('<div/>')
+function defaultCard() {
+    return $('<div/>')
         .addClass("mtg-card")
         .css("background-image", "url('img/backside.jpg')");
-
-    if (typeof cssClass !== 'undefined') {
-        card.addClass(typeof cssClass !== 'undefined' ? cssClass : "")
-    }
-
-    return card;
 }
 
 function createCard(card) {
@@ -26,9 +20,11 @@ function createCard(card) {
         .css("background-image", `url(${typeof card.backgroundImage !== 'undefined' ? card.backgroundImage : card.imageUrl})`)
         .appendTo(cardDiv);
 
-    $('<div/>')
-        .addClass("handle")
-        .appendTo(cardDiv);
+    if (jQuery.browser.mobile) {
+        $('<div/>')
+            .addClass("handle")
+            .appendTo(cardDiv);
+    }
 
     $('<div/>')
         .addClass("back")
@@ -55,7 +51,10 @@ function getCardObject(selector) {
     return {
         goldfishId: $(selector[0]).attr("data-goldfishid"),
         layout: $(selector[0]).attr("data-layout"),
-        imageUrl: $(selector[0])[0].querySelector(".front.mtg-card-side.mtg-card-preview").style["background-image"].replace(/url\(("|')(.+)("|')\)/gi, '$2'),
+        imageUrl: $(selector[0])[0]
+            .querySelector(".front.mtg-card-side.mtg-card-preview")
+            .style["background-image"]
+            .replace(/url\(("|')(.+)("|')\)/gi, '$2'),
     };
 }
 
@@ -171,6 +170,10 @@ function addCounter(card) {
         .children((flip.isFlipped ? ".back" : ".front"))
         .append("<label class='ms ms-e ms-3x counter'></label><input class='form-control clickedit' type='text' />");
     
+    // Disable context menu
+    $(card)
+        .on("contextmenu",function(){ return false; })
+
     $('.mtg-card .clickedit').hide()
     .focusout(endEdit)
     .keyup(function (e) {
@@ -192,13 +195,10 @@ function addCounter(card) {
         revert: "invalid"
     });
 
+    // Add event listener to delete counter on right click
     $(".counter").on("mousedown", function (event) {
-        switch (event.which) {
-            case 3: // right button
-                $(this).remove();
-                break;
-            default:
-                break;
+        if (event.which === 3) {
+            $(this).remove();
         }
     });
 }

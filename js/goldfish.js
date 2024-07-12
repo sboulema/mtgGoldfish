@@ -202,6 +202,7 @@ async function startLoadDeck() {
 }
 
 function setupManaPoolCounters() {
+    // Disable context menu
 	$('body').on('contextmenu', '.mana-pool', function() {
         return false;
     });
