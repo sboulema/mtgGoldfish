@@ -40,7 +40,7 @@ function setupTokens() {
                 default:
                     createCard({
                         backgroundImage: this.value,
-                        imageUrlBack: "img/backside.jpg",
+                        imageUrlBack: "img/card-backside-mint.jpg",
                         goldfishId: createGoldfishId(),
                         layout: "token"
                     }).appendTo("#table");

@@ -21,8 +21,12 @@
     overflow-x: auto;
 }
 
-.ui-background {
-    background-image: url("../img/playbg1.png");
+#placeholder-row {
+    background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.5));
+    color: #c8b472;
+}
+
+#state-col {
     color: #c8b472;
 }
 
@@ -34,11 +38,9 @@
 }
 
 #table {
-    background-image: url("../img/playmat.jpg");
     background-size: cover;
     position: relative;
-    height: calc(100vh - 228px - 56px);
-    border: 1px solid black;
+    height: calc(100vh - 228px);
 }
 
 #graveyard-placeholder,
@@ -68,7 +70,7 @@
 }
 
 body {
-    background-image: url("../img/playbg1.png");
+    background-image: url("../img/playmat.jpg");
 }
 
 .popover-body {

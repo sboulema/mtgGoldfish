@@ -3,7 +3,7 @@ var isCounterClick = false;
 function defaultCard() {
     return $('<div/>')
         .addClass("mtg-card")
-        .css("background-image", "url('img/backside.jpg')");
+        .css("background-image", "url('img/card-backside-mint.jpg')");
 }
 
 function createCard(card) {

@@ -101,9 +101,9 @@ function retrieveSettings() {
     if (backgroundUrl === null ||
         backgroundUrl === "")
     {
-        $("#table").css("background-image", "url('../img/playmat.jpg')");
+        $("body").css("background-image", "url('../img/playmat.jpg')");
     } else {
-        $("#table").css("background-image", `url('${backgroundUrl}')`);
+        $("body").css("background-image", `url('${backgroundUrl}')`);
         $("#background-url").val(backgroundUrl);
     } 
 }

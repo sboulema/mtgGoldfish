@@ -30,3 +30,17 @@ Website to playtest (goldfish) Magic The Gathering decks - http://goldfish.sboul
 ## Running
 
 `docker run -p 80:80 sboulema/mtggoldfish`
+
+## Links
+- [Bootstrap](http://getbootstrap.com/)
+- [Bootstrap Number Input](https://github.com/wpic/bootstrap-number-input)
+- [Cockatrice Magic Token](https://github.com/Cockatrice/Magic-Token)
+- [Goldfish icon](http://www.iconarchive.com/show/flat-animal-icons-by-martin-berube/gold-fish-icon.html)
+- [jQuery](https://jquery.com/)
+- [jQuery Flip](https://github.com/nnattawat/flip)
+- [jQuery UI](https://jqueryui.com/)
+- [jQuery UI Touch Punch](http://touchpunch.furf.com/)
+- [Knuth Shuffle](https://git.daplie.com/Daplie/knuth-shuffle/)
+- [Magic: The Gathering - Developers](https://magicthegathering.io/)
+- [Mana Font](https://mana.andrewgioia.com/)
+- [Open source mobile phone detection](http://detectmobilebrowsers.com/)
