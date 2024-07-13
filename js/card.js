@@ -75,17 +75,15 @@ const getPreviewImageUrl = (domNode) =>
 
 function bindCardActions() {
     // Tap
-    $("#table .mtg-card").rotate({
-        bind: {
-            click: function() {
-                if (isCounterClick) {
-                    isCounterClick = false;
-                } else {
-                    tap(this);
-                }
+    $("#table .mtg-card")
+        .off("click")
+        .on("click", function() {
+            if (isCounterClick) {
+                isCounterClick = false;
+            } else {
+                tap(this);
             }
-        }
-    });
+        });
 
     // Large preview
     $('.mtg-card').popover({
@@ -131,16 +129,21 @@ function bindCardActions() {
     $(".mtg-card").flip({trigger: "manual"});
 }
 
-function tap(card) {
-    if (!$(card).hasClass("tapped") || $(card).getRotateAngle() == 0)
-    {
-        $(card).addClass("tapped");
-        $(card).rotate({ angle: 0, animateTo: 90 });
-    } else {
-        untap(card);
-    }
+/**
+ * Tap/Rotate a card
+ * 
+ * @param {domNode} domNode - Div gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
+ * @param {int} [degree] - Degrees to rotate, if unspecified rotation will be toggled between 0 and 90
+ */
+const tap = (domNode, degree) => {
+    degree ??= domNode.style.transform.includes("90") ? 0 : 90;
+    
+    $(domNode).css({
+        transition: "transform 0.5s",
+        transform: `rotate(${degree}deg)`
+    });
 }
-
+    
 function untap(card) {
     $(card).removeClass("tapped");
     $(card).rotate({
