@@ -27,7 +27,6 @@
     "flip": "github:nnattawat/flip",
     "jquery": "^3.6.0",
     "jquery-ui-touch-punch": "^0.2.3",
-    "jqueryrotate-slevomat-fork": "^1.0.0",
     "knuth-shuffle": "1.0.8",
     "popper.js": "^1.14.6",
     "mana-font": "^1.15.9"

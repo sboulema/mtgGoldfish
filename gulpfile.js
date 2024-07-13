@@ -9,7 +9,6 @@ gulp.task('vendor', function(done) {
     'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
     'node_modules/flip/dist/jquery.flip.min.js',
     'node_modules/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js',
-    'node_modules/jqueryrotate-slevomat-fork/jQueryRotateCompressed.js',
     'node_modules/knuth-shuffle/index.js'
   ];
 

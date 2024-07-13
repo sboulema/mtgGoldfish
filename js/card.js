@@ -143,18 +143,13 @@ const tap = (domNode, degree) => {
         transform: `rotate(${degree}deg)`
     });
 }
-    
-function untap(card) {
-    $(card).removeClass("tapped");
-    $(card).rotate({
-        angle: 90,
-        animateTo: 0
-    }) 
-}
 
+/**
+ * Untap/Rotate all cards on the table
+ */
 function untapAll() {
-    $("#table .mtg-card.tapped").each(function() {
-        untap(this);
+    $('#table .mtg-card[style*="transform: rotate(90deg)"]').each(function() {
+        tap(this, 0);
     });
 }
 
