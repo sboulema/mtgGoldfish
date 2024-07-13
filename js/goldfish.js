@@ -10,6 +10,8 @@ var sideboard = [];
 var markedList = [];
 var isDragging = false;
 
+var settings = {};
+
 $(function() {
     init();
 });
@@ -96,7 +98,9 @@ async function init() {
 }
 
 function retrieveSettings() {
-    var backgroundUrl = localStorage.getItem("background");
+    settings = JSON.parse(localStorage.getItem("mtgGoldfish-settings"));
+
+    var backgroundUrl = settings.background;
 
     if (backgroundUrl === null ||
         backgroundUrl === "")
@@ -105,7 +109,9 @@ function retrieveSettings() {
     } else {
         $("body").css("background-image", `url('${backgroundUrl}')`);
         $("#background-url").val(backgroundUrl);
-    } 
+    }
+
+    $("#checkbox-card-backside-lightly-played").prop("checked", settings.useLightlyPlayedCardBackside);
 }
 
 function bindZoneModal(selector, id) {
@@ -429,7 +435,10 @@ function restart() {
 }
 
 function saveSettings() {
-    localStorage.setItem("background", $("#background-url").val());
+    localStorage.setItem("mtgGoldfish-settings", JSON.stringify({
+        background: $("#background-url").val(),
+        useLightlyPlayedCardBackside: $("#checkbox-card-backside-lightly-played").is(":checked"),
+    }))
 
     retrieveSettings();
 
