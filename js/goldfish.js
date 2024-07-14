@@ -117,36 +117,36 @@ function bindZoneModal(selector, id) {
     $(selector).on("click", function() {
         $('#zoneModal .row').empty();
 
+        // Set title of the modal to the zone title
         document.querySelector("#zoneModal .modal-title").textContent = id;
 
-        // Get the correct list of cards to show based on the id
-        var zoneCards = [];
-        switch (id) {
-            case "Library":
-                zoneCards = libraryList;
-                break;
-            case "Graveyard":
-                zoneCards = graveyardList;
-                break;
-            case "Exile":
-                zoneCards = exileList;
-                break;
-            case "Sideboard":
-                zoneCards = sideboardList;
-                break;
-            case "Hand":
-                zoneCards = handList;
-                break;
-        }
+        // Show every card in the zone list
+        GetListById(id).forEach((card) => $("#zoneModal .row").append(createCard(card)));
 
-        zoneCards.forEach((card) => $('#zoneModal .row').append(createCard(card)));
-
-        // setupDroppableZone(selector.slice(0, -6), list);
+        setupDroppableZoneModal("#zoneModal .row", id);
         bindCardActions();
         markAllCards();
-
-        $('#zoneModal').modal('toggle')
     });
+}
+
+/**
+ * Get the correct list of cards based on the id
+ * @param {string} id 
+ * @returns 
+ */
+function GetListById(id) {
+    switch (id) {
+        case "Library":
+            return libraryList;
+        case "Graveyard":
+            return graveyardList;
+        case "Exile":
+            return exileList;
+        case "Sideboard":
+            return sideboardList;
+        case "Hand":
+            return handList;
+    }
 }
 
 function setupLifeCounters() {
@@ -266,6 +266,9 @@ function setupManaPoolCounters() {
         });
 }
 
+/**
+ * Update number of cards in each zone
+ */
 function updateTotals() {
     $("#libraryTotal").html(libraryList.length);
     $("#graveyardTotal").html(graveyardList.length);
@@ -285,7 +288,7 @@ function setupDragDrop() {
                 .css("margin-bottom", "")
                 .appendTo($(this));
         },
-        deactivate: function(_, ui) {
+        out: function(_, ui) {
             ui.draggable
                 .css('left', "")
                 .css('top', "")
@@ -300,11 +303,9 @@ function setupDragDrop() {
         drop: function(_, ui) {
             putCardinHand(ui.draggable);
         },
-        deactivate: function(_, ui) {
-            var needle = getGoldfishId(ui.draggable);
-            var index = handList.findIndex(function(element) { 
-                return element.goldfishId === needle;
-            });
+        out: function(_, ui) {
+            var goldfishId = getGoldfishId(ui.draggable);
+            var index = handList.findIndex((card) => card.goldfishid === goldfishId);
             handList.splice(index, 1);
 
             updateTotals();
@@ -316,9 +317,9 @@ function setupDragDrop() {
         drop: function(_, ui) {
             putCardOnLibrary(ui.draggable[0]);
         },
-        deactivate: function(_, ui) {
+        out: function(_, ui) {
             // Remove card from the Library list
-            libraryList.splice(0, 1)[0];
+            libraryList.splice(0, 1);
 
             // Flip card to the front side
             $(ui.draggable[0]).flip(false);
@@ -353,7 +354,7 @@ function setupDroppablePlaceholder(selector, list) {
                 $(ui.draggable).remove();
             }
         },
-        deactivate: function(_, ui) {
+        out: function(_, ui) {
             list.splice(-1, 1);
                 
             if (list.length > 0) {
@@ -363,22 +364,22 @@ function setupDroppablePlaceholder(selector, list) {
     });   
 }
 
-function setupDroppableZone(selector, list) {
+function setupDroppableZoneModal(selector, id) {
     $(selector).droppable({
         accept: ".mtg-card",
-        deactivate: function(_, ui) {
-            var needle = getGoldfishId(ui.draggable);
-            var index = list.findIndex(function(element) { 
-                return element.goldfishId === needle;
-            });
+        drop: function(_, ui) {
+            
+        },
+        out: function(_, ui) {
+            var list = GetListById(id);
+
+            // Remove card from card list
+            var goldfishId = getGoldfishId(ui.draggable);
+            var index = list.findIndex((card) => card.goldfishId === goldfishId);
             list.splice(index, 1);
 
-            $(selector + "-placeholder").empty();
-            if (list.length === 0) {
-                $('.popover').popover('hide');
-            } else {
-                $(selector + "-placeholder").append(createCard(list[list.length - 1]));
-            }
+            // Update number of cards in each zone
+            updateTotals();
         }
     });  
 }

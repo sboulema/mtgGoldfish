@@ -113,6 +113,7 @@ function bindCardActions() {
         $(".mtg-card").draggable("option", "handle", ".handle");
     }
 
+    // Drag & drop counters
     $("#table .mtg-card-side").droppable({
         accept: ".counter",
         drop: function(_, ui) {
