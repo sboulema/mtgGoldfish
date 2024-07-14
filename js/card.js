@@ -47,11 +47,11 @@ function isDoubleFaced(layout) {
 
 /**
  * Get the deck card object based on a DOM node
- * @param {domNode} domNode - Div gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
+ * @param {HTMLElement} htmlElement - HTML element gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
  * @returns card object
  */
-const getCardObject = (domNode) =>
-    deck.find((card) => card.goldfishId == domNode.dataset.goldfishid);
+const getCardObject = (htmlElement) =>
+    deck.find((card) => card.goldfishId == htmlElement.dataset.goldfishid);
 
 /**
  * Check if the DOM node has been flipped
@@ -89,14 +89,14 @@ function bindCardActions() {
     $('.mtg-card').popover({
         html: true,
         trigger: 'hover',
-        content: function() {
-            var card = getCardObject(this);
+        content: function(htmlElement) {
+            var card = getCardObject(htmlElement);
 
-            if (!isDoubleFaced(card.layout) && isFlipped(this)) {
+            if (!isDoubleFaced(card.layout) && isFlipped(htmlElement)) {
                 return null;
             }
 
-            return `<img width="223" height="310" src="${getPreviewImageUrl(this)}" />`;
+            return `<img width="223" height="310" src="${getPreviewImageUrl(htmlElement)}" />`;
         }
     });
 

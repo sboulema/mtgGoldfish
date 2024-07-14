@@ -340,6 +340,11 @@ function setupDragDrop() {
 
                 if (libraryList.length > 0) {
                     $("#library-placeholder").html(createCard(libraryList[0]));
+
+                    // Flip card to the back side
+                    $("#library-placeholder .mtg-card").flip({trigger: "manual"});
+                    $("#library-placeholder .mtg-card").flip(true);
+                    
                     setupClickToDraw();
                 }
             }
