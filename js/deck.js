@@ -224,8 +224,11 @@ function draw(amount) {
     bindCardActions();
 }
 
+/**
+ * Setup click event on the top library card to draw a new card
+ */
 function setupClickToDraw() {
-    $(".library-placeholder-card").on("click", function() {
+    $("#library-placeholder .mtg-card").on("click", function() {
         draw(1);
     });
 }

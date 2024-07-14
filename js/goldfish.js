@@ -8,7 +8,6 @@ var deck = [];
 var sideboard = [];
 
 var markedList = [];
-var isDragging = false;
 
 var settings = {};
 
@@ -279,7 +278,6 @@ function setupDragDrop() {
     $("#table").droppable({
         accept: ".mtg-card",
         drop: function(_, ui) {
-            isDragging = false;
             ui.draggable.detach()
                 .css('left', ui.offset.left)
                 .css('top', ui.offset.top - 60)
@@ -287,8 +285,7 @@ function setupDragDrop() {
                 .css("margin-bottom", "")
                 .appendTo($(this));
         },
-        out: function(_, ui) {
-            isDragging = true;
+        deactivate: function(_, ui) {
             ui.draggable
                 .css('left', "")
                 .css('top', "")
@@ -301,54 +298,41 @@ function setupDragDrop() {
     $("#hand-placeholder").droppable({
         accept: ".mtg-card",
         drop: function(_, ui) {
-            isDragging = false;
             putCardinHand(ui.draggable);
         },
-        out: function(_, ui) {
-            if (ui.draggable[0].parentElement.id === "hand-placeholder" && isDragging === false) {
-                var needle = getGoldfishId(ui.draggable);
-                var index = handList.findIndex(function(element) { 
-                    return element.goldfishId === needle;
-                });
-                handList.splice(index, 1);
-    
-                updateTotals();
-            }
-            isDragging = true;
+        deactivate: function(_, ui) {
+            var needle = getGoldfishId(ui.draggable);
+            var index = handList.findIndex(function(element) { 
+                return element.goldfishId === needle;
+            });
+            handList.splice(index, 1);
+
+            updateTotals();
         }
     });
 
     $("#library-placeholder").droppable({
         accept: ".mtg-card",
         drop: function(_, ui) {
-            isDragging = false;
             putCardOnLibrary(ui.draggable[0]);
         },
-        out: function(_, ui) {
-            if (ui.draggable[0].parentElement.id === "library-placeholder" && isDragging === false) {
-                var card = libraryList.splice(0, 1)[0];
+        deactivate: function(_, ui) {
+            // Remove card from the Library list
+            libraryList.splice(0, 1)[0];
 
-                $(ui.draggable[0])
-                    .html(createCard(card)[0].innerHTML)
-                    .removeClass("library-placeholder-card")
-                    .removeData("flip-model")
-                    .css("background-image", "")
-                    .attr("data-goldfishid", card.goldfishId)
-                    .attr("data-layout", card.layout)
-                    .flip({trigger:"manual"})
-                    .unbind("click");
+            // Flip card to the front side
+            $(ui.draggable[0]).flip(false);
 
-                if (libraryList.length > 0) {
-                    $("#library-placeholder").html(createCard(libraryList[0]));
+            // If there are still cards in the library, show a new top card
+            if (libraryList.length > 0) {
+                $("#library-placeholder").html(createCard(libraryList[0]));
 
-                    // Flip card to the back side
-                    $("#library-placeholder .mtg-card").flip({trigger: "manual"});
-                    $("#library-placeholder .mtg-card").flip(true);
-                    
-                    setupClickToDraw();
-                }
+                // Flip card to the back side
+                $("#library-placeholder .mtg-card").flip({trigger: "manual"});
+                $("#library-placeholder .mtg-card").flip(true);
+                
+                setupClickToDraw();
             }
-            isDragging = true;
         }
     });
 
@@ -361,7 +345,6 @@ function setupDroppablePlaceholder(selector, list) {
     $(selector).droppable({
         accept: ".mtg-card",
         drop: function(_, ui) {
-            isDragging = false;
             $('.popover').popover('hide');
 
             if(!$(ui.draggable).hasClass("token")) {
@@ -370,15 +353,12 @@ function setupDroppablePlaceholder(selector, list) {
                 $(ui.draggable).remove();
             }
         },
-        out: function(_, ui) {
-            if (ui.draggable[0].parentElement.id === selector.substr(1) && isDragging === false) {
-                list.splice(-1, 1);
+        deactivate: function(_, ui) {
+            list.splice(-1, 1);
                 
-                if (list.length > 0) {
-                    $(selector).append(createCard(list[list.length - 1]));
-                }
+            if (list.length > 0) {
+                $(selector).append(createCard(list[list.length - 1]));
             }
-            isDragging = true;
         }
     });   
 }
@@ -386,7 +366,7 @@ function setupDroppablePlaceholder(selector, list) {
 function setupDroppableZone(selector, list) {
     $(selector).droppable({
         accept: ".mtg-card",
-        out: function(_, ui) {
+        deactivate: function(_, ui) {
             var needle = getGoldfishId(ui.draggable);
             var index = list.findIndex(function(element) { 
                 return element.goldfishId === needle;
