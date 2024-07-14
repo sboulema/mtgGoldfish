@@ -17,18 +17,18 @@
   },
   "homepage": "https://github.com/sboulema/mtgGoldfish#readme",
   "devDependencies": {
-    "gulp": "^5.0.0",
-    "gulp-html-replace": "^1.6.2",
-    "gulp-concat": "^2.6.1",
-    "gulp-uglify": "^3.0.2"
+    "gulp": "5.0.0",
+    "gulp-html-replace": "1.6.2",
+    "gulp-concat": "2.6.1",
+    "gulp-uglify": "3.0.2"
   },
   "dependencies": {
-    "bootstrap": "^4.3.1",
+    "bootstrap": "5.3.3",
     "flip": "github:nnattawat/flip",
-    "jquery": "^3.6.0",
-    "jquery-ui-touch-punch": "^0.2.3",
+    "jquery": "3.7.1",
+    "jquery-ui": "1.13.3",
+    "jquery-ui-touch-punch": "0.2.3",
     "knuth-shuffle": "1.0.8",
-    "popper.js": "^1.14.6",
-    "mana-font": "^1.15.9"
+    "mana-font": "1.15.9"
   }
 }

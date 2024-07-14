@@ -20,13 +20,13 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-11 col-sm-10">
-                <div id="table" class="row"></div>
+                <div id="table" class="row g-0"></div>
 
                 <div id="placeholder-row" class="row">
                     <div class="col-lg-8 col-sm-4">
                         <strong id="hand-title">Hand</strong> (<span id="handTotal">0</span>)
                         <div id="hand-container" class="container-fluid">
-                            <div id="hand-placeholder" class="row flex-row flex-nowrap card-placeholder">
+                            <div id="hand-placeholder" class="row g-0 flex-row flex-nowrap card-placeholder">
                             </div>
                         </div>
                     </div>
@@ -53,13 +53,13 @@
                 <a class="navbar-brand" href="#"><img src="img/goldfish.png" /> Goldfish</a>
 
                 <div class="btn-group my-3" role="group">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#deckModal">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deckModal">
                         <span class="ms ms-ability-transform" title="Load deck"></span>
                     </button>
-                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#helpModal">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#helpModal">
                         <span class="ms ms-ability-adventure" title="Help"></span>
                     </button>
-                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#settingsModal">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#settingsModal">
                         <span class="ms ms-ability-fabricate" title="Settings"></span>
                     </button>
                 </div>
@@ -82,7 +82,7 @@
                     </fieldset>
                 </form>
 
-                <label class="control-label"><strong>Mana pool:</strong></label>
+                <label class="control-label mt-3"><strong>Mana pool:</strong></label>
                 <div class="row row-mana">
                     <div class="mana-pool col-sm-4">
                         <div style="position: relative;" class="ms ms-w ms-cost ms-shadow ms-2x"></div>
@@ -123,30 +123,28 @@
                         </div>
                     </fieldset>
                     <fieldset>
-                        <div class="form-group">
+                        <div class="form-group mt-3">
                             <label class="control-label"><strong>Turn: <span id="turn-counter">1</span></strong></label>
                             <input id="btn-next-turn" class="form-control btn btn-primary" type="button" value="Next turn" />
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label"><strong>Actions:</strong></label>
-                            <div class="btn-group btn-block dropleft">
-                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                                    Actions
-                                </button>
-                                <div class="dropdown-menu">
-                                    <button class="dropdown-item" type="button" onclick="shuffleDeck();">Shuffle library</button>
-                                    <button class="dropdown-item" type="button" onclick="shuffleHand();">Shuffle hand</button>
-                                    <button class="dropdown-item" type="button" data-toggle="modal" data-target="#shuffleDeckModal">Start with card</button>
-                                    <button class="dropdown-item" type="button" onclick="mulligan();">Mulligan</button>
-                                    <button class="dropdown-item" type="button" onclick="untapAll();">Untap all</button>
-                                    <button class="dropdown-item" type="button" onclick="flipHand();">Flip hand</button>
-                                    <button class="dropdown-item" type="button" onclick="restart();">Restart</button>
-                                </div>
-                            </div>
                         </div>
                     </fieldset>
                 </form>
 
+                <label class="control-label mt-3"><strong>Actions:</strong></label>
+                <div class="dropdown dropstart">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Actions
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" onclick="shuffleDeck();">Shuffle library</a></li>
+                      <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#shuffleDeckModal">Start with card</a></li>
+                      <li><a class="dropdown-item" onclick="mulligan();">Mulligan</a></li>
+                      <li><a class="dropdown-item" onclick="untapAll();">Untap all</a></li>
+                      <li><a class="dropdown-item" onclick="flipHand();">Flip hand</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" onclick="restart();">Restart</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -155,7 +153,6 @@
     <!-- build:vendor-js -->
     <script src='dist/js/vendor.bundle.js'></script>
     <!-- endbuild -->
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
     <!-- Local/Custom Javascript functions -->
     <!-- build:js -->

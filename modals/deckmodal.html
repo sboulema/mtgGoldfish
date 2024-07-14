@@ -1,39 +1,37 @@
 <!-- Load deck modal -->
-<div class="modal fade" id="deckModal" tabindex="-1" role="dialog" aria-labelledby="deckModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deckModalLabel">Deck list</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="control-label">Mainboard:</label>
-                            <textarea class="form-control" rows="15" id="deck-list"></textarea>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="control-label">Sideboard:</label>
-                            <textarea class="form-control" rows="15" id="sideboard-list"></textarea>
-                        </div>
+<div id="deckModal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Deck list</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label">Mainboard:</label>
+                        <textarea class="form-control" rows="15" id="deck-list"></textarea>
                     </div>
                 </div>
-                <div id="alert-load-deck" class="alert alert-danger d-none" role="alert">
-                    <!-- ALERT -->
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label">Sideboard:</label>
+                        <textarea class="form-control" rows="15" id="sideboard-list"></textarea>
+                    </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="btn-load-deck" type="button" class="btn btn-primary" onclick="startLoadDeck();">
-                    <span id="btn-load-deck-spinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
-                    <span id="btn-load-deck-text">Load</span>
-                </button>
+            <div id="alert-load-deck" class="alert alert-danger d-none" role="alert">
+                <!-- ALERT -->
             </div>
         </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button id="btn-load-deck" type="button" class="btn btn-primary" onclick="startLoadDeck();">
+                <span id="btn-load-deck-spinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                <span id="btn-load-deck-text">Load</span>
+            </button>
+        </div>
+      </div>
     </div>
 </div>

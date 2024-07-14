@@ -4,10 +4,11 @@ var uglify = require('gulp-uglify');
 var htmlreplace = require('gulp-html-replace');
 
 gulp.task('vendor', function(done) {
-  jsSources = [  
+  jsSources = [
     'node_modules/jquery/dist/jquery.min.js',
     'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
     'node_modules/flip/dist/jquery.flip.min.js',
+    'node_modules/jquery-ui/dist/jquery-ui.min.js',
     'node_modules/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js',
     'node_modules/knuth-shuffle/index.js'
   ];
