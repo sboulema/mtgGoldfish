@@ -322,7 +322,7 @@ function setupDragDrop() {
         accept: ".mtg-card",
         drop: function(_, ui) {
             isDragging = false;
-            putCardOnLibrary(ui.draggable);
+            putCardOnLibrary(ui.draggable[0]);
         },
         out: function(_, ui) {
             if (ui.draggable[0].parentElement.id === "library-placeholder" && isDragging === false) {

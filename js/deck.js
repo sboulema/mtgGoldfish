@@ -144,7 +144,7 @@ async function parseCardList(input) {
             imageUrl: isDoubleFaced(card.layout) ? card.card_faces[0].image_uris.small : card.image_uris.small,
             imageFrontPreviewUrl: isDoubleFaced(card.layout) ? card.card_faces[0].image_uris.png : card.image_uris.png,
             imageUrlBack: isDoubleFaced(card.layout) ? card.card_faces[1].image_uris.small : settings.useLightlyPlayedCardBackside ? "img/card-backside-lightly-played.png" : "img/card-backside-mint.jpg",
-            imageBackPreviewUrl: isDoubleFaced(card.layout) ? card.card_faces[1].image_uris.png : "img/card-backside-mint.jpg",
+            imageBackPreviewUrl: isDoubleFaced(card.layout) ? card.card_faces[1].image_uris.png : settings.useLightlyPlayedCardBackside ? "img/card-backside-lightly-played.png" : "img/card-backside-mint.jpg",
             goldfishId: createGoldfishId(),
         }));
 
