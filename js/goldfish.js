@@ -30,37 +30,39 @@ async function init() {
     bindZoneModal("#graveyard-title", "Graveyard");
     bindZoneModal("#hand-title", "Hand");
 
-    $(document).off("keypress").on("keypress", function(event) {
-        switch (event.which) {
-            case 98: // b
-                putCardOnLibrary($(".mtg-card:hover")[0], true);
-                break;
-            case 99: // c
-                addCounter($(".mtg-card:hover")[0]);
-                break;
-            case 100: // d
-                draw(1);
-                break;
-            case 101: // e
-                putCardinPlaceholder($(".mtg-card:hover"), "#exile-placeholder", exileList);
-                break;
-            case 102: // f
-                flip($(".mtg-card:hover")[0]);
-                break;
-            case 103: // g
-                putCardinPlaceholder($(".mtg-card:hover"), "#graveyard-placeholder", graveyardList);
-                break;
-            case 108: // l
-                putCardOnLibrary($(".mtg-card:hover")[0]);
-                break;
-            case 109: // m
-                markCard($(".mtg-card:hover")[0]);
-                break;
-            case 116: // t
-                tap($(".mtg-card:hover")[0]);
-                break;
-        }
-    });
+    $(document)
+        .off("keypress")
+        .on("keypress", function(event) {
+            switch (event.which) {
+                case 98: // b
+                    putCardOnLibrary($(".mtg-card:hover")[0], true);
+                    break;
+                case 99: // c
+                    addCounter($(".mtg-card:hover")[0]);
+                    break;
+                case 100: // d
+                    draw(1);
+                    break;
+                case 101: // e
+                    putCardinPlaceholder($(".mtg-card:hover"), "#exile-placeholder", exileList);
+                    break;
+                case 102: // f
+                    flip($(".mtg-card:hover")[0]);
+                    break;
+                case 103: // g
+                    putCardinPlaceholder($(".mtg-card:hover"), "#graveyard-placeholder", graveyardList);
+                    break;
+                case 108: // l
+                    putCardOnLibrary($(".mtg-card:hover")[0]);
+                    break;
+                case 109: // m
+                    markCard($(".mtg-card:hover")[0]);
+                    break;
+                case 116: // t
+                    tap($(".mtg-card:hover")[0]);
+                    break;
+            }
+        });
 
     $(document).on('shown.bs.modal', function(event) {
         $('input:visible:enabled:first', event.target).trigger("focus");

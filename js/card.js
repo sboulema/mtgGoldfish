@@ -1,5 +1,3 @@
-var isCounterClick = false;
-
 function defaultCard() {
     return $('<div/>')
         .addClass("mtg-card")
@@ -54,8 +52,8 @@ const getCardObject = (htmlElement) =>
     deck.find((card) => card.goldfishId == htmlElement.dataset.goldfishid);
 
 /**
- * Check if the DOM node has been flipped
- * @param {domNode} domNode - Div gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
+ * Check if the HTML element has been flipped
+ * @param {HTMLElement} htmlElement - HTML element gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
  * @returns boolean
  */
 const isFlipped = (domNode) =>
@@ -78,11 +76,7 @@ function bindCardActions() {
     $("#table .mtg-card")
         .off("click")
         .on("click", function() {
-            if (isCounterClick) {
-                isCounterClick = false;
-            } else {
-                tap(this);
-            }
+            tap(this);
         });
 
     // Large preview
@@ -174,43 +168,53 @@ function addCounter(card) {
         return;
     }
 
-    var flip = $(card).data("flip-model");
-
+    // Append counter to the card face
     $(card)
-        .children((flip.isFlipped ? ".back" : ".front"))
-        .append("<label class='ms ms-e ms-3x counter'></label><input class='form-control clickedit' type='text' />");
+        .children(isFlipped(card) ? ".back" : ".front")
+        .append("<label class='ms ms-e ms-3x counter'></label><input class='form-control counter-input' type='text' />");
     
     // Disable context menu
     $(card)
         .on("contextmenu",function(){ return false; })
 
-    $('.mtg-card .clickedit').hide()
-    .focusout(endEdit)
-    .keyup(function (e) {
-        var defaultText = '';
-        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
-            endEdit(e, defaultText);
-            return false;
-        } else {
-            return true;
-        }
-    })
-    .prev().click(function (event) {
-        $(this).hide();
-        $(this).next().show().focus();
-        isCounterClick = true;
-    });
+    // Clicking a counter should show the input field to change counter icon
+    $(".mtg-card .counter")
+        .off("click")
+        .on("click", function(event) {
+            event.stopImmediatePropagation();
+            $(this).next().show().trigger("focus");
+        })
 
-    $(".counter").draggable({
+    // Upon ending entering text into the counter edit field we should update the counter icon
+    $('.mtg-card .counter-input')
+        .hide()
+        .off("keypress focusout")
+        .on("keypress focusout", function(event) {
+            event.stopImmediatePropagation();
+
+            if (event.key !== "Enter") {
+                return;
+            }
+
+            // Set class of the counter to the input text
+            $(this).prev().removeClass().addClass(`ms ms-counter-${$(this).val()} ms-3x counter`);
+
+            // Hide counter input field
+            $(this).hide();
+        });
+
+    $(".mtg-card .counter").draggable({
         revert: "invalid"
     });
 
     // Add event listener to delete counter on right click
-    $(".counter").on("mousedown", function (event) {
-        if (event.which === 3) {
-            $(this).remove();
-        }
-    });
+    $(".mtg-card .counter")
+        .off("mousedown")
+        .on("mousedown", function (event) {
+            if (event.which === 3) {
+                $(this).remove();
+            }
+        });
 }
 
 function markCard(card) {
