@@ -364,12 +364,17 @@ function setupDroppablePlaceholder(selector, list) {
     });   
 }
 
-function setupDroppableZoneModal(selector, id) {
+/**
+ * Setup dragging a zone modal
+ * 
+ * Remarks:
+ * - Zone modal is not a drop target because the modal backdrop prevents interacting with other elements
+ * @param {string} selector - CSS selector of the zone modal card row
+ * @param {string} id - Title of the zone modal
+ * @returns 
+ */
+function setupDraggableZoneModal(selector, id) {
     $(selector).droppable({
-        accept: ".mtg-card",
-        drop: function(_, ui) {
-            
-        },
         out: function(_, ui) {
             var list = GetListById(id);
 
@@ -420,6 +425,9 @@ function restart() {
     bindCardActions();
 }
 
+/**
+ * Save settings to local storage
+ */
 function saveSettings() {
     localStorage.setItem("mtgGoldfish-settings", JSON.stringify({
         background: $("#background-url").val(),

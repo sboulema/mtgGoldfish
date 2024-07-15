@@ -264,22 +264,22 @@ function shuffleDeckToCard(cardName) {
  * Remarks:
  * - By default the card will be put on top of the library
  * - When putting on top of the library, the card will be flipped to the back 
- * @param {domNode} card - DOM node gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
+ * @param {HTMLElement} htmlElement - HTML element gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
  * @param {boolean} onBottom - Put card on the bottom of the library
  * @returns 
  */
-function putCardOnLibrary(card, onBottom) {
-    if (typeof card === 'undefined') {
+function putCardOnLibrary(htmlElement, onBottom) {
+    if (typeof htmlElement === 'undefined') {
         return;
     }
 
     $('.popover').popover('hide');
 
     if (onBottom) {
-        libraryList.push(getCardObject(card))
+        libraryList.push(getCardObject(htmlElement))
     } else {
         $("#library-placeholder").empty();
-        libraryList.unshift(getCardObject(card));
+        libraryList.unshift(getCardObject(htmlElement));
         $("#library-placeholder").html(createCard(libraryList[0]));
 
         // Flip card to the back side
@@ -287,25 +287,33 @@ function putCardOnLibrary(card, onBottom) {
         $("#library-placeholder .mtg-card").flip(true);
     }
 
-    $(card).trigger("mouseout");
-    $(card).remove();
+    $(htmlElement).trigger("mouseout");
+    $(htmlElement).remove();
 
     setupClickToDraw();
     updateTotals();
     bindCardActions();
 } 
 
-function putCardinPlaceholder(card, selector, list) {
-    if(typeof card === 'undefined') {
+/**
+ * Put a card in a zone placeholder
+ * 
+ * @param {HTMLElement} htmlElement - HTML element gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
+ * @param {string} selector - CSS selector of the zone placeholder
+ * @param {string} id - Title of the zone placeholder
+ * @returns 
+ */
+function putCardinPlaceholder(htmlElement, selector, id) {
+    if(typeof htmlElement === 'undefined') {
         return;
     }
 
     $('.popover').popover('hide');
 
     $(selector).empty();
-    $(card).detach().appendTo($(selector));
+    $(htmlElement).detach().appendTo($(selector));
 
-    $(card)
+    $(htmlElement)
         .css('left', "")
         .css('top', "")
         .css('position', "")
@@ -314,7 +322,7 @@ function putCardinPlaceholder(card, selector, list) {
         .off("click")
         .flip(false);
 
-    list.push(getCardObject(card));
+    GetListById(id).push(getCardObject(htmlElement));
 
     updateTotals();
     bindCardActions();

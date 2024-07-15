@@ -25,3 +25,10 @@
       </div>
     </div>
   </div>
+
+  <script>
+    const settingsModal = document.getElementById('settingsModal')
+    settingsModal.addEventListener('shown.bs.modal', event => {
+      retrieveSettings();
+    })
+  </script>
