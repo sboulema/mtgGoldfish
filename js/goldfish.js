@@ -125,7 +125,6 @@ function bindZoneModal(selector, id) {
         // Show every card in the zone list
         GetListById(id).forEach((card) => $("#zoneModal .row").append(createCard(card)));
 
-        setupDroppableZoneModal("#zoneModal .row", id);
         bindCardActions();
         markAllCards();
     });
@@ -393,14 +392,28 @@ function setupDraggableZoneModal(selector, id) {
     });  
 }
 
+/**
+ * Reset the game state
+ * 
+ * Remarks:
+ * - Clear/Re-initialize all lists
+ * - Empty all zones
+ * - Set default card in sideboard
+ * - Shuffle library
+ * - Set top card in library
+ * - Set life totals to 20
+ * - Set turn counter to 1
+ */
 function reset() {
-    // Clear all
-    exileList.length = 0;
-    graveyardList.length = 0;
-    markedList.length = 0;
-    handList.length = 0;
+    // Clear/Re-initialize all lists
+    exileList = [];
+    graveyardList = [];
+    markedList = [];
+    handList = [];
     libraryList = deck.slice();
     sideboardList = sideboard.slice();
+
+    // Empty all zones
     $(".card-placeholder").empty();
     $("#table").empty();
     $("hand-placeholder").empty();
@@ -409,9 +422,13 @@ function reset() {
     if (sideboardList.length > 0) {
         $("#sideboard-placeholder").html(defaultCard());
     }
+
     if (libraryList.length > 0) {
+        shuffleDeck();
         $("#library-placeholder").html(createCard(libraryList[0]));
+        $("#library-placeholder .mtg-card").flip(true);
     }
+
     $('#life-you').val("20");
     $('#life-opponent').val("20");
     $("#turn-counter").html("1");

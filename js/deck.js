@@ -192,33 +192,34 @@ function shuffleDeck() {
     window.knuthShuffle(libraryList);
 }
 
+/**
+ * Put cards in hand back on the library, shuffle, draw 7 new cards
+ */
 function mulligan() {
     libraryList = deck.slice();
     shuffleDeck();
 
-    var handSize = $("#hand-placeholder").children().length;
     $("#hand-placeholder").empty();
-
-    var newHandSize = handSize - 1;
-
-    if (newHandSize === 0) {
-        newHandSize = 1;
-    }
     
-    draw(newHandSize);
-    updateTotals();
+    draw(7);
 }
 
+/**
+ * Draw X cards, remove them from the library and add them to your hand
+ * @param {number} amount - Number of cards to draw 
+ * @returns 
+ */
 function draw(amount) {
     if (libraryList.length === 0) {
         return;
     }
 
-    for (var index = 0; index < amount; index++) {
-        var card = libraryList.splice(0, 1)[0];
-        handList.push(card);
-        $("#hand-placeholder").append(createCard(card));
-    }
+    libraryList
+        .splice(0, amount)
+        .forEach((card) => {
+            handList.push(card);
+            $("#hand-placeholder").append(createCard(card));
+        });
 
     updateTotals();
     bindCardActions();
@@ -278,7 +279,11 @@ function putCardOnLibrary(htmlElement, onBottom) {
 
     if (onBottom) {
         libraryList.push(getCardObject(htmlElement))
-    } else {
+    }
+
+    // Put a card on top of the library or when putting the top card on the bottom
+    if (!onBottom || htmlElement.parentElement.id === "library-placeholder") {
+        // Put new card on top of the library
         $("#library-placeholder").empty();
         libraryList.unshift(getCardObject(htmlElement));
         $("#library-placeholder").html(createCard(libraryList[0]));
