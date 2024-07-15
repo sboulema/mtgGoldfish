@@ -19,7 +19,7 @@ async function init() {
     bindCardActions();
     setupLifeCounters();
     setupManaPoolCounters();
-    setupCustomCounters();
+    setupCustomCounter();
     setupTurnButton();
 
     setupDragDrop();
@@ -167,7 +167,10 @@ function setupLifeCounters() {
     }
 }
 
-function setupCustomCounters() {
+/**
+ * Setup functionality for the Custom Counter functionality
+ */
+function setupCustomCounter() {
     if($('#custom-counter')[0].style.textAlign !== "center") {
         $('#custom-counter').bootstrapNumber({
             upClass: 'success',
@@ -175,34 +178,24 @@ function setupCustomCounters() {
         });
     }
 
-    setupEditable();
-}
+    // Show input field upon clicking the custom counter label
+    $("#custom-counter-label")
+        .off("click")
+        .on("click", function() {
+            $("#custom-counter-label-input").show();
+        })
 
-function setupEditable() {
-    $('.clickedit').hide()
-    .focusout(endEdit)
-    .keyup(function (e) {
-        var defaultText = 'Custom counter:';
-        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
-            endEdit(e, defaultText);
-            return false;
-        } else {
-            return true;
-        }
-    })
-    .prev().click(function (event) {
-        $(this).hide();
-        $(this).next().show().focus();
-    });
-}
+    // Upon enter or leaving focus, save the text as custom counter label
+    $("#custom-counter-label-input")
+        .hide()
+        .on("keypress focusout", function(event) {
+            if (event.key !== "Enter") {
+                return;
+            }
 
-function endEdit(e, defaultText) {
-    var input = $(e.target),
-        label = input && input.prev();
-
-    label.text(input.val() === '' ? defaultText : input.val());
-    input.hide();
-    label.show();
+            $("#custom-counter-label").text(`${$("#custom-counter-label-input").val()}:`);
+            $("#custom-counter-label-input").hide();
+        });
 }
 
 function setupTurnButton() {
