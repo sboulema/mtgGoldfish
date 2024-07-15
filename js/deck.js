@@ -273,7 +273,8 @@ function putCardOnLibrary(htmlElement, onBottom) {
         return;
     }
 
-    $('.popover').popover('hide');
+    // Hide any connected popovers
+    $(htmlElement).popover('hide');
 
     if (onBottom) {
         libraryList.push(getCardObject(htmlElement))
@@ -287,7 +288,6 @@ function putCardOnLibrary(htmlElement, onBottom) {
         $("#library-placeholder .mtg-card").flip(true);
     }
 
-    $(htmlElement).trigger("mouseout");
     $(htmlElement).remove();
 
     setupClickToDraw();
@@ -308,11 +308,18 @@ function putCardinPlaceholder(htmlElement, selector, id) {
         return;
     }
 
-    $('.popover').popover('hide');
-
+    // Clear the placeholder to insert the new card
     $(selector).empty();
-    $(htmlElement).detach().appendTo($(selector));
 
+    // Hide any connected popovers
+    $(htmlElement).popover('hide');
+  
+    // Add card to the placeholder
+    $(htmlElement)
+        .detach()
+        .appendTo($(selector));
+
+    // Clean card of any styling/logic received
     $(htmlElement)
         .css('left', "")
         .css('top', "")
@@ -322,9 +329,13 @@ function putCardinPlaceholder(htmlElement, selector, id) {
         .off("click")
         .flip(false);
 
+    // Add card to the correct list
     GetListById(id).push(getCardObject(htmlElement));
 
+    // Update card counts
     updateTotals();
+
+    // Setup card events for the new card in the placeholder
     bindCardActions();
 }
 

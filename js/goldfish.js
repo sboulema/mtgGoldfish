@@ -44,13 +44,13 @@ async function init() {
                     draw(1);
                     break;
                 case 101: // e
-                    putCardinPlaceholder($(".mtg-card:hover"), "#exile-placeholder", exileList);
+                    putCardinPlaceholder($(".mtg-card:hover")[0], "#exile-placeholder", "Exile");
                     break;
                 case 102: // f
                     flip($(".mtg-card:hover")[0]);
                     break;
                 case 103: // g
-                    putCardinPlaceholder($(".mtg-card:hover"), "#graveyard-placeholder", graveyardList);
+                    putCardinPlaceholder($(".mtg-card:hover")[0], "#graveyard-placeholder", "Graveyard");
                     break;
                 case 108: // l
                     putCardOnLibrary($(".mtg-card:hover")[0]);
@@ -276,9 +276,10 @@ function setupDragDrop() {
     $("#table").droppable({
         accept: ".mtg-card",
         drop: function(_, ui) {
-            ui.draggable.detach()
+            ui.draggable
+                .detach()
                 .css('left', ui.offset.left)
-                .css('top', ui.offset.top - 60)
+                .css('top', ui.offset.top)
                 .css('position', "absolute")
                 .css("margin-bottom", "")
                 .appendTo($(this));
@@ -332,29 +333,37 @@ function setupDragDrop() {
         }
     });
 
-    setupDroppablePlaceholder("#graveyard-placeholder", graveyardList);
-    setupDroppablePlaceholder("#exile-placeholder", exileList);
-    setupDroppablePlaceholder("#sideboard-placeholder", sideboardList);
+    setupDroppablePlaceholder("#graveyard-placeholder", "Graveyard");
+    setupDroppablePlaceholder("#exile-placeholder", "Exile");
+    setupDroppablePlaceholder("#sideboard-placeholder", "Sideboard");
 }
 
-function setupDroppablePlaceholder(selector, list) {
+/**
+ * Setup droppable zone placeholder
+ * @param {string} selector CSS selector of the zone placeholder 
+ * @param {string} id Title of the zone 
+ */
+function setupDroppablePlaceholder(selector, id) {
     $(selector).droppable({
         accept: ".mtg-card",
         drop: function(_, ui) {
-            $('.popover').popover('hide');
-
-            if(!$(ui.draggable).hasClass("token")) {
-                putCardinPlaceholder(ui.draggable, selector, list);
-            } else {
+            // Tokens are destroyed when they change zone
+            if($(ui.draggable).hasClass("token")) {
                 $(ui.draggable).remove();
-            }
+                return;
+            } 
+
+            putCardinPlaceholder($(ui.draggable)[0], selector, id);
         },
         out: function(_, ui) {
-            list.splice(-1, 1);
-                
-            if (list.length > 0) {
-                $(selector).append(createCard(list[list.length - 1]));
+            // Remove a card from the correct list based on the zone id
+            GetListById(id).splice(-1, 1);
+            
+            if (GetListById(id).length > 0) {
+                $(selector).append(createCard(GetListById(id)[GetListById(id).length - 1]));
             }
+
+            updateTotals();
         }
     });   
 }
