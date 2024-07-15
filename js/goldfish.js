@@ -207,6 +207,9 @@ function setupTurnButton() {
         });
 }
 
+/**
+ * Parse and load deck entered in the Deck modal
+ */
 async function startLoadDeck() {
     $("#btn-load-deck-spinner").removeClass("d-none");
     $("#btn-load-deck-text").text("Loading...");
@@ -217,8 +220,6 @@ async function startLoadDeck() {
 
     $("#btn-load-deck-spinner").addClass("d-none");
     $("#btn-load-deck-text").text("Load");
-
-    flip($("#library-placeholder .mtg-card")[0]);
 
     if (success) {
         $('#deckModal').modal('hide');
@@ -404,7 +405,7 @@ function setupDraggableZoneModal(selector, id) {
  * - Set life totals to 20
  * - Set turn counter to 1
  */
-function reset() {
+async function reset() {
     // Clear/Re-initialize all lists
     exileList = [];
     graveyardList = [];
@@ -433,7 +434,7 @@ function reset() {
     $('#life-opponent').val("20");
     $("#turn-counter").html("1");
 
-    init();
+    await init();
 }
 
 function restart() {

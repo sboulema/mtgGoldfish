@@ -67,10 +67,6 @@ async function loadDeck() {
             .text(result.errorMessage);
     }
 
-    // Place card on top of library
-    var libraryTopCard = createCard(libraryList[0]);
-    $("#library-placeholder").html(libraryTopCard);
-
     // Set start state
     deck = libraryList.slice();
     shuffleDeck();
@@ -78,6 +74,10 @@ async function loadDeck() {
     updateTotals();
     bindCardActions();
     setupClickToDraw();
+
+    // Place card on top of library
+    $("#library-placeholder").empty();
+    $("#library-placeholder").html(createCard(libraryList[0]));
 
     // Sideboard
     if ($("#sideboard-list").val() != '') {
@@ -188,6 +188,9 @@ const mergeByProperty = (target, source, prop) => {
         })
     }
 
+/**
+ * Shuffle the library list using Knuth shuffle
+ */
 function shuffleDeck() {
     window.knuthShuffle(libraryList);
 }
