@@ -99,7 +99,9 @@ async function init() {
 }
 
 function retrieveSettings() {
-    settings = JSON.parse(localStorage.getItem("mtgGoldfish-settings"));
+    settings = localStorage.getItem("mtgGoldfish-settings") !== null
+        ? JSON.parse(localStorage.getItem("mtgGoldfish-settings"))
+        : {};
 
     var backgroundUrl = settings.background;
 
