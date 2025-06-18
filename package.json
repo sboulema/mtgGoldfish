@@ -23,7 +23,7 @@
     "gulp-uglify": "3.0.2"
   },
   "dependencies": {
-    "bootstrap": "5.3.6",
+    "bootstrap": "5.3.7",
     "flip": "github:nnattawat/flip",
     "jquery": "3.7.1",
     "jquery-ui": "1.14.1",
