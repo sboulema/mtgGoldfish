@@ -94,7 +94,7 @@ async function init() {
 
         $('#deckModal').modal('hide');
     }
-    
+
     setupTokens();
 }
 
@@ -105,13 +105,11 @@ function retrieveSettings() {
 
     var backgroundUrl = settings.background;
 
-    if (backgroundUrl === null ||
-        backgroundUrl === "")
-    {
-        $("body").css("background-image", "url('../img/playmat.jpg')");
-    } else {
+    if (backgroundUrl) {
         $("body").css("background-image", `url('${backgroundUrl}')`);
         $("#background-url").val(backgroundUrl);
+    } else {
+        $("body").css("background-image", "url('../img/playmat.jpg')");
     }
 
     $("#checkbox-card-backside-lightly-played").prop("checked", settings.useLightlyPlayedCardBackside);
