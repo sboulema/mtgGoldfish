@@ -38,8 +38,6 @@
 }
 
 #table {
-    background-size: cover;
-    position: relative;
     height: calc(100vh - 228px);
 }
 
@@ -70,7 +68,8 @@
 }
 
 body {
-    background-image: url("../img/playmat.jpg");
+    background-image: url("../img/playmat.webp");
+    background-size: cover;
 }
 
 .popover-body {

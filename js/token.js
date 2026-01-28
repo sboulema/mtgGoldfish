@@ -10,7 +10,7 @@ function addTokensToSelect() {
                     'text': getTokenName(this)
                 }).appendTo('#token-art, #token-select');
             })
-        }  
+        }
     });
 }
 
@@ -93,6 +93,6 @@ function addCustomToken() {
         .appendTo("#table");
 
     $('#tokenModal').modal('hide');
-    
+
     bindCardActions();
 }

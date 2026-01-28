@@ -109,7 +109,7 @@ function retrieveSettings() {
         $("body").css("background-image", `url('${backgroundUrl}')`);
         $("#background-url").val(backgroundUrl);
     } else {
-        $("body").css("background-image", "url('../img/playmat.jpg')");
+        $("body").css("background-image", "url('../img/playmat.webp')");
     }
 
     $("#checkbox-card-backside-lightly-played").prop("checked", settings.useLightlyPlayedCardBackside);
@@ -132,8 +132,8 @@ function bindZoneModal(selector, id) {
 
 /**
  * Get the correct list of cards based on the id
- * @param {string} id 
- * @returns 
+ * @param {string} id
+ * @returns
  */
 function GetListById(id) {
     switch (id) {
@@ -231,7 +231,7 @@ function setupManaPoolCounters() {
 	$('body').on('contextmenu', '.mana-pool', function() {
         return false;
     });
-	
+
     $(".mana-pool")
         .off("mousedown")
         .on("mousedown", function (event) {
@@ -293,7 +293,7 @@ function setupDragDrop() {
                 .css("transform", "")
         }
     });
-    
+
     $("#hand-placeholder").droppable({
         accept: ".mtg-card",
         drop: function(_, ui) {
@@ -327,7 +327,7 @@ function setupDragDrop() {
                 // Flip card to the back side
                 $("#library-placeholder .mtg-card").flip({trigger: "manual"});
                 $("#library-placeholder .mtg-card").flip(true);
-                
+
                 setupClickToDraw();
             }
         }
@@ -340,8 +340,8 @@ function setupDragDrop() {
 
 /**
  * Setup droppable zone placeholder
- * @param {string} selector CSS selector of the zone placeholder 
- * @param {string} id Title of the zone 
+ * @param {string} selector CSS selector of the zone placeholder
+ * @param {string} id Title of the zone
  */
 function setupDroppablePlaceholder(selector, id) {
     $(selector).droppable({
@@ -351,31 +351,31 @@ function setupDroppablePlaceholder(selector, id) {
             if($(ui.draggable).hasClass("token")) {
                 $(ui.draggable).remove();
                 return;
-            } 
+            }
 
             putCardinPlaceholder($(ui.draggable)[0], selector, id);
         },
         out: function(_, ui) {
             // Remove a card from the correct list based on the zone id
             GetListById(id).splice(-1, 1);
-            
+
             if (GetListById(id).length > 0) {
                 $(selector).append(createCard(GetListById(id)[GetListById(id).length - 1]));
             }
 
             updateTotals();
         }
-    });   
+    });
 }
 
 /**
  * Setup dragging a zone modal
- * 
+ *
  * Remarks:
  * - Zone modal is not a drop target because the modal backdrop prevents interacting with other elements
  * @param {string} selector - CSS selector of the zone modal card row
  * @param {string} id - Title of the zone modal
- * @returns 
+ * @returns
  */
 function setupDraggableZoneModal(selector, id) {
     $(selector).droppable({
@@ -390,12 +390,12 @@ function setupDraggableZoneModal(selector, id) {
             // Update number of cards in each zone
             updateTotals();
         }
-    });  
+    });
 }
 
 /**
  * Reset the game state
- * 
+ *
  * Remarks:
  * - Clear/Re-initialize all lists
  * - Empty all zones
@@ -419,14 +419,19 @@ async function reset() {
     $("#table").empty();
     $("hand-placeholder").empty();
 
-    // Reset
+    // Reset the sideboard
     if (sideboardList.length > 0) {
         $("#sideboard-placeholder").html(defaultCard());
     }
 
+    // Shuffle library and set top card
     if (libraryList.length > 0) {
         shuffleDeck();
+
         $("#library-placeholder").html(createCard(libraryList[0]));
+
+        // Flip card to the back side
+        $("#library-placeholder .mtg-card").flip({trigger: "manual"});
         $("#library-placeholder .mtg-card").flip(true);
     }
 

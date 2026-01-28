@@ -126,13 +126,13 @@ function bindCardActions() {
 
 /**
  * Tap/Rotate a card
- * 
+ *
  * @param {domNode} domNode - Div gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
  * @param {int} [degree] - Degrees to rotate, if unspecified rotation will be toggled between 0 and 90
  */
 const tap = (domNode, degree) => {
     degree ??= domNode.style.transform.includes("90") ? 0 : 90;
-    
+
     $(domNode).css({
         transition: "transform 0.5s",
         transform: `rotate(${degree}deg)`
@@ -172,7 +172,7 @@ function addCounter(card) {
     $(card)
         .children(isFlipped(card) ? ".back" : ".front")
         .append("<label class='ms ms-e ms-3x counter'></label><input class='form-control counter-input' type='text' />");
-    
+
     // Disable context menu
     $(card)
         .on("contextmenu",function(){ return false; })

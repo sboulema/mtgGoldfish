@@ -79,6 +79,10 @@ async function loadDeck() {
     $("#library-placeholder").empty();
     $("#library-placeholder").html(createCard(libraryList[0]));
 
+    // Flip card to the back side
+    $("#library-placeholder .mtg-card").flip({trigger: "manual"});
+    $("#library-placeholder .mtg-card").flip(true);
+
     // Sideboard
     if ($("#sideboard-list").val() != '') {
         result = await parseCardList($("#sideboard-list").val());
@@ -170,7 +174,7 @@ const chunk = (arr, size) =>
 
 /**
  * Merge two lists based on a matching property
- * 
+ *
  * Remarks:
  * - Properties should match or match the first part of a split card
  * - Objects in the source list that do not match a target object will be appended to the target list
@@ -203,14 +207,14 @@ function mulligan() {
     shuffleDeck();
 
     $("#hand-placeholder").empty();
-    
+
     draw(7);
 }
 
 /**
  * Draw X cards, remove them from the library and add them to your hand
- * @param {number} amount - Number of cards to draw 
- * @returns 
+ * @param {number} amount - Number of cards to draw
+ * @returns
  */
 function draw(amount) {
     if (libraryList.length === 0) {
@@ -264,13 +268,13 @@ function shuffleDeckToCard(cardName) {
 
 /**
  * Put a card on the library
- * 
+ *
  * Remarks:
  * - By default the card will be put on top of the library
- * - When putting on top of the library, the card will be flipped to the back 
+ * - When putting on top of the library, the card will be flipped to the back
  * @param {HTMLElement} htmlElement - HTML element gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
  * @param {boolean} onBottom - Put card on the bottom of the library
- * @returns 
+ * @returns
  */
 function putCardOnLibrary(htmlElement, onBottom) {
     if (typeof htmlElement === 'undefined') {
@@ -301,11 +305,11 @@ function putCardOnLibrary(htmlElement, onBottom) {
     setupClickToDraw();
     updateTotals();
     bindCardActions();
-} 
+}
 
 /**
  * Put a card in a zone placeholder
- * 
+ *
  * @param {HTMLElement} htmlElement - HTML element gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
  * @param {string} selector - CSS selector of the zone placeholder
  * @param {string} id - Title of the zone placeholder
@@ -321,7 +325,7 @@ function putCardinPlaceholder(htmlElement, selector, id) {
 
     // Hide any connected popovers
     $(htmlElement).popover('hide');
-  
+
     // Add card to the placeholder
     $(htmlElement)
         .detach()
@@ -349,7 +353,7 @@ function putCardinPlaceholder(htmlElement, selector, id) {
 
 function putCardinHand(card) {
     card.detach().appendTo($("#hand-placeholder"));
-    
+
     var needle = getGoldfishId(card);
     var index = handList.findIndex(function(element) {
         return element.goldfishId === needle;
@@ -358,6 +362,6 @@ function putCardinHand(card) {
     if (index === -1) {
         handList.push(getCardObject(card));
     }
-    
+
     updateTotals();
 }
