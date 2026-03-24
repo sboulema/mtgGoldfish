@@ -1,9 +1,11 @@
-$(window).on('beforeunload', function(e) {
+window.addEventListener('beforeunload', function(e) {
     return 'By leaving this page you will lose the data you have entered here.';
 });
 
-$(function() {
-    if (jQuery.browser.mobile) {
-        $(".life-counter").prop("disabled", true);
+document.addEventListener('DOMContentLoaded', function() {
+    if (isMobileBrowser) {
+        document.querySelectorAll(".life-counter").forEach(function(el) {
+            el.disabled = true;
+        });
     }
 });

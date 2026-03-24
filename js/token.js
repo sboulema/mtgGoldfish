@@ -1,98 +1,110 @@
 function addTokensToSelect() {
-    $.ajax({
-        url: 'https://raw.githubusercontent.com/Cockatrice/Magic-Token/master/tokens.xml',
-        type: 'GET', 
-        dataType: 'xml',
-        success: function(returnedXMLResponse){
-            $('card', returnedXMLResponse).each(function(){
-                $('<option/>', {
-                    'value': $('set', this).attr('picURL'),
-                    'text': getTokenName(this)
-                }).appendTo('#token-art, #token-select');
-            })
-        }
-    });
+    fetch('https://raw.githubusercontent.com/Cockatrice/Magic-Token/master/tokens.xml')
+        .then(function(response) { return response.text(); })
+        .then(function(text) {
+            var parser = new DOMParser();
+            var xml = parser.parseFromString(text, 'text/xml');
+            var tokenArt = document.getElementById('token-art');
+            var tokenSelect = document.getElementById('token-select');
+
+            xml.querySelectorAll('card').forEach(function(card) {
+                var setEl = card.querySelector('set');
+                if (!setEl) return;
+
+                var option = document.createElement('option');
+                option.value = setEl.getAttribute('picURL');
+                option.textContent = getTokenName(card);
+                tokenArt.appendChild(option.cloneNode(true));
+                tokenSelect.appendChild(option);
+            });
+        });
 }
 
 function getTokenName(token) {
-    var name = $('name', token).text();
+    var nameEl = token.querySelector('name');
+    var name = nameEl ? nameEl.textContent : '';
 
-    if ($('pt', token).text() !== '') {
-        name += " (" + $('pt', token).text() + ")";
+    var ptEl = token.querySelector('pt');
+    if (ptEl && ptEl.textContent !== '') {
+        name += " (" + ptEl.textContent + ")";
     }
 
-    name += " " + $('color', token).text();
+    var colorEl = token.querySelector('color');
+    if (colorEl) {
+        name += " " + colorEl.textContent;
+    }
+
     return name;
 }
 
 function setupTokens() {
     addTokensToSelect();
 
-    $('#token-select')
-        .off('change')
-        .on('change', function() {
-            switch (this.value) {
-                case "-1":
-                    break;
-                case "0":
-                    $('#tokenModal').modal('show');
-                    break;
-                default:
-                    createCard({
-                        backgroundImage: this.value,
-                        imageUrlBack: "img/card-backside-mint.jpg",
-                        goldfishId: createGoldfishId(),
-                        layout: "token"
-                    }).appendTo("#table");
-                    bindCardActions();
-                    break;
-            }
-        });
+    var tokenSelect = document.getElementById('token-select');
+    tokenSelect.addEventListener('change', function() {
+        switch (this.value) {
+            case "-1":
+                break;
+            case "0":
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('tokenModal')).show();
+                break;
+            default:
+                var card = createCard({
+                    backgroundImage: this.value,
+                    imageUrlBack: "img/card-backside-mint.jpg",
+                    goldfishId: createGoldfishId(),
+                    layout: "token"
+                });
+                document.getElementById('table').appendChild(card);
+                bindCardActions();
+                break;
+        }
+    });
 }
 
 function createToken(name, rules, powerToughness, backgroundImage, color) {
     var token = createCard({layout: "token"});
 
-    token.children(".front")[0].style.backgroundImage = `url('${backgroundImage}')`;
+    var front = token.querySelector(".front");
+    front.style.backgroundImage = "url('" + backgroundImage + "')";
 
-    $('<div/>')
-        .addClass("mtg-card-token-frame-" + color)
-        .addClass("mtg-card-side")
-        .appendTo(token.children(".front"));
+    var frame = document.createElement('div');
+    frame.className = "mtg-card-token-frame-" + color + " mtg-card-side";
+    front.appendChild(frame);
 
-    $('<div/>')
-        .addClass("mtg-card-token-name")
-        .html(name)
-        .appendTo(token.children(".front"));
+    var nameDiv = document.createElement('div');
+    nameDiv.className = "mtg-card-token-name";
+    nameDiv.innerHTML = name;
+    front.appendChild(nameDiv);
 
-    $('<div/>')
-        .addClass("mtg-card-token-type")
-        .html(name)
-        .appendTo(token.children(".front"));
+    var typeDiv = document.createElement('div');
+    typeDiv.className = "mtg-card-token-type";
+    typeDiv.innerHTML = name;
+    front.appendChild(typeDiv);
 
-    $('<div/>')
-        .addClass("mtg-card-token-rules")
-        .html(rules)
-        .appendTo(token.children(".front"));
+    var rulesDiv = document.createElement('div');
+    rulesDiv.className = "mtg-card-token-rules";
+    rulesDiv.innerHTML = rules;
+    front.appendChild(rulesDiv);
 
-    $('<div/>')
-        .addClass("mtg-card-token-powerToughness")
-        .html(powerToughness)
-        .appendTo(token.children(".front"));
+    var ptDiv = document.createElement('div');
+    ptDiv.className = "mtg-card-token-powerToughness";
+    ptDiv.innerHTML = powerToughness;
+    front.appendChild(ptDiv);
 
     return token;
 }
 
 function addCustomToken() {
-    createToken(
-        $("#token-name").val(),
-        $("#token-rules").val(),
-        $("#token-powerToughness").val(),
-        $("#token-art").val(),
-        $("#token-color").val())
-        .appendTo("#table");
+    var token = createToken(
+        document.getElementById("token-name").value,
+        document.getElementById("token-rules").value,
+        document.getElementById("token-powerToughness").value,
+        document.getElementById("token-art").value,
+        document.getElementById("token-color").value);
+    document.getElementById('table').appendChild(token);
 
-    $('#tokenModal').modal('hide');
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('tokenModal')).hide();
 
     bindCardActions();
 }
