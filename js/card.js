@@ -6,6 +6,7 @@ function defaultCard() {
 }
 
 function createCard(card) {
+    if (!card) return defaultCard();
     var cardDiv = document.createElement('div');
     cardDiv.className = 'mtg-card';
     if (card.layout) cardDiv.classList.add(card.layout);
@@ -14,7 +15,8 @@ function createCard(card) {
 
     var front = document.createElement('div');
     front.className = 'front mtg-card-side';
-    front.style.backgroundImage = "url(" + (typeof card.backgroundImage !== 'undefined' ? card.backgroundImage : card.imageUrl) + ")";
+    var frontImage = card.backgroundImage || card.imageUrl || "img/card-backside-mint.jpg";
+    front.style.backgroundImage = "url(" + frontImage + ")";
     cardDiv.appendChild(front);
 
     if (isMobileBrowser) {
@@ -25,7 +27,8 @@ function createCard(card) {
 
     var back = document.createElement('div');
     back.className = 'back mtg-card-side';
-    back.style.backgroundImage = "url('" + card.imageUrlBack + "')";
+    var backImage = card.imageUrlBack || "img/card-backside-mint.jpg";
+    back.style.backgroundImage = "url('" + backImage + "')";
     cardDiv.appendChild(back);
 
     return cardDiv;
@@ -173,7 +176,7 @@ function shuffleHand() {
 }
 
 function addCounter(card) {
-    if (typeof card === 'undefined') {
+    if (!card) {
         return;
     }
 

@@ -74,10 +74,11 @@ async function loadDeck() {
     // Place card on top of library
     var libraryEl = document.getElementById("library-placeholder");
     libraryEl.innerHTML = '';
-    libraryEl.appendChild(createCard(libraryList[0]));
-
-    // Flip card to the back side
-    flipCard(libraryEl.querySelector('.mtg-card'), true);
+    if (libraryList.length > 0) {
+        libraryEl.appendChild(createCard(libraryList[0]));
+        // Flip card to the back side
+        flipCard(libraryEl.querySelector('.mtg-card'), true);
+    }
 
     // Sideboard
     var sideboardVal = document.getElementById("sideboard-list").value;
