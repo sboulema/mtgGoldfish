@@ -435,11 +435,18 @@ function setupDragDrop() {
     });
 
     // Tap card on click (event delegation on table)
-    tableEl.addEventListener('click', function(e) {
+    // Use mousedown+mouseup instead of click because draggable=true suppresses click in some browsers
+    var tapStartTarget = null;
+    tableEl.addEventListener('mousedown', function(e) {
+        tapStartTarget = e.target.closest('.mtg-card');
+    });
+    tableEl.addEventListener('mouseup', function(e) {
+        if (currentDragElement) { tapStartTarget = null; return; }
         var card = e.target.closest('.mtg-card');
-        if (card && !e.target.closest('.counter') && !e.target.closest('.counter-input') && card.parentElement === tableEl) {
+        if (card && card === tapStartTarget && !e.target.closest('.counter') && !e.target.closest('.counter-input') && card.parentElement === tableEl) {
             tap(card);
         }
+        tapStartTarget = null;
     });
 }
 
