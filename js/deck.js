@@ -1,16 +1,16 @@
 async function importMtgStocksDeck(deckId) {
-    const response = await fetch("https://cors.sboulema.nl/https://api.mtgstocks.com/decks/" + deckId);
+    const response = await fetch(`https://cors.sboulema.nl/https://api.mtgstocks.com/decks/${deckId}`);
     const result = await response.json();
 
     document.getElementById("deck-list").value =
         result.boards.mainboard.cards
-        .map(function(card) { return card.quantity + " " + card.card.name; })
+        .map((card) => `${card.quantity} ${card.card.name}`)
         .join("\n");
 
     if (typeof result.boards.sideboard !== 'undefined') {
         document.getElementById("sideboard-list").value =
             result.boards.sideboard.cards
-            .map(function(card) { return card.quantity + " " + card.card.name; })
+            .map((card) => `${card.quantity} ${card.card.name}`)
             .join("\n");
     }
 }
@@ -104,7 +104,7 @@ async function parseCardList(input) {
         errorMessage: "",
     }
 
-    lines.forEach(function(line) {
+    lines.forEach((line) => {
         var matches = line.match(/(\d+)x?\s+([^(]*)(?:\((.*)\))?(?:\s+(\d+))?/);
 
         if (matches === null) {
@@ -112,7 +112,7 @@ async function parseCardList(input) {
         }
 
         cardListResult.cards.push({
-            name: matches[2].split("/")[0].trim(),
+            name: matches[2].split("/")[0].trim(), // Take single name for split cards like "Commit / Memory"
             count: matches[1],
             set: matches[3],
             collector_number: matches[4],
@@ -123,24 +123,24 @@ async function parseCardList(input) {
     var batches = chunk(cardListResult.cards, 75);
 
     // use scryfall api to get data
-    await Promise.all(batches.map(async function(batch) {
+    await Promise.all(batches.map(async (batch) => {
         const response = await fetch("https://api.scryfall.com/cards/collection", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ identifiers: batch.map(function(card) { return {
+            body: JSON.stringify({ identifiers: batch.map((card) => ({
                 name: typeof card.set !== "undefined" ? undefined : card.name,
                 set: card.set,
                 collector_number: card.collector_number
-            }; }) }),
+            })) }),
         });
         const result = await response.json();
 
         if (result.not_found.length > 0) {
-            cardListResult.errorMessage = "The following cards could not be found: " + result.not_found.map(function(card) { return card.name; }).join(", ");
+            cardListResult.errorMessage = `The following cards could not be found: ${result.not_found.map((card) => card.name).join(", ")}`;
             cardListResult.success = false;
         }
 
-        const scryfallCards = result.data.map(function(card) { return {
+        const scryfallCards = result.data.map((card) => ({
             name: card.name,
             layout: card.layout,
             imageUrl: isDoubleFaced(card.layout) ? card.card_faces[0].image_uris.small : card.image_uris.small,
@@ -148,14 +148,14 @@ async function parseCardList(input) {
             imageUrlBack: isDoubleFaced(card.layout) ? card.card_faces[1].image_uris.small : settings.useLightlyPlayedCardBackside ? "img/card-backside-lightly-played.png" : "img/card-backside-mint.jpg",
             imageBackPreviewUrl: isDoubleFaced(card.layout) ? card.card_faces[1].image_uris.png : settings.useLightlyPlayedCardBackside ? "img/card-backside-lightly-played.png" : "img/card-backside-mint.jpg",
             goldfishId: createGoldfishId(),
-        }; });
+        }));
 
         // merge count and scryfall data
         mergeByProperty(cardListResult.cards, scryfallCards, "name");
     }));
 
     // duplicate cards based on count
-    cardListResult.cards.map(function(card) {
+    cardListResult.cards.map((card) => {
         for (var index = 0; index < card.count - 1; index++) {
             cardListResult.cards.push(card);
         }
@@ -172,6 +172,9 @@ const chunk = (arr, size) =>
 
 /**
  * Merge two lists based on a matching property
+ *
+ * Remarks:
+ * - Properties should match or match the first part of a split card
  */
 const mergeByProperty = (target, source, prop) => {
         source.forEach(sourceElement => {
@@ -263,6 +266,10 @@ function shuffleDeckToCard(cardName) {
 
 /**
  * Put a card on the library
+ *
+ * Remarks:
+ * - By default the card will be put on top of the library
+ * - When putting on top of the library, the card will be flipped to the back
  * @param {HTMLElement} htmlElement
  * @param {boolean} onBottom - Put card on the bottom of the library
  */
@@ -281,6 +288,7 @@ function putCardOnLibrary(htmlElement, onBottom) {
 
     // Put a card on top of the library or when putting the top card on the bottom
     if (!onBottom || htmlElement.parentElement.id === "library-placeholder") {
+        // Put new card on top of the library
         var libraryEl = document.getElementById("library-placeholder");
         libraryEl.innerHTML = '';
         libraryList.unshift(getCardObject(htmlElement));

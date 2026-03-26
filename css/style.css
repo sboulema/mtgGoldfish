@@ -17,23 +17,29 @@
     border-radius: 5px;
 }
 
+.mtg-card {
+    perspective: 1000px;
+}
+
 .mtg-card .front,
 .mtg-card .back {
     position: absolute;
     top: 0;
     left: 0;
+    backface-visibility: hidden;
+    transition: transform 0.6s;
 }
 
 .mtg-card .back {
-    display: none;
+    transform: rotateY(180deg);
 }
 
 .mtg-card.flipped .front {
-    display: none;
+    transform: rotateY(180deg);
 }
 
 .mtg-card.flipped .back {
-    display: block;
+    transform: rotateY(0deg);
 }
 
 #hand-container {

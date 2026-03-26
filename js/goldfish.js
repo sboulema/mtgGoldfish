@@ -438,9 +438,11 @@ function setupDragDrop() {
     // Use mousedown+mouseup instead of click because draggable=true suppresses click in some browsers
     var tapStartTarget = null;
     tableEl.addEventListener('mousedown', function(e) {
+        if (e.button !== 0) return; // Only left mouse button
         tapStartTarget = e.target.closest('.mtg-card');
     });
     tableEl.addEventListener('mouseup', function(e) {
+        if (e.button !== 0) { tapStartTarget = null; return; } // Only left mouse button
         if (currentDragElement) { tapStartTarget = null; return; }
         var card = e.target.closest('.mtg-card');
         if (card && card === tapStartTarget && !e.target.closest('.counter') && !e.target.closest('.counter-input') && card.parentElement === tableEl) {
