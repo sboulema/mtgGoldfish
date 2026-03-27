@@ -161,7 +161,7 @@ function showDiceContextMenu(outer, inner, clientX, clientY) {
         inner.appendChild(newEl);
         outer.dataset.diceType = otherType;
         var label = outer.querySelector('.dice-label');
-        if (label) label.textContent = 'Klik om te rollen';
+        if (label) label.textContent = 'Click to roll';
         if (otherType === 'd6') rollD6(inner); else rollD20(inner);
         closeMenu();
     });
