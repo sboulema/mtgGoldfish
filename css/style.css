@@ -70,6 +70,7 @@
 #graveyard-placeholder,
 #exile-placeholder,
 #sideboard-placeholder,
+#commander-placeholder,
 #library-placeholder {
     width: 125px;
     height: 172px;
@@ -78,10 +79,19 @@
 #graveyard-title,
 #exile-title,
 #sideboard-title,
+#commander-title,
 #library-title,
 #hand-title,
 #custom-counter-label {
     cursor: pointer;
+}
+
+.commander-tax {
+    margin-top: 4px;
+    font-size: 13px;
+    color: #c8b472;
+    cursor: pointer;
+    user-select: none;
 }
 
 #hand-placeholder {
