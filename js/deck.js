@@ -89,13 +89,13 @@ async function importMtgGolfdishDeck(deckId) {
     document.getElementById("sideboard-list").value = sideboard;
 }
 
-async function loadDeck() {
+async function loadDeck(onProgress) {
     // Clear any existing deck and sideboard
     libraryList = [];
     sideboardList = [];
 
     // Mainboard
-    var result = await parseCardList(document.getElementById("deck-list").value);
+    var result = await parseCardList(document.getElementById("deck-list").value, onProgress);
     libraryList = result.cards;
 
     if (!result.success) {
@@ -125,7 +125,7 @@ async function loadDeck() {
     // Sideboard
     var sideboardVal = document.getElementById("sideboard-list").value;
     if (sideboardVal != '') {
-        result = await parseCardList(sideboardVal);
+        result = await parseCardList(sideboardVal, onProgress);
         sideboardList = result.cards;
 
         document.getElementById("sideboard-placeholder").appendChild(defaultCard());
@@ -137,7 +137,7 @@ async function loadDeck() {
     return result.success;
 }
 
-async function parseCardList(input) {
+async function parseCardList(input, onProgress) {
     var lines = input.trim().split("\n");
 
     var cardListResult = {
@@ -163,6 +163,8 @@ async function parseCardList(input) {
 
     // split in batches of 75 (max batch size for Scryfall Collection API)
     var batches = chunk(cardListResult.cards, 75);
+    var total = cardListResult.cards.length;
+    var loaded = 0;
 
     // use scryfall api to get data
     await Promise.all(batches.map(async (batch) => {
@@ -201,6 +203,9 @@ async function parseCardList(input) {
 
         // merge count and scryfall data
         mergeByProperty(cardListResult.cards, scryfallCards, "name");
+
+        loaded += batch.length;
+        if (onProgress) onProgress(loaded, total);
     }));
 
     // duplicate cards based on count

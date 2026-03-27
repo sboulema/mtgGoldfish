@@ -268,15 +268,20 @@ function setupTurnButton(signal) {
  * Parse and load deck entered in the Deck modal
  */
 async function startLoadDeck() {
-    document.getElementById("btn-load-deck-spinner").classList.remove("d-none");
-    document.getElementById("btn-load-deck-text").textContent = "Loading...";
+    var spinner = document.getElementById("btn-load-deck-spinner");
+    var btnText = document.getElementById("btn-load-deck-text");
+
+    spinner.classList.remove("d-none");
+    btnText.textContent = "0 / ?";
 
     reset();
 
-    var success = await loadDeck();
+    var success = await loadDeck(function(loaded, total) {
+        btnText.textContent = loaded + " / " + total;
+    });
 
-    document.getElementById("btn-load-deck-spinner").classList.add("d-none");
-    document.getElementById("btn-load-deck-text").textContent = "Load";
+    spinner.classList.add("d-none");
+    btnText.textContent = "Load";
 
     if (success) {
         bootstrap.Modal.getOrCreateInstance(document.getElementById('deckModal')).hide();
