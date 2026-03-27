@@ -207,14 +207,19 @@ function addCounter(card) {
     });
 
     // Upon ending entering text into the counter edit field we should update the counter icon
-    function handleCounterInput(event) {
-        event.stopImmediatePropagation();
-        if (event.key !== "Enter") return;
+    function applyCounter() {
         label.className = 'ms ms-counter-' + input.value + ' ms-3x counter';
         input.style.display = 'none';
     }
-    input.addEventListener("keypress", handleCounterInput);
-    input.addEventListener("focusout", handleCounterInput);
+    input.addEventListener("keypress", function(event) {
+        event.stopImmediatePropagation();
+        if (event.key !== "Enter") return;
+        applyCounter();
+    });
+    input.addEventListener("focusout", function(event) {
+        event.stopImmediatePropagation();
+        applyCounter();
+    });
 
     // Make counter draggable
     label.draggable = true;
