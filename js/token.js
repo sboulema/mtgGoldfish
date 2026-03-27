@@ -37,11 +37,16 @@ function getTokenName(token) {
     return name;
 }
 
+var tokenChangeHandler = null;
+
 function setupTokens() {
     addTokensToSelect();
 
     var tokenSelect = document.getElementById('token-select');
-    tokenSelect.addEventListener('change', function() {
+    if (tokenChangeHandler) {
+        tokenSelect.removeEventListener('change', tokenChangeHandler);
+    }
+    tokenChangeHandler = function() {
         switch (this.value) {
             case "-1":
                 break;
@@ -59,7 +64,8 @@ function setupTokens() {
                 bindCardActions();
                 break;
         }
-    });
+    };
+    tokenSelect.addEventListener('change', tokenChangeHandler);
 }
 
 function createToken(name, rules, powerToughness, backgroundImage, color) {
@@ -69,7 +75,7 @@ function createToken(name, rules, powerToughness, backgroundImage, color) {
     front.style.backgroundImage = "url('" + backgroundImage + "')";
 
     var frame = document.createElement('div');
-    frame.className = "mtg-card-token-frame-" + color + " mtg-card-side";
+    frame.className = "mtg-card-token-frame-" + color.toLowerCase();
     front.appendChild(frame);
 
     var nameDiv = document.createElement('div');
