@@ -5,11 +5,7 @@ var htmlreplace = require('gulp-html-replace');
 
 gulp.task('vendor', function(done) {
   jsSources = [
-    'node_modules/jquery/dist/jquery.min.js',
     'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
-    'node_modules/flip/dist/jquery.flip.min.js',
-    'node_modules/jquery-ui/dist/jquery-ui.min.js',
-    'node_modules/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js',
     'node_modules/knuth-shuffle/index.js'
   ];
 
@@ -19,11 +15,11 @@ gulp.task('vendor', function(done) {
   ];
 
   gulp.src(jsSources)
-    .pipe(concat('vendor.bundle.js'))  
+    .pipe(concat('vendor.bundle.js'))
     .pipe(gulp.dest('dist/js'));
 
   gulp.src(cssSources)
-    .pipe(concat('vendor.bundle.css'))  
+    .pipe(concat('vendor.bundle.css'))
     .pipe(gulp.dest('dist/css'));
 
   done();

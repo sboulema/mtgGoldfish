@@ -156,28 +156,17 @@
 
     <!-- Local/Custom Javascript functions -->
     <!-- build:js -->
+    <script src="js/detectmobilebrowser.js"></script>
     <script src="js/bootstrap-number-input.js"></script>
     <script src="js/card.js"></script>
     <script src="js/token.js"></script>
     <script src="js/goldfish.js"></script>
     <script src="js/deck.js"></script>
     <script src="js/mobile.js"></script>
-    <script src="js/detectmobilebrowser.js"></script>
     <!-- endbuild -->
 
     <!-- build:modals -->
-    <script>
-        $(document).ready(function () {
-            // Load all Modals
-            $("body")
-                .append($("<div>").load("modals/deckmodal.html"))
-                .append($("<div>").load("modals/helpmodal.html"))
-                .append($("<div>").load("modals/settingsmodal.html"))
-                .append($("<div>").load("modals/shuffletocardmodal.html"))
-                .append($("<div>").load("modals/tokenmodal.html"))
-                .append($("<div>").load("modals/zonemodal.html"));
-        });
-    </script>
+    <!-- Modals are loaded dynamically in development, see goldfish.js loadModals() -->
     <!-- endbuild -->
 </body>
 

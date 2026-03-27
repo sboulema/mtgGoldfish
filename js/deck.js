@@ -1,21 +1,17 @@
 async function importMtgStocksDeck(deckId) {
-    const response = await fetch(`https://cors.sboulema.nl/https://api.mtgstocks.com/decks/${deckId}`)
+    const response = await fetch(`https://cors.sboulema.nl/https://api.mtgstocks.com/decks/${deckId}`);
     const result = await response.json();
 
-    $("#deck-list")
-        .val(
-            result.boards.mainboard.cards
-            .map((card) => `${card.quantity} ${card.card.name}`)
-            .join("\n")
-        );
+    document.getElementById("deck-list").value =
+        result.boards.mainboard.cards
+        .map((card) => `${card.quantity} ${card.card.name}`)
+        .join("\n");
 
     if (typeof result.boards.sideboard !== 'undefined') {
-        $("#sideboard-list")
-        .val(
+        document.getElementById("sideboard-list").value =
             result.boards.sideboard.cards
             .map((card) => `${card.quantity} ${card.card.name}`)
-            .join("\n")
-        );
+            .join("\n");
     }
 }
 
@@ -27,14 +23,14 @@ async function importMtgGolfdishDeck(deckId) {
             "deckId": deckId,
             "wrapAPIKey": "HXhWGELDSQ84wmTd2FYKxtTnqKjeRtQb"
         }),
-    })
+    });
     const result = await response.json();
 
     var deck = "";
     var sideboard = "";
     var loadingDeck = true;
 
-    $.each(result.data.Line, function(key, card) {
+    result.data.Line.forEach(function(card) {
         if (card.Amount === null) {
             if (card.Header.includes("Sideboard")) {
                 loadingDeck = false;
@@ -48,8 +44,8 @@ async function importMtgGolfdishDeck(deckId) {
         }
     });
 
-    $("#deck-list").val(deck);
-    $("#sideboard-list").val(sideboard);
+    document.getElementById("deck-list").value = deck;
+    document.getElementById("sideboard-list").value = sideboard;
 }
 
 async function loadDeck() {
@@ -58,13 +54,13 @@ async function loadDeck() {
     sideboardList = [];
 
     // Mainboard
-    var result = await parseCardList($("#deck-list").val());
+    var result = await parseCardList(document.getElementById("deck-list").value);
     libraryList = result.cards;
 
     if (!result.success) {
-        $("#alert-load-deck")
-            .removeClass("d-none")
-            .text(result.errorMessage);
+        var alert = document.getElementById("alert-load-deck");
+        alert.classList.remove("d-none");
+        alert.textContent = result.errorMessage;
     }
 
     // Set start state
@@ -76,19 +72,21 @@ async function loadDeck() {
     setupClickToDraw();
 
     // Place card on top of library
-    $("#library-placeholder").empty();
-    $("#library-placeholder").html(createCard(libraryList[0]));
-
-    // Flip card to the back side
-    $("#library-placeholder .mtg-card").flip({trigger: "manual"});
-    $("#library-placeholder .mtg-card").flip(true);
+    var libraryEl = document.getElementById("library-placeholder");
+    libraryEl.innerHTML = '';
+    if (libraryList.length > 0) {
+        libraryEl.appendChild(createCard(libraryList[0]));
+        // Flip card to the back side
+        flipCard(libraryEl.querySelector('.mtg-card'), true);
+    }
 
     // Sideboard
-    if ($("#sideboard-list").val() != '') {
-        result = await parseCardList($("#sideboard-list").val());
+    var sideboardVal = document.getElementById("sideboard-list").value;
+    if (sideboardVal != '') {
+        result = await parseCardList(sideboardVal);
         sideboardList = result.sideboardList;
 
-        $("#sideboard-placeholder").html(defaultCard());
+        document.getElementById("sideboard-placeholder").appendChild(defaultCard());
         sideboard = sideboardList.slice();
         updateTotals();
         bindCardActions();
@@ -118,8 +116,8 @@ async function parseCardList(input) {
             count: matches[1],
             set: matches[3],
             collector_number: matches[4],
-        })
-    })
+        });
+    });
 
     // split in batches of 75 (max batch size for Scryfall Collection API)
     var batches = chunk(cardListResult.cards, 75);
@@ -130,11 +128,11 @@ async function parseCardList(input) {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ identifiers: batch.map((card) => ({
-                name: typeof card.set !== "undefined" ? undefined: card.name,
+                name: typeof card.set !== "undefined" ? undefined : card.name,
                 set: card.set,
                 collector_number: card.collector_number
             })) }),
-        })
+        });
         const result = await response.json();
 
         if (result.not_found.length > 0) {
@@ -158,7 +156,7 @@ async function parseCardList(input) {
 
     // duplicate cards based on count
     cardListResult.cards.map((card) => {
-        for (let index = 0; index < card.count - 1; index++) {
+        for (var index = 0; index < card.count - 1; index++) {
             cardListResult.cards.push(card);
         }
     });
@@ -177,10 +175,6 @@ const chunk = (arr, size) =>
  *
  * Remarks:
  * - Properties should match or match the first part of a split card
- * - Objects in the source list that do not match a target object will be appended to the target list
- * @param {Object[]} target - The list that will hold the merged set of lists.
- * @param {Object[]} source - the list to merge with the target list.
- * @param {string} prop - The name of the property to match on.
  */
 const mergeByProperty = (target, source, prop) => {
         source.forEach(sourceElement => {
@@ -206,7 +200,7 @@ function mulligan() {
     libraryList = deck.slice();
     shuffleDeck();
 
-    $("#hand-placeholder").empty();
+    document.getElementById("hand-placeholder").innerHTML = '';
 
     draw(7);
 }
@@ -214,18 +208,19 @@ function mulligan() {
 /**
  * Draw X cards, remove them from the library and add them to your hand
  * @param {number} amount - Number of cards to draw
- * @returns
  */
 function draw(amount) {
     if (libraryList.length === 0) {
         return;
     }
 
+    var handEl = document.getElementById("hand-placeholder");
+
     libraryList
         .splice(0, amount)
-        .forEach((card) => {
+        .forEach(function(card) {
             handList.push(card);
-            $("#hand-placeholder").append(createCard(card));
+            handEl.appendChild(createCard(card));
         });
 
     updateTotals();
@@ -236,22 +231,25 @@ function draw(amount) {
  * Setup click event on the top library card to draw a new card
  */
 function setupClickToDraw() {
-    $("#library-placeholder .mtg-card").on("click", function() {
-        draw(1);
-    });
+    var libraryCard = document.querySelector("#library-placeholder .mtg-card");
+    if (libraryCard) {
+        libraryCard.addEventListener("click", function() {
+            draw(1);
+        });
+    }
 }
 
 function startShuffleDeckToCard() {
-    var cardName = $("#shuffle-card-name").val().trim();
+    var cardName = document.getElementById("shuffle-card-name").value.trim();
 
-    $('#shuffleDeckModal').modal('hide');
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('shuffleDeckModal')).hide();
 
     shuffleDeckToCard(cardName);
 }
 
 function shuffleDeckToCard(cardName) {
     handList.length = 0;
-    $("#hand-placeholder").empty();
+    document.getElementById("hand-placeholder").innerHTML = '';
 
     libraryList = deck.slice();
     shuffleDeck();
@@ -272,35 +270,35 @@ function shuffleDeckToCard(cardName) {
  * Remarks:
  * - By default the card will be put on top of the library
  * - When putting on top of the library, the card will be flipped to the back
- * @param {HTMLElement} htmlElement - HTML element gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
+ * @param {HTMLElement} htmlElement
  * @param {boolean} onBottom - Put card on the bottom of the library
- * @returns
  */
 function putCardOnLibrary(htmlElement, onBottom) {
-    if (typeof htmlElement === 'undefined') {
+    if (typeof htmlElement === 'undefined' || htmlElement === null) {
         return;
     }
 
     // Hide any connected popovers
-    $(htmlElement).popover('hide');
+    var popover = bootstrap.Popover.getInstance(htmlElement);
+    if (popover) popover.hide();
 
     if (onBottom) {
-        libraryList.push(getCardObject(htmlElement))
+        libraryList.push(getCardObject(htmlElement));
     }
 
     // Put a card on top of the library or when putting the top card on the bottom
     if (!onBottom || htmlElement.parentElement.id === "library-placeholder") {
         // Put new card on top of the library
-        $("#library-placeholder").empty();
+        var libraryEl = document.getElementById("library-placeholder");
+        libraryEl.innerHTML = '';
         libraryList.unshift(getCardObject(htmlElement));
-        $("#library-placeholder").html(createCard(libraryList[0]));
+        libraryEl.appendChild(createCard(libraryList[0]));
 
         // Flip card to the back side
-        $("#library-placeholder .mtg-card").flip({trigger: "manual"});
-        $("#library-placeholder .mtg-card").flip(true);
+        flipCard(libraryEl.querySelector('.mtg-card'), true);
     }
 
-    $(htmlElement).remove();
+    htmlElement.remove();
 
     setupClickToDraw();
     updateTotals();
@@ -309,37 +307,34 @@ function putCardOnLibrary(htmlElement, onBottom) {
 
 /**
  * Put a card in a zone placeholder
- *
- * @param {HTMLElement} htmlElement - HTML element gotten by for example a jQuery selector '$(".mtg-card:hover")[0]'
+ * @param {HTMLElement} htmlElement
  * @param {string} selector - CSS selector of the zone placeholder
  * @param {string} id - Title of the zone placeholder
- * @returns 
  */
 function putCardinPlaceholder(htmlElement, selector, id) {
-    if(typeof htmlElement === 'undefined') {
+    if (typeof htmlElement === 'undefined' || htmlElement === null) {
         return;
     }
 
+    var destination = document.querySelector(selector);
+
     // Clear the placeholder to insert the new card
-    $(selector).empty();
+    destination.innerHTML = '';
 
     // Hide any connected popovers
-    $(htmlElement).popover('hide');
+    var popover = bootstrap.Popover.getInstance(htmlElement);
+    if (popover) popover.hide();
 
     // Add card to the placeholder
-    $(htmlElement)
-        .detach()
-        .appendTo($(selector));
+    destination.appendChild(htmlElement);
 
     // Clean card of any styling/logic received
-    $(htmlElement)
-        .css('left', "")
-        .css('top', "")
-        .css('position', "")
-        .css("margin-bottom", "")
-        .css("transform", "")
-        .off("click")
-        .flip(false);
+    htmlElement.style.left = '';
+    htmlElement.style.top = '';
+    htmlElement.style.position = '';
+    htmlElement.style.marginBottom = '';
+    htmlElement.style.transform = '';
+    flipCard(htmlElement, false);
 
     // Add card to the correct list
     GetListById(id).push(getCardObject(htmlElement));
@@ -352,7 +347,7 @@ function putCardinPlaceholder(htmlElement, selector, id) {
 }
 
 function putCardinHand(card) {
-    card.detach().appendTo($("#hand-placeholder"));
+    document.getElementById("hand-placeholder").appendChild(card);
 
     var needle = getGoldfishId(card);
     var index = handList.findIndex(function(element) {
