@@ -1,6 +1,6 @@
 var gulp = require('gulp');
 var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
+var terser = require('gulp-terser');
 var htmlreplace = require('gulp-html-replace');
 
 gulp.task('vendor', function(done) {
@@ -31,7 +31,7 @@ gulp.task('scripts', function (done) {
 
   gulp.src(jsFiles)
     .pipe(concat('scripts.min.js'))
-    .pipe(uglify({ mangle: true, compress: true }))
+    .pipe(terser({ mangle: true, compress: true }))
     .pipe(gulp.dest(jsDest));
 
   done();
