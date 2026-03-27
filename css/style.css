@@ -141,25 +141,28 @@ body {
 }
 .dice-container:active { cursor: grabbing; }
 
-.dice-close {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    width: 20px;
-    height: 20px;
-    background: #333;
-    color: #c8b472;
-    border-radius: 50%;
-    font-size: 16px;
-    line-height: 20px;
-    text-align: center;
-    cursor: pointer;
-    z-index: 101;
-    border: 1px solid #c8b472;
-}
-.dice-close:hover { background: #555; }
-
 .dice-inner { display: inline-block; }
+
+/* Right-click context menu */
+.dice-context-menu {
+    position: fixed;
+    background: #1e1e1e;
+    border: 1px solid #c8b472;
+    border-radius: 6px;
+    z-index: 9999;
+    min-width: 180px;
+    padding: 4px 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+}
+.dice-context-menu-item {
+    padding: 8px 16px;
+    color: #c8b472;
+    cursor: pointer;
+    font-size: 13px;
+}
+.dice-context-menu-item:hover {
+    background: #333;
+}
 
 /* d6 3D cube */
 .dice-perspective {
