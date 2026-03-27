@@ -302,19 +302,21 @@ function startShuffleDeckToCard() {
 }
 
 function shuffleDeckToCard(cardName) {
-    handList.length = 0;
-    document.getElementById("hand-placeholder").innerHTML = '';
+    var cardExists = deck.some(function(c) { return c.name === cardName; });
+    if (!cardExists) return;
 
-    libraryList = deck.slice();
-    shuffleDeck();
-    draw(7);
+    var index = -1;
+    while (index === -1) {
+        handList.length = 0;
+        document.getElementById("hand-placeholder").innerHTML = '';
 
-    var index = handList.findIndex(function(element) {
-        return element.name === cardName;
-    });
+        libraryList = deck.slice();
+        shuffleDeck();
+        draw(7);
 
-    if (index === -1) {
-        shuffleDeckToCard(cardName);
+        index = handList.findIndex(function(element) {
+            return element.name === cardName;
+        });
     }
 }
 
