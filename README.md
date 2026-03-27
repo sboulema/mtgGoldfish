@@ -6,15 +6,17 @@ Website to playtest (goldfish) Magic The Gathering decks - http://goldfish.sboul
 ![screenshot](img/screenshot.png)
 
 ## Features
-- Load deck and sideboard from text, [MTGStocks](https://www.mtgstocks.com/) or [MTGGoldfish](https://www.mtggoldfish.com/)
+- Load deck and sideboard from text, file (.txt, .dec, .dck), [MTGStocks](https://www.mtgstocks.com/) or [MTGGoldfish](https://www.mtggoldfish.com/)
 - Keep track of life totals
 - Custom counter for eg. storm or poison counters
 - Keep track of your mana pool
 - Keep track of current turn
-- Flip or morph cards
+- Flip or transform double-faced cards
 - Add counters to cards
-- Write custom text on counters
-- View cards in all zones (hand, library, graveyard exile, sideboard)
+- Add copy count badges to track duplicate cards
+- View cards in all zones (hand, library, graveyard, exile, sideboard, commander)
+- Commander zone with commander tax tracker
+- Sideboard swaps for game 2
 - Keyboard shortcuts
 - Select and add tokens
 - Create custom tokens
@@ -36,11 +38,7 @@ Website to playtest (goldfish) Magic The Gathering decks - http://goldfish.sboul
 - [Bootstrap Number Input](https://github.com/wpic/bootstrap-number-input)
 - [Cockatrice Magic Token](https://github.com/Cockatrice/Magic-Token)
 - [Goldfish icon](http://www.iconarchive.com/show/flat-animal-icons-by-martin-berube/gold-fish-icon.html)
-- [jQuery](https://jquery.com/)
-- [jQuery Flip](https://github.com/nnattawat/flip)
-- [jQuery UI](https://jqueryui.com/)
-- [jQuery UI Touch Punch](http://touchpunch.furf.com/)
 - [Knuth Shuffle](https://git.daplie.com/Daplie/knuth-shuffle/)
-- [Magic: The Gathering - Developers](https://magicthegathering.io/)
 - [Mana Font](https://mana.andrewgioia.com/)
 - [Open source mobile phone detection](http://detectmobilebrowsers.com/)
+- [Scryfall API](https://scryfall.com/docs/api)
