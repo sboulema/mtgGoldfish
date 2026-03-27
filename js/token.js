@@ -1,6 +1,13 @@
 function addTokensToSelect() {
-    fetch('https://raw.githubusercontent.com/Cockatrice/Magic-Token/master/tokens.xml')
-        .then(function(response) { return response.text(); })
+    var controller = new AbortController();
+    var timeoutId = setTimeout(function() { controller.abort(); }, 10000);
+
+    fetch('https://raw.githubusercontent.com/Cockatrice/Magic-Token/master/tokens.xml', { signal: controller.signal })
+        .then(function(response) {
+            clearTimeout(timeoutId);
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            return response.text();
+        })
         .then(function(text) {
             var parser = new DOMParser();
             var xml = parser.parseFromString(text, 'text/xml');
@@ -21,6 +28,10 @@ function addTokensToSelect() {
                 tokenArt.appendChild(option.cloneNode(true));
                 tokenSelect.appendChild(option);
             });
+        })
+        .catch(function(err) {
+            clearTimeout(timeoutId);
+            console.warn('Failed to load token list:', err.message);
         });
 }
 
