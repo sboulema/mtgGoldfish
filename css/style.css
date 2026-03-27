@@ -138,6 +138,8 @@ body {
     user-select: none;
     z-index: 100;
     display: inline-block;
+    width: fit-content;
+    height: fit-content;
 }
 .dice-container:active { cursor: grabbing; }
 
