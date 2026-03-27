@@ -168,17 +168,29 @@ async function parseCardList(input, onProgress) {
 
     // use scryfall api to get data
     await Promise.all(batches.map(async (batch) => {
-        const response = await fetch("https://api.scryfall.com/cards/collection", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ identifiers: batch.map((card) => {
-                if (card.set && card.collector_number) {
-                    return { set: card.set, collector_number: card.collector_number };
-                }
-                return { name: card.name };
-            }) }),
-        });
-        const result = await response.json();
+        let result;
+        try {
+            const response = await fetch("https://api.scryfall.com/cards/collection", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ identifiers: batch.map((card) => {
+                    if (card.set && card.collector_number) {
+                        return { set: card.set, collector_number: card.collector_number };
+                    }
+                    return { name: card.name };
+                }) }),
+            });
+            if (!response.ok) {
+                cardListResult.errorMessage = `Scryfall returned an error (HTTP ${response.status})`;
+                cardListResult.success = false;
+                return;
+            }
+            result = await response.json();
+        } catch (e) {
+            cardListResult.errorMessage = "Could not reach Scryfall. Check your internet connection.";
+            cardListResult.success = false;
+            return;
+        }
 
         if (!result.data) {
             cardListResult.errorMessage = "Failed to fetch cards from Scryfall";
@@ -187,7 +199,8 @@ async function parseCardList(input, onProgress) {
         }
 
         if (result.not_found && result.not_found.length > 0) {
-            cardListResult.errorMessage = `The following cards could not be found: ${result.not_found.map((card) => card.name).join(", ")}`;
+            var notFoundNames = result.not_found.map((card) => card.name || card.id || JSON.stringify(card)).join(", ");
+            cardListResult.errorMessage = `The following cards could not be found: ${notFoundNames}`;
             cardListResult.success = false;
         }
 
