@@ -26,7 +26,7 @@ async function loadModals() {
     // If modals are already inlined (dist build), skip loading
     if (document.getElementById('deckModal')) return;
 
-    var modals = ['deckmodal', 'helpmodal', 'settingsmodal', 'shuffletocardmodal', 'tokenmodal', 'zonemodal'];
+    var modals = ['deckmodal', 'helpmodal', 'settingsmodal', 'shuffletocardmodal', 'tokenmodal', 'zonemodal', 'sideboardmodal'];
     await Promise.all(modals.map(async function(modal) {
         var response = await fetch('modals/' + modal + '.html');
         var html = await response.text();
@@ -600,6 +600,71 @@ function restart() {
     draw(7);
 
     bindCardActions();
+}
+
+// Working copies used while the sideboard modal is open
+var swapDeck = [];
+var swapSideboard = [];
+
+function openSideboardModal() {
+    swapDeck = deck.slice();
+    swapSideboard = sideboard.slice();
+    renderSideboardModal();
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('sideboardModal')).show();
+}
+
+function renderSideboardModal() {
+    renderSwapList('swap-main-list', swapDeck, swapSideboard);
+    renderSwapList('swap-side-list', swapSideboard, swapDeck);
+    document.getElementById('swap-main-count').textContent = swapDeck.length;
+    document.getElementById('swap-side-count').textContent = swapSideboard.length;
+}
+
+function renderSwapList(listId, fromList, toList) {
+    var ul = document.getElementById(listId);
+    ul.innerHTML = '';
+
+    // Aggregate unique card names with counts
+    var seen = {};
+    fromList.forEach(function(card) {
+        if (!seen[card.name]) seen[card.name] = { card: card, count: 0 };
+        seen[card.name].count++;
+    });
+
+    Object.keys(seen).sort().forEach(function(name) {
+        var entry = seen[name];
+        var li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        li.style.cursor = 'pointer';
+        li.title = 'Click to move one copy';
+
+        var nameSpan = document.createElement('span');
+        nameSpan.textContent = name;
+
+        var badge = document.createElement('span');
+        badge.className = 'badge bg-secondary';
+        badge.textContent = entry.count;
+
+        li.appendChild(nameSpan);
+        li.appendChild(badge);
+
+        li.addEventListener('click', function() {
+            var idx = fromList.findIndex(function(c) { return c.name === name; });
+            if (idx > -1) {
+                toList.push(fromList.splice(idx, 1)[0]);
+                renderSideboardModal();
+            }
+        });
+
+        ul.appendChild(li);
+    });
+}
+
+function applySideboardSwaps() {
+    deck = swapDeck;
+    sideboard = swapSideboard;
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('sideboardModal')).hide();
+    restart();
 }
 
 /**
