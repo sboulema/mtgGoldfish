@@ -251,3 +251,45 @@ body {
 .dice-d20.rolling {
     animation: dice-shake 0.15s infinite;
 }
+
+/* Coin */
+.coin-perspective {
+    width: 80px;
+    height: 80px;
+    perspective: 300px;
+}
+
+.coin {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 1s ease-out;
+}
+
+.coin-face {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backface-visibility: hidden;
+    font-weight: bold;
+    font-size: 18px;
+    color: #1a1a1a;
+    user-select: none;
+    box-shadow: inset -4px -4px 8px rgba(0,0,0,0.3), inset 2px 2px 6px rgba(255,255,255,0.3);
+}
+
+.coin-heads {
+    background: radial-gradient(circle at 38% 38%, #f5e47e, #c89010, #a07000);
+    border: 3px solid #8a6000;
+}
+
+.coin-tails {
+    background: radial-gradient(circle at 38% 38%, #e0e0e0, #aaaaaa, #888888);
+    border: 3px solid #666;
+    transform: rotateY(180deg);
+}

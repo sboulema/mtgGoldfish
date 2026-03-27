@@ -190,6 +190,158 @@ function showDiceContextMenu(outer, inner, clientX, clientY) {
     }, 0);
 }
 
+function createCoinElement() {
+    var wrapper = document.createElement('div');
+    wrapper.className = 'coin-perspective';
+
+    var coin = document.createElement('div');
+    coin.className = 'coin';
+    coin.dataset.rotY = '0';
+
+    var heads = document.createElement('div');
+    heads.className = 'coin-face coin-heads';
+    heads.textContent = 'H';
+
+    var tails = document.createElement('div');
+    tails.className = 'coin-face coin-tails';
+    tails.textContent = 'T';
+
+    coin.appendChild(heads);
+    coin.appendChild(tails);
+    wrapper.appendChild(coin);
+    return wrapper;
+}
+
+function flipCoin(container) {
+    var coin = container.querySelector('.coin');
+    if (coin.dataset.flipping === 'true') return;
+    coin.dataset.flipping = 'true';
+
+    var result = Math.random() < 0.5 ? 'heads' : 'tails';
+    var currentRot = parseFloat(coin.dataset.rotY) || 0;
+
+    var baseRot = Math.round(currentRot / 360) * 360;
+    var landing = result === 'heads' ? 0 : 180;
+    var newRot = baseRot + 1800 + landing;
+
+    coin.dataset.rotY = newRot;
+    coin.style.transform = 'rotateY(' + newRot + 'deg)';
+
+    setTimeout(function() {
+        coin.dataset.flipping = 'false';
+    }, 1050);
+}
+
+function showCoinContextMenu(outer, clientX, clientY) {
+    var existing = document.getElementById('dice-context-menu');
+    if (existing) existing.remove();
+
+    var menu = document.createElement('div');
+    menu.id = 'dice-context-menu';
+    menu.className = 'dice-context-menu';
+    menu.style.left = (clientX + 4) + 'px';
+    menu.style.top  = (clientY + 4) + 'px';
+
+    function closeMenu() { menu.remove(); }
+
+    var itemRemove = document.createElement('div');
+    itemRemove.className = 'dice-context-menu-item';
+    itemRemove.textContent = 'Remove coin';
+    itemRemove.addEventListener('click', function() {
+        outer.remove();
+        closeMenu();
+    });
+    menu.appendChild(itemRemove);
+
+    document.body.appendChild(menu);
+
+    setTimeout(function() {
+        function onOutsideClick(e) {
+            if (!menu.contains(e.target)) {
+                closeMenu();
+                document.removeEventListener('mousedown', onOutsideClick);
+                document.removeEventListener('keydown', onEscape);
+            }
+        }
+        function onEscape(e) {
+            if (e.key === 'Escape') {
+                closeMenu();
+                document.removeEventListener('mousedown', onOutsideClick);
+                document.removeEventListener('keydown', onEscape);
+            }
+        }
+        document.addEventListener('mousedown', onOutsideClick);
+        document.addEventListener('keydown', onEscape);
+    }, 0);
+}
+
+function spawnCoin() {
+    var table = document.getElementById('table');
+    if (!table) return;
+
+    var tableRect = table.getBoundingClientRect();
+
+    var outer = document.createElement('div');
+    outer.className = 'dice-container';
+    outer.dataset.diceType = 'coin';
+
+    var startX = (tableRect.width / 2) - 40 + (Math.random() * 60 - 30);
+    var startY = (tableRect.height / 2) - 40 + (Math.random() * 60 - 30);
+    outer.style.left = startX + 'px';
+    outer.style.top  = startY + 'px';
+
+    var inner = document.createElement('div');
+    inner.className = 'dice-inner';
+    outer.appendChild(inner);
+
+    inner.appendChild(createCoinElement());
+    table.appendChild(outer);
+
+    // Initial flip
+    flipCoin(inner);
+
+    // Drag logic
+    var isDragging = false;
+    var dragStartX, dragStartY, elStartX, elStartY;
+    var dragMoved = false;
+
+    outer.addEventListener('mousedown', function(e) {
+        if (e.button !== 0) return;
+        isDragging = true;
+        dragMoved = false;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        elStartX = parseInt(outer.style.left, 10) || 0;
+        elStartY = parseInt(outer.style.top,  10) || 0;
+        outer.style.cursor = 'grabbing';
+        e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+        var dx = e.clientX - dragStartX;
+        var dy = e.clientY - dragStartY;
+        if (Math.abs(dx) > 4 || Math.abs(dy) > 4) dragMoved = true;
+        outer.style.left = (elStartX + dx) + 'px';
+        outer.style.top  = (elStartY + dy) + 'px';
+    });
+
+    document.addEventListener('mouseup', function(e) {
+        if (!isDragging) return;
+        isDragging = false;
+        outer.style.cursor = 'grab';
+        if (!dragMoved) {
+            flipCoin(inner);
+        }
+    });
+
+    // Right-click → context menu
+    outer.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        showCoinContextMenu(outer, e.clientX, e.clientY);
+    });
+}
+
 function spawnDice(type) {
     var table = document.getElementById('table');
     if (!table) return;
