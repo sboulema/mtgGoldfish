@@ -149,7 +149,7 @@ function showDiceContextMenu(outer, inner, clientX, clientY) {
     // Option 1: Remove die
     var itemRemove = document.createElement('div');
     itemRemove.className = 'dice-context-menu-item';
-    itemRemove.textContent = 'Verwijder dobbelsteen';
+    itemRemove.textContent = 'Remove die';
     itemRemove.addEventListener('click', function() {
         outer.remove();
         closeMenu();
@@ -161,7 +161,7 @@ function showDiceContextMenu(outer, inner, clientX, clientY) {
     var otherType   = currentType === 'd6' ? 'd20' : 'd6';
     var itemSwitch  = document.createElement('div');
     itemSwitch.className = 'dice-context-menu-item';
-    itemSwitch.textContent = 'Wijzig naar ' + otherType;
+    itemSwitch.textContent = 'Change to ' + otherType;
     itemSwitch.addEventListener('click', function() {
         inner.innerHTML = '';
         var newEl = otherType === 'd6' ? createD6Element() : createD20Element();
