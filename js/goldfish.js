@@ -350,11 +350,16 @@ function setupDragDrop() {
 
     // Table drop zone
     setupDropZone(tableEl, function(card, e) {
+        var tableRect = tableEl.getBoundingClientRect();
+        var dropX = e.clientX - dragOffsetX - tableRect.left;
+        var dropY = e.clientY - dragOffsetY - tableRect.top;
+
         var sourceParent = card.parentElement;
         if (sourceParent === tableEl) {
             // Repositioning on table
-            card.style.left = (e.pageX - dragOffsetX) + 'px';
-            card.style.top = (e.pageY - dragOffsetY) + 'px';
+            card.style.position = 'absolute';
+            card.style.left = dropX + 'px';
+            card.style.top = dropY + 'px';
             return;
         }
 
@@ -363,8 +368,8 @@ function setupDragDrop() {
         // Reset styles from previous zone
         card.style.marginBottom = '';
 
-        card.style.left = (e.pageX - dragOffsetX) + 'px';
-        card.style.top = (e.pageY - dragOffsetY) + 'px';
+        card.style.left = dropX + 'px';
+        card.style.top = dropY + 'px';
         card.style.position = 'absolute';
         tableEl.appendChild(card);
 

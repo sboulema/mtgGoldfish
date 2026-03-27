@@ -127,15 +127,22 @@ async function parseCardList(input) {
         const response = await fetch("https://api.scryfall.com/cards/collection", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ identifiers: batch.map((card) => ({
-                name: typeof card.set !== "undefined" ? undefined : card.name,
-                set: card.set,
-                collector_number: card.collector_number
-            })) }),
+            body: JSON.stringify({ identifiers: batch.map((card) => {
+                if (card.set && card.collector_number) {
+                    return { set: card.set, collector_number: card.collector_number };
+                }
+                return { name: card.name };
+            }) }),
         });
         const result = await response.json();
 
-        if (result.not_found.length > 0) {
+        if (!result.data) {
+            cardListResult.errorMessage = "Failed to fetch cards from Scryfall";
+            cardListResult.success = false;
+            return;
+        }
+
+        if (result.not_found && result.not_found.length > 0) {
             cardListResult.errorMessage = `The following cards could not be found: ${result.not_found.map((card) => card.name).join(", ")}`;
             cardListResult.success = false;
         }
