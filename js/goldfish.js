@@ -159,6 +159,9 @@ function retrieveSettings() {
 
     var checkbox = document.getElementById("checkbox-card-backside-lightly-played");
     if (checkbox) checkbox.checked = !!settings.useLightlyPlayedCardBackside;
+
+    var startingLifeInput = document.getElementById("starting-life");
+    if (startingLifeInput) startingLifeInput.value = settings.startingLife || 20;
 }
 
 /**
@@ -580,13 +583,14 @@ async function reset() {
     var lifeYou = document.querySelector('#life-you') || document.querySelector('[id="life-you"]');
     var lifeYouInput = document.querySelector('#life-you, .input-group input[type="text"]');
     // Find the cloned inputs inside input-groups
+    var startingLife = (settings && settings.startingLife) ? settings.startingLife : 20;
     document.querySelectorAll('.input-group input').forEach(function(input) {
         var label = input.closest('.form-group')?.querySelector('label');
         if (label && label.textContent.includes('You:')) {
-            input.value = "20";
+            input.value = startingLife;
         }
         if (label && label.textContent.includes('Opponent:')) {
-            input.value = "20";
+            input.value = startingLife;
         }
     });
 
@@ -677,6 +681,7 @@ function saveSettings() {
     localStorage.setItem("mtgGoldfish-settings", JSON.stringify({
         background: document.getElementById("background-url").value,
         useLightlyPlayedCardBackside: document.getElementById("checkbox-card-backside-lightly-played").checked,
+        startingLife: parseInt(document.getElementById("starting-life").value, 10) || 20,
     }));
 
     retrieveSettings();
