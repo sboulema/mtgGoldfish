@@ -137,6 +137,9 @@ function handleKeypress(event) {
         case 116: // t
             if (hoveredCard) tap(hoveredCard);
             break;
+        case 117: // u (mulligan)
+            mulligan();
+            break;
     }
 }
 
