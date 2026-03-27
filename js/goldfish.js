@@ -58,6 +58,12 @@ function updateCopyBadges() {
         groups[key].push(card);
     });
 
+    // Remove badges from cards that are no longer direct children of the table
+    document.querySelectorAll('.copy-badge').forEach(function(badge) {
+        var card = badge.closest('.mtg-card');
+        if (!card || card.parentElement !== tableEl) badge.remove();
+    });
+
     // Add/update/remove badges
     cards.forEach(function(card) {
         var front = card.querySelector('.front');

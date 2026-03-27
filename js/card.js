@@ -101,6 +101,9 @@ function handleDragStart(e) {
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/plain', '');
     this.style.opacity = '0.5';
+    // Hide popover — mouseleave doesn't fire during HTML5 drag
+    var popover = bootstrap.Popover.getInstance(this);
+    if (popover) popover.hide();
 }
 
 function handleDragEnd(e) {
