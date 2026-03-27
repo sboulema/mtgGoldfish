@@ -75,7 +75,7 @@ function createToken(name, rules, powerToughness, backgroundImage, color) {
     front.style.backgroundImage = "url('" + backgroundImage + "')";
 
     var frame = document.createElement('div');
-    frame.className = "mtg-card-token-frame-" + color.toLowerCase() + " mtg-card-side";
+    frame.className = "mtg-card-token-frame-" + color.toLowerCase();
     front.appendChild(frame);
 
     var nameDiv = document.createElement('div');
