@@ -16,6 +16,9 @@ var settings = {};
 // AbortController to prevent duplicate event listeners when init() is called multiple times
 var initAbortController = null;
 
+// MutationObserver for copy badge updates — disconnected and recreated on re-init
+var tableObserver = null;
+
 document.addEventListener('DOMContentLoaded', async function() {
     await loadModals();
     init();
@@ -35,11 +38,56 @@ async function loadModals() {
     }));
 }
 
+/**
+ * Show a ×N badge on table cards when multiple copies of the same card are present.
+ * Uses the front face background-image as the card identity key.
+ */
+function updateCopyBadges() {
+    var tableEl = document.getElementById('table');
+    if (!tableEl) return;
+
+    var cards = Array.from(tableEl.querySelectorAll(':scope > .mtg-card'));
+
+    // Group cards by front image URL
+    var groups = {};
+    cards.forEach(function(card) {
+        var front = card.querySelector('.front');
+        if (!front) return;
+        var key = front.style.backgroundImage;
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(card);
+    });
+
+    // Add/update/remove badges
+    cards.forEach(function(card) {
+        var front = card.querySelector('.front');
+        if (!front) return;
+        var count = (groups[front.style.backgroundImage] || []).length;
+        var badge = card.querySelector('.copy-badge');
+        if (count > 1) {
+            if (!badge) {
+                badge = document.createElement('div');
+                badge.className = 'copy-badge';
+                card.appendChild(badge);
+            }
+            badge.textContent = '×' + count;
+        } else if (badge) {
+            badge.remove();
+        }
+    });
+}
+
 async function init() {
     // Abort previous listeners to prevent duplicates when init() is re-called
     if (initAbortController) initAbortController.abort();
     initAbortController = new AbortController();
     var signal = initAbortController.signal;
+
+    // Reconnect table observer for copy badges
+    if (tableObserver) tableObserver.disconnect();
+    tableObserver = new MutationObserver(updateCopyBadges);
+    var tableEl = document.getElementById('table');
+    if (tableEl) tableObserver.observe(tableEl, { childList: true });
 
     bindCardActions();
     setupLifeCounters();
