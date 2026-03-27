@@ -7,7 +7,7 @@ Website to playtest (goldfish) Magic The Gathering decks - http://goldfish.sboul
 
 ## Features
 - Load deck and sideboard from text, file (.txt, .dec, .dck), [MTGStocks](https://www.mtgstocks.com/) or [MTGGoldfish](https://www.mtggoldfish.com/)
-- Keep track of life totals
+- Keep track of life totals (configurable starting total for Commander, Brawl, etc.)
 - Custom counter for eg. storm or poison counters
 - Keep track of your mana pool
 - Keep track of current turn
@@ -17,13 +17,14 @@ Website to playtest (goldfish) Magic The Gathering decks - http://goldfish.sboul
 - View cards in all zones (hand, library, graveyard, exile, sideboard, commander)
 - Commander zone with commander tax tracker
 - Sideboard swaps for game 2
-- Keyboard shortcuts
+- Keyboard shortcuts (tap, flip, draw, graveyard, exile, library, mulligan, and more)
 - Select and add tokens
 - Create custom tokens
 - Start with a specific card in hand
 - Tap cards
 - Drag & drop cards between all zones
 - Custom background
+- Dice roller (d4, d6, d8, d10, d12, d20) and coin flip
 
 ## Building
 - npm install
@@ -35,7 +36,6 @@ Website to playtest (goldfish) Magic The Gathering decks - http://goldfish.sboul
 
 ## Links
 - [Bootstrap](http://getbootstrap.com/)
-- [Bootstrap Number Input](https://github.com/wpic/bootstrap-number-input)
 - [Cockatrice Magic Token](https://github.com/Cockatrice/Magic-Token)
 - [Goldfish icon](http://www.iconarchive.com/show/flat-animal-icons-by-martin-berube/gold-fish-icon.html)
 - [Knuth Shuffle](https://git.daplie.com/Daplie/knuth-shuffle/)
