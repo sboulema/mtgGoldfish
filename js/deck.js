@@ -288,7 +288,7 @@ function setupClickToDraw() {
     var libraryCard = document.querySelector("#library-placeholder .mtg-card");
     if (libraryCard) {
         libraryCard.addEventListener("click", function() {
-            draw(1);
+            if (this.closest('#library-placeholder')) draw(1);
         });
     }
 }
