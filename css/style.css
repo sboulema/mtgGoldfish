@@ -130,3 +130,130 @@ body {
     z-index: 10;
     right: 0px;
 }
+
+/* ── Dice roller ─────────────────────────────────────── */
+.dice-container {
+    position: absolute;
+    cursor: grab;
+    user-select: none;
+    z-index: 100;
+    display: inline-block;
+}
+.dice-container:active { cursor: grabbing; }
+
+.dice-inner { display: inline-block; }
+
+/* Right-click context menu */
+.dice-context-menu {
+    position: fixed;
+    background: #1e1e1e;
+    border: 1px solid #c8b472;
+    border-radius: 6px;
+    z-index: 9999;
+    min-width: 180px;
+    padding: 4px 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+}
+.dice-context-menu-item {
+    padding: 8px 16px;
+    color: #c8b472;
+    cursor: pointer;
+    font-size: 13px;
+}
+.dice-context-menu-item:hover {
+    background: #333;
+}
+
+/* d6 3D cube */
+.dice-perspective {
+    width: 70px;
+    height: 70px;
+    perspective: 300px;
+}
+
+.dice-d6 {
+    width: 70px;
+    height: 70px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 1s ease-out;
+}
+
+.dice-face {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    background: #f8f0d8;
+    border: 2px solid #222;
+    border-radius: 10px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.face-front  { transform: translateZ(35px); }
+.face-back   { transform: rotateY(180deg) translateZ(35px); }
+.face-right  { transform: rotateY(90deg) translateZ(35px); }
+.face-left   { transform: rotateY(-90deg) translateZ(35px); }
+.face-top    { transform: rotateX(90deg) translateZ(35px); }
+.face-bottom { transform: rotateX(-90deg) translateZ(35px); }
+
+.dice-pip-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    width: 54px;
+    height: 54px;
+}
+
+.dice-pip-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pip {
+    width: 11px;
+    height: 11px;
+    background: #111;
+    border-radius: 50%;
+}
+
+/* d20 polygon */
+.dice-d20 {
+    width: 90px;
+    height: 90px;
+    clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+    background: linear-gradient(135deg, #1a1a2e, #2a2a5e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dice-d20-number {
+    font-size: 30px;
+    font-weight: bold;
+    color: #c8b472;
+    padding-top: 12px;
+}
+
+@keyframes dice-shake {
+    0%,100% { transform: rotate(0deg); }
+    20%      { transform: rotate(-15deg); }
+    40%      { transform: rotate(15deg); }
+    60%      { transform: rotate(-10deg); }
+    80%      { transform: rotate(10deg); }
+}
+
+.dice-d20.rolling {
+    animation: dice-shake 0.15s infinite;
+}
+
+.dice-label {
+    text-align: center;
+    font-size: 11px;
+    color: #c8b472;
+    margin-top: 4px;
+    text-shadow: 0 0 4px #000;
+}
