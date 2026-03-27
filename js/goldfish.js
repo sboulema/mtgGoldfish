@@ -16,6 +16,7 @@ var settings = {};
 // AbortController to prevent duplicate event listeners when init() is called multiple times
 var initAbortController = null;
 
+
 document.addEventListener('DOMContentLoaded', async function() {
     await loadModals();
     init();
@@ -34,6 +35,7 @@ async function loadModals() {
         document.body.appendChild(div);
     }));
 }
+
 
 async function init() {
     // Abort previous listeners to prevent duplicates when init() is re-called
@@ -125,6 +127,9 @@ function handleKeypress(event) {
             break;
         case 109: // m
             if (hoveredCard) markCard(hoveredCard);
+            break;
+        case 110: // n (copy counter)
+            addCopyCounter(hoveredCard);
             break;
         case 111: // o (cOmmander zone)
             putCardinPlaceholder(hoveredCard, "#commander-placeholder", "Commander");
@@ -489,7 +494,7 @@ function setupDragDrop(signal) {
         // If the mouse moved more than the threshold, this was a drag, not a click
         if (movedDistance > TAP_THRESHOLD) { tapStartTarget = null; return; }
         var card = e.target.closest('.mtg-card');
-        if (card && card === tapStartTarget && !e.target.closest('.counter') && !e.target.closest('.counter-input') && card.parentElement === tableEl) {
+        if (card && card === tapStartTarget && !e.target.closest('.counter') && !e.target.closest('.counter-input') && !e.target.closest('.copy-badge') && card.parentElement === tableEl) {
             tap(card);
         }
         tapStartTarget = null;

@@ -101,6 +101,9 @@ function handleDragStart(e) {
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/plain', '');
     this.style.opacity = '0.5';
+    // Hide popover — mouseleave doesn't fire during HTML5 drag
+    var popover = bootstrap.Popover.getInstance(this);
+    if (popover) popover.hide();
 }
 
 function handleDragEnd(e) {
@@ -228,6 +231,40 @@ function addCounter(card) {
             input.remove();
         }
     });
+}
+
+function addCopyCounter(card) {
+    if (!card) return;
+
+    // Only one copy counter per card
+    if (card.querySelector('.copy-badge')) return;
+
+    var count = 1;
+    var badge = document.createElement('div');
+    badge.className = 'copy-badge';
+    badge.textContent = '×' + count;
+
+    // Left-click: increment
+    badge.addEventListener('mouseup', function(e) {
+        if (e.button !== 0) return;
+        e.stopPropagation();
+        count++;
+        badge.textContent = '×' + count;
+    });
+
+    // Right-click: decrement, remove at 0
+    badge.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        count--;
+        if (count <= 0) {
+            badge.remove();
+        } else {
+            badge.textContent = '×' + count;
+        }
+    });
+
+    card.appendChild(badge);
 }
 
 function markCard(card) {
