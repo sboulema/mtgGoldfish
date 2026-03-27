@@ -208,10 +208,11 @@ async function parseCardList(input, onProgress) {
         if (onProgress) onProgress(loaded, total);
     }));
 
-    // duplicate cards based on count
-    cardListResult.cards.map((card) => {
+    // duplicate cards based on count — each copy gets its own object and unique goldfishId
+    var originals = cardListResult.cards.slice();
+    originals.forEach((card) => {
         for (var index = 0; index < card.count - 1; index++) {
-            cardListResult.cards.push(card);
+            cardListResult.cards.push(Object.assign({}, card, { goldfishId: createGoldfishId() }));
         }
     });
 
