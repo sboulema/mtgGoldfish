@@ -16,8 +16,6 @@ var settings = {};
 // AbortController to prevent duplicate event listeners when init() is called multiple times
 var initAbortController = null;
 
-// MutationObserver for copy badge updates — disconnected and recreated on re-init
-var tableObserver = null;
 
 document.addEventListener('DOMContentLoaded', async function() {
     await loadModals();
@@ -38,62 +36,12 @@ async function loadModals() {
     }));
 }
 
-/**
- * Show a ×N badge on table cards when multiple copies of the same card are present.
- * Uses the front face background-image as the card identity key.
- */
-function updateCopyBadges() {
-    var tableEl = document.getElementById('table');
-    if (!tableEl) return;
-
-    var cards = Array.from(tableEl.querySelectorAll(':scope > .mtg-card'));
-
-    // Group cards by front image URL
-    var groups = {};
-    cards.forEach(function(card) {
-        var front = card.querySelector('.front');
-        if (!front) return;
-        var key = front.style.backgroundImage;
-        if (!groups[key]) groups[key] = [];
-        groups[key].push(card);
-    });
-
-    // Remove badges from cards that are no longer direct children of the table
-    document.querySelectorAll('.copy-badge').forEach(function(badge) {
-        var card = badge.closest('.mtg-card');
-        if (!card || card.parentElement !== tableEl) badge.remove();
-    });
-
-    // Add/update/remove badges
-    cards.forEach(function(card) {
-        var front = card.querySelector('.front');
-        if (!front) return;
-        var count = (groups[front.style.backgroundImage] || []).length;
-        var badge = card.querySelector('.copy-badge');
-        if (count > 1) {
-            if (!badge) {
-                badge = document.createElement('div');
-                badge.className = 'copy-badge';
-                card.appendChild(badge);
-            }
-            badge.textContent = '×' + count;
-        } else if (badge) {
-            badge.remove();
-        }
-    });
-}
 
 async function init() {
     // Abort previous listeners to prevent duplicates when init() is re-called
     if (initAbortController) initAbortController.abort();
     initAbortController = new AbortController();
     var signal = initAbortController.signal;
-
-    // Reconnect table observer for copy badges
-    if (tableObserver) tableObserver.disconnect();
-    tableObserver = new MutationObserver(updateCopyBadges);
-    var tableEl = document.getElementById('table');
-    if (tableEl) tableObserver.observe(tableEl, { childList: true });
 
     bindCardActions();
     setupLifeCounters();
@@ -179,6 +127,9 @@ function handleKeypress(event) {
             break;
         case 109: // m
             if (hoveredCard) markCard(hoveredCard);
+            break;
+        case 110: // n (copy counter)
+            addCopyCounter(hoveredCard);
             break;
         case 111: // o (cOmmander zone)
             putCardinPlaceholder(hoveredCard, "#commander-placeholder", "Commander");
@@ -543,7 +494,7 @@ function setupDragDrop(signal) {
         // If the mouse moved more than the threshold, this was a drag, not a click
         if (movedDistance > TAP_THRESHOLD) { tapStartTarget = null; return; }
         var card = e.target.closest('.mtg-card');
-        if (card && card === tapStartTarget && !e.target.closest('.counter') && !e.target.closest('.counter-input') && card.parentElement === tableEl) {
+        if (card && card === tapStartTarget && !e.target.closest('.counter') && !e.target.closest('.counter-input') && !e.target.closest('.copy-badge') && card.parentElement === tableEl) {
             tap(card);
         }
         tapStartTarget = null;

@@ -233,6 +233,40 @@ function addCounter(card) {
     });
 }
 
+function addCopyCounter(card) {
+    if (!card) return;
+
+    // Only one copy counter per card
+    if (card.querySelector('.copy-badge')) return;
+
+    var count = 1;
+    var badge = document.createElement('div');
+    badge.className = 'copy-badge';
+    badge.textContent = '×' + count;
+
+    // Left-click: increment
+    badge.addEventListener('mouseup', function(e) {
+        if (e.button !== 0) return;
+        e.stopPropagation();
+        count++;
+        badge.textContent = '×' + count;
+    });
+
+    // Right-click: decrement, remove at 0
+    badge.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        count--;
+        if (count <= 0) {
+            badge.remove();
+        } else {
+            badge.textContent = '×' + count;
+        }
+    });
+
+    card.appendChild(badge);
+}
+
 function markCard(card) {
     var goldfishId = card.dataset.goldfishid;
     var index = markedList.indexOf(goldfishId);
