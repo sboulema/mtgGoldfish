@@ -3,6 +3,8 @@ var graveyardList = [];
 var exileList = [];
 var sideboardList = [];
 var handList = [];
+var commanderList = [];
+var commanderTax = 0;
 
 var deck = [];
 var sideboard = [];
@@ -51,6 +53,8 @@ async function init() {
     bindZoneModal("#sideboard-title", "Sideboard", signal);
     bindZoneModal("#library-title", "Library", signal);
     bindZoneModal("#graveyard-title", "Graveyard", signal);
+    bindZoneModal("#commander-title", "Commander", signal);
+    setupCommanderTax(signal);
     bindZoneModal("#hand-title", "Hand", signal);
 
     // Keyboard shortcuts
@@ -122,6 +126,9 @@ function handleKeypress(event) {
         case 109: // m
             if (hoveredCard) markCard(hoveredCard);
             break;
+        case 111: // o (cOmmander zone)
+            putCardinPlaceholder(hoveredCard, "#commander-placeholder", "Commander");
+            break;
         case 116: // t
             if (hoveredCard) tap(hoveredCard);
             break;
@@ -144,6 +151,23 @@ function retrieveSettings() {
 
     var checkbox = document.getElementById("checkbox-card-backside-lightly-played");
     if (checkbox) checkbox.checked = !!settings.useLightlyPlayedCardBackside;
+}
+
+/**
+ * Setup commander tax click handlers. Left-click adds 2, right-click resets to 0.
+ */
+function setupCommanderTax(signal) {
+    var taxEl = document.getElementById('commander-tax');
+    if (!taxEl) return;
+    taxEl.addEventListener('click', function() {
+        commanderTax += 2;
+        document.getElementById('commander-tax-value').textContent = commanderTax;
+    }, { signal: signal });
+    taxEl.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        commanderTax = 0;
+        document.getElementById('commander-tax-value').textContent = 0;
+    }, { signal: signal });
 }
 
 function bindZoneModal(selector, id, signal) {
@@ -181,6 +205,8 @@ function GetListById(id) {
             return sideboardList;
         case "Hand":
             return handList;
+        case "Commander":
+            return commanderList;
     }
 }
 
@@ -294,6 +320,7 @@ function updateTotals() {
     document.getElementById("exileTotal").innerHTML = exileList.length;
     document.getElementById("sideboardTotal").innerHTML = sideboardList.length;
     document.getElementById("handTotal").innerHTML = handList.length;
+    document.getElementById("commanderTotal").innerHTML = commanderList.length;
 }
 
 /**
@@ -317,7 +344,7 @@ function cleanupDragSource(sourceParent, card) {
             setupClickToDraw();
             bindCardActions();
         }
-    } else if (sourceId === 'graveyard-placeholder' || sourceId === 'exile-placeholder' || sourceId === 'sideboard-placeholder') {
+    } else if (sourceId === 'graveyard-placeholder' || sourceId === 'exile-placeholder' || sourceId === 'sideboard-placeholder' || sourceId === 'commander-placeholder') {
         var zoneName = sourceId.replace('-placeholder', '');
         zoneName = zoneName.charAt(0).toUpperCase() + zoneName.slice(1);
         var list = GetListById(zoneName);
@@ -412,10 +439,11 @@ function setupDragDrop(signal) {
         putCardOnLibrary(card);
     }, signal);
 
-    // Graveyard, Exile, Sideboard drop zones
+    // Graveyard, Exile, Sideboard, Commander drop zones
     setupDroppablePlaceholder("#graveyard-placeholder", "Graveyard", signal);
     setupDroppablePlaceholder("#exile-placeholder", "Exile", signal);
     setupDroppablePlaceholder("#sideboard-placeholder", "Sideboard", signal);
+    setupDroppablePlaceholder("#commander-placeholder", "Commander", signal);
 
     // Counter drop on card faces
     tableEl.addEventListener('dragover', function(e) {
@@ -506,6 +534,8 @@ async function reset() {
     graveyardList = [];
     markedList = [];
     handList = [];
+    commanderList = [];
+    commanderTax = 0;
     libraryList = deck.slice();
     sideboardList = sideboard.slice();
 
@@ -528,6 +558,10 @@ async function reset() {
         // Flip card to the back side
         flipCard(libraryEl.querySelector('.mtg-card'), true);
     }
+
+    // Reset commander tax display
+    var taxValueEl = document.getElementById('commander-tax-value');
+    if (taxValueEl) taxValueEl.textContent = '0';
 
     // Reset life and turn counter
     var lifeYou = document.querySelector('#life-you') || document.querySelector('[id="life-you"]');
