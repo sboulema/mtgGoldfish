@@ -23,7 +23,6 @@ var D6_PIPS = {
 function buildD6Face(n) {
     var face = document.createElement('div');
     face.className = 'dice-face';
-    // 3x3 grid for pip placement
     var grid = document.createElement('div');
     grid.className = 'dice-pip-grid';
     for (var r = 0; r < 3; r++) {
@@ -73,11 +72,9 @@ function rollD6(container) {
     var result = Math.floor(Math.random() * 6) + 1;
     var target = D6_FACES[result];
 
-    // Accumulate rotations to avoid jumps; add extra full spins for visual effect
     var curX = parseFloat(cube.dataset.rotX) || 0;
     var curY = parseFloat(cube.dataset.rotY) || 0;
 
-    // Snap current angles to nearest 360 multiple, then add 720 + target offset
     var baseX = Math.round(curX / 360) * 360;
     var baseY = Math.round(curY / 360) * 360;
     var newX = baseX + 720 + target.x;
@@ -88,11 +85,11 @@ function rollD6(container) {
     cube.style.transform = 'rotateX(' + newX + 'deg) rotateY(' + newY + 'deg)';
 
     var label = container.parentElement && container.parentElement.querySelector('.dice-label');
-    if (label) label.textContent = 'Rolling...';
+    if (label) label.textContent = 'Rolt...';
 
     setTimeout(function() {
         cube.dataset.rolling = 'false';
-        if (label) label.textContent = 'Result: ' + result;
+        if (label) label.textContent = 'Uitkomst: ' + result;
     }, 1050);
 }
 
@@ -116,7 +113,7 @@ function rollD20(container) {
 
     var result = Math.floor(Math.random() * 20) + 1;
     var label = container.parentElement && container.parentElement.querySelector('.dice-label');
-    if (label) label.textContent = 'Rolling...';
+    if (label) label.textContent = 'Rolt...';
 
     shape.classList.add('rolling');
 
@@ -130,9 +127,74 @@ function rollD20(container) {
             shape.classList.remove('rolling');
             num.textContent = result;
             shape.dataset.rolling = 'false';
-            if (label) label.textContent = 'Result: ' + result;
+            if (label) label.textContent = 'Uitkomst: ' + result;
         }
     }, 50);
+}
+
+// Shows a small context menu near the cursor for the given dice container
+function showDiceContextMenu(outer, inner, clientX, clientY) {
+    // Remove any existing context menu
+    var existing = document.getElementById('dice-context-menu');
+    if (existing) existing.remove();
+
+    var menu = document.createElement('div');
+    menu.id = 'dice-context-menu';
+    menu.className = 'dice-context-menu';
+    menu.style.left = (clientX + 4) + 'px';
+    menu.style.top  = (clientY + 4) + 'px';
+
+    function closeMenu() { menu.remove(); }
+
+    // Option 1: Remove die
+    var itemRemove = document.createElement('div');
+    itemRemove.className = 'dice-context-menu-item';
+    itemRemove.textContent = 'Verwijder dobbelsteen';
+    itemRemove.addEventListener('click', function() {
+        outer.remove();
+        closeMenu();
+    });
+    menu.appendChild(itemRemove);
+
+    // Option 2: Switch type
+    var currentType = outer.dataset.diceType;
+    var otherType   = currentType === 'd6' ? 'd20' : 'd6';
+    var itemSwitch  = document.createElement('div');
+    itemSwitch.className = 'dice-context-menu-item';
+    itemSwitch.textContent = 'Wijzig naar ' + otherType;
+    itemSwitch.addEventListener('click', function() {
+        inner.innerHTML = '';
+        var newEl = otherType === 'd6' ? createD6Element() : createD20Element();
+        inner.appendChild(newEl);
+        outer.dataset.diceType = otherType;
+        var label = outer.querySelector('.dice-label');
+        if (label) label.textContent = 'Klik om te rollen';
+        if (otherType === 'd6') rollD6(inner); else rollD20(inner);
+        closeMenu();
+    });
+    menu.appendChild(itemSwitch);
+
+    document.body.appendChild(menu);
+
+    // Close on outside click (next event loop so this click doesn't immediately close it)
+    setTimeout(function() {
+        function onOutsideClick(e) {
+            if (!menu.contains(e.target)) {
+                closeMenu();
+                document.removeEventListener('mousedown', onOutsideClick);
+                document.removeEventListener('keydown', onEscape);
+            }
+        }
+        function onEscape(e) {
+            if (e.key === 'Escape') {
+                closeMenu();
+                document.removeEventListener('mousedown', onOutsideClick);
+                document.removeEventListener('keydown', onEscape);
+            }
+        }
+        document.addEventListener('mousedown', onOutsideClick);
+        document.addEventListener('keydown', onEscape);
+    }, 0);
 }
 
 function spawnDice(type) {
@@ -141,50 +203,32 @@ function spawnDice(type) {
 
     var tableRect = table.getBoundingClientRect();
 
-    // Outer container (positioned on table)
     var outer = document.createElement('div');
     outer.className = 'dice-container';
     outer.dataset.diceType = type;
 
-    // Position near center of table
     var startX = (tableRect.width / 2) - 45 + (Math.random() * 60 - 30);
     var startY = (tableRect.height / 2) - 45 + (Math.random() * 60 - 30);
     outer.style.left = startX + 'px';
-    outer.style.top = startY + 'px';
+    outer.style.top  = startY + 'px';
 
-    // Close button
-    var closeBtn = document.createElement('span');
-    closeBtn.className = 'dice-close';
-    closeBtn.textContent = '×';
-    closeBtn.title = 'Remove dice';
-    outer.appendChild(closeBtn);
-
-    // Dice visual + label wrapper
+    // Dice visual wrapper
     var inner = document.createElement('div');
     inner.className = 'dice-inner';
     outer.appendChild(inner);
 
-    var diceEl;
-    if (type === 'd6') {
-        diceEl = createD6Element();
-    } else {
-        diceEl = createD20Element();
-    }
+    var diceEl = type === 'd6' ? createD6Element() : createD20Element();
     inner.appendChild(diceEl);
 
     var label = document.createElement('div');
     label.className = 'dice-label';
-    label.textContent = 'Click to roll';
+    label.textContent = 'Klik om te rollen';
     outer.appendChild(label);
 
     table.appendChild(outer);
 
-    // Trigger initial roll
-    if (type === 'd6') {
-        rollD6(inner);
-    } else {
-        rollD20(inner);
-    }
+    // Initial roll
+    if (type === 'd6') rollD6(inner); else rollD20(inner);
 
     // --- Drag logic ---
     var isDragging = false;
@@ -192,13 +236,13 @@ function spawnDice(type) {
     var dragMoved = false;
 
     outer.addEventListener('mousedown', function(e) {
-        if (e.target === closeBtn) return;
+        if (e.button !== 0) return; // only left button drags
         isDragging = true;
         dragMoved = false;
         dragStartX = e.clientX;
         dragStartY = e.clientY;
         elStartX = parseInt(outer.style.left, 10) || 0;
-        elStartY = parseInt(outer.style.top, 10) || 0;
+        elStartY = parseInt(outer.style.top,  10) || 0;
         outer.style.cursor = 'grabbing';
         e.preventDefault();
     });
@@ -209,7 +253,7 @@ function spawnDice(type) {
         var dy = e.clientY - dragStartY;
         if (Math.abs(dx) > 4 || Math.abs(dy) > 4) dragMoved = true;
         outer.style.left = (elStartX + dx) + 'px';
-        outer.style.top = (elStartY + dy) + 'px';
+        outer.style.top  = (elStartY + dy) + 'px';
     });
 
     document.addEventListener('mouseup', function(e) {
@@ -217,23 +261,15 @@ function spawnDice(type) {
         isDragging = false;
         outer.style.cursor = 'grab';
         if (!dragMoved) {
-            // Treat as a click — re-roll
-            if (e.target !== closeBtn) {
-                if (type === 'd6') {
-                    rollD6(inner);
-                } else {
-                    rollD20(inner);
-                }
-            }
+            // Left-click without drag → re-roll
+            var ct = outer.dataset.diceType;
+            if (ct === 'd6') rollD6(inner); else rollD20(inner);
         }
     });
 
-    // Close button
-    closeBtn.addEventListener('mousedown', function(e) {
-        e.stopPropagation();
-    });
-    closeBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        outer.remove();
+    // Right-click → context menu
+    outer.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        showDiceContextMenu(outer, inner, e.clientX, e.clientY);
     });
 }
