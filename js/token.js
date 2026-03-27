@@ -7,6 +7,10 @@ function addTokensToSelect() {
             var tokenArt = document.getElementById('token-art');
             var tokenSelect = document.getElementById('token-select');
 
+            // Remove previously loaded token options to prevent duplicates on restart
+            while (tokenSelect.options.length > 2) tokenSelect.remove(2);
+            while (tokenArt.options.length > 0) tokenArt.remove(0);
+
             xml.querySelectorAll('card').forEach(function(card) {
                 var setEl = card.querySelector('set');
                 if (!setEl) return;
