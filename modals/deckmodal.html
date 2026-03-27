@@ -7,6 +7,13 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+            <div class="mb-2">
+                <input type="file" id="deck-file-input" accept=".txt,.dec,.dck" class="d-none" onchange="importDeckFromFile(this.files[0])">
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('deck-file-input').click()">
+                    Import from file
+                </button>
+                <small class="text-muted ms-2">.txt, .dec, .dck</small>
+            </div>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">

@@ -1,3 +1,44 @@
+/**
+ * Read a local deck file and populate the mainboard/sideboard textareas.
+ * Supports plain text, MTGO format (SB: prefix), and Sideboard: section headers.
+ */
+function importDeckFromFile(file) {
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var lines = e.target.result.split('\n').map(function(l) { return l.trim(); });
+        var mainboardLines = [];
+        var sideboardLines = [];
+        var inSideboard = false;
+
+        lines.forEach(function(line) {
+            if (!line) return;
+            // MTGO "SB: 4 Card Name" format
+            if (/^SB:\s+/i.test(line)) {
+                sideboardLines.push(line.replace(/^SB:\s+/i, ''));
+                return;
+            }
+            // "Sideboard:" section header
+            if (/^sideboard\s*:?\s*$/i.test(line)) {
+                inSideboard = true;
+                return;
+            }
+            if (inSideboard) {
+                sideboardLines.push(line);
+            } else {
+                mainboardLines.push(line);
+            }
+        });
+
+        document.getElementById('deck-list').value = mainboardLines.join('\n');
+        document.getElementById('sideboard-list').value = sideboardLines.join('\n');
+
+        // Reset the file input so the same file can be re-imported
+        document.getElementById('deck-file-input').value = '';
+    };
+    reader.readAsText(file);
+}
+
 async function importMtgStocksDeck(deckId) {
     const response = await fetch(`https://cors.sboulema.nl/https://api.mtgstocks.com/decks/${deckId}`);
     const result = await response.json();
@@ -67,9 +108,6 @@ async function loadDeck() {
     deck = libraryList.slice();
     shuffleDeck();
     draw(7);
-    updateTotals();
-    bindCardActions();
-    setupClickToDraw();
 
     // Place card on top of library
     var libraryEl = document.getElementById("library-placeholder");
@@ -80,11 +118,15 @@ async function loadDeck() {
         flipCard(libraryEl.querySelector('.mtg-card'), true);
     }
 
+    updateTotals();
+    bindCardActions();
+    setupClickToDraw();
+
     // Sideboard
     var sideboardVal = document.getElementById("sideboard-list").value;
     if (sideboardVal != '') {
         result = await parseCardList(sideboardVal);
-        sideboardList = result.sideboardList;
+        sideboardList = result.cards;
 
         document.getElementById("sideboard-placeholder").appendChild(defaultCard());
         sideboard = sideboardList.slice();
