@@ -80,22 +80,22 @@ function createToken(name, rules, powerToughness, backgroundImage, color) {
 
     var nameDiv = document.createElement('div');
     nameDiv.className = "mtg-card-token-name";
-    nameDiv.innerHTML = name;
+    nameDiv.textContent = name;
     front.appendChild(nameDiv);
 
     var typeDiv = document.createElement('div');
     typeDiv.className = "mtg-card-token-type";
-    typeDiv.innerHTML = name;
+    typeDiv.textContent = name;
     front.appendChild(typeDiv);
 
     var rulesDiv = document.createElement('div');
     rulesDiv.className = "mtg-card-token-rules";
-    rulesDiv.innerHTML = rules;
+    rulesDiv.textContent = rules;
     front.appendChild(rulesDiv);
 
     var ptDiv = document.createElement('div');
     ptDiv.className = "mtg-card-token-powerToughness";
-    ptDiv.innerHTML = powerToughness;
+    ptDiv.textContent = powerToughness;
     front.appendChild(ptDiv);
 
     return token;
