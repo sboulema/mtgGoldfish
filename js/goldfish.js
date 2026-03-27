@@ -45,7 +45,7 @@ async function init() {
     setupCustomCounter(signal);
     setupTurnButton(signal);
 
-    setupDragDrop();
+    setupDragDrop(signal);
 
     bindZoneModal("#exile-title", "Exile", signal);
     bindZoneModal("#sideboard-title", "Sideboard", signal);
@@ -330,20 +330,20 @@ function cleanupDragSource(sourceParent, card) {
     // For table: no list cleanup needed, just style reset (handled by destination)
 }
 
-function setupDropZone(element, onDrop) {
+function setupDropZone(element, onDrop, signal) {
     element.addEventListener('dragover', function(e) {
         if (!currentDragElement) return;
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
-    });
+    }, { signal: signal });
     element.addEventListener('drop', function(e) {
         e.preventDefault();
         if (!currentDragElement) return;
         onDrop(currentDragElement, e);
-    });
+    }, { signal: signal });
 }
 
-function setupDragDrop() {
+function setupDragDrop(signal) {
     var tableEl = document.getElementById('table');
     var handEl = document.getElementById('hand-placeholder');
     var libraryEl = document.getElementById('library-placeholder');
@@ -375,7 +375,7 @@ function setupDragDrop() {
 
         updateTotals();
         bindCardActions();
-    });
+    }, signal);
 
     // Hand drop zone
     setupDropZone(handEl, function(card, e) {
@@ -393,7 +393,7 @@ function setupDragDrop() {
 
         putCardinHand(card);
         bindCardActions();
-    });
+    }, signal);
 
     // Library drop zone
     setupDropZone(libraryEl, function(card, e) {
@@ -410,19 +410,19 @@ function setupDragDrop() {
         card.style.transform = '';
 
         putCardOnLibrary(card);
-    });
+    }, signal);
 
     // Graveyard, Exile, Sideboard drop zones
-    setupDroppablePlaceholder("#graveyard-placeholder", "Graveyard");
-    setupDroppablePlaceholder("#exile-placeholder", "Exile");
-    setupDroppablePlaceholder("#sideboard-placeholder", "Sideboard");
+    setupDroppablePlaceholder("#graveyard-placeholder", "Graveyard", signal);
+    setupDroppablePlaceholder("#exile-placeholder", "Exile", signal);
+    setupDroppablePlaceholder("#sideboard-placeholder", "Sideboard", signal);
 
     // Counter drop on card faces
     tableEl.addEventListener('dragover', function(e) {
         if (currentDragElement && currentDragElement.classList.contains('counter')) {
             e.preventDefault();
         }
-    });
+    }, { signal: signal });
     tableEl.addEventListener('drop', function(e) {
         if (currentDragElement && currentDragElement.classList.contains('counter')) {
             var cardSide = e.target.closest('.mtg-card-side');
@@ -437,24 +437,35 @@ function setupDragDrop() {
                 cardSide.appendChild(currentDragElement);
             }
         }
-    });
+    }, { signal: signal });
 
     // Tap card on click (event delegation on table)
-    // Use mousedown+mouseup instead of click because draggable=true suppresses click in some browsers
+    // Use mousedown+mouseup instead of click because draggable=true suppresses click in some browsers.
+    // Track mouse position to distinguish clicks from drags, since dragstart can fire
+    // before mouseup even with minimal movement.
     var tapStartTarget = null;
+    var tapStartX = 0;
+    var tapStartY = 0;
+    var TAP_THRESHOLD = 5; // pixels — movement below this is treated as a click, not a drag
     tableEl.addEventListener('mousedown', function(e) {
         if (e.button !== 0) return; // Only left mouse button
         tapStartTarget = e.target.closest('.mtg-card');
-    });
+        tapStartX = e.clientX;
+        tapStartY = e.clientY;
+    }, { signal: signal });
     tableEl.addEventListener('mouseup', function(e) {
         if (e.button !== 0) { tapStartTarget = null; return; } // Only left mouse button
-        if (currentDragElement) { tapStartTarget = null; return; }
+        var dx = e.clientX - tapStartX;
+        var dy = e.clientY - tapStartY;
+        var movedDistance = Math.sqrt(dx * dx + dy * dy);
+        // If the mouse moved more than the threshold, this was a drag, not a click
+        if (movedDistance > TAP_THRESHOLD) { tapStartTarget = null; return; }
         var card = e.target.closest('.mtg-card');
         if (card && card === tapStartTarget && !e.target.closest('.counter') && !e.target.closest('.counter-input') && card.parentElement === tableEl) {
             tap(card);
         }
         tapStartTarget = null;
-    });
+    }, { signal: signal });
 }
 
 /**
@@ -462,7 +473,7 @@ function setupDragDrop() {
  * @param {string} selector CSS selector of the zone placeholder
  * @param {string} id Title of the zone
  */
-function setupDroppablePlaceholder(selector, id) {
+function setupDroppablePlaceholder(selector, id, signal) {
     var el = document.querySelector(selector);
     setupDropZone(el, function(card, e) {
         var sourceParent = card.parentElement;
@@ -484,7 +495,7 @@ function setupDroppablePlaceholder(selector, id) {
         card.style.transform = '';
 
         putCardinPlaceholder(card, selector, id);
-    });
+    }, signal);
 }
 
 /**
