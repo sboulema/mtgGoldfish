@@ -84,12 +84,8 @@ function rollD6(container) {
     cube.dataset.rotY = newY;
     cube.style.transform = 'rotateX(' + newX + 'deg) rotateY(' + newY + 'deg)';
 
-    var label = container.parentElement && container.parentElement.querySelector('.dice-label');
-    if (label) label.textContent = 'Rolt...';
-
     setTimeout(function() {
         cube.dataset.rolling = 'false';
-        if (label) label.textContent = 'Uitkomst: ' + result;
     }, 1050);
 }
 
@@ -112,8 +108,6 @@ function rollD20(container) {
     shape.dataset.rolling = 'true';
 
     var result = Math.floor(Math.random() * 20) + 1;
-    var label = container.parentElement && container.parentElement.querySelector('.dice-label');
-    if (label) label.textContent = 'Rolt...';
 
     shape.classList.add('rolling');
 
@@ -127,7 +121,6 @@ function rollD20(container) {
             shape.classList.remove('rolling');
             num.textContent = result;
             shape.dataset.rolling = 'false';
-            if (label) label.textContent = 'Uitkomst: ' + result;
         }
     }, 50);
 }
@@ -219,11 +212,6 @@ function spawnDice(type) {
 
     var diceEl = type === 'd6' ? createD6Element() : createD20Element();
     inner.appendChild(diceEl);
-
-    var label = document.createElement('div');
-    label.className = 'dice-label';
-    label.textContent = 'Klik om te rollen';
-    outer.appendChild(label);
 
     table.appendChild(outer);
 

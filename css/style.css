@@ -249,11 +249,3 @@ body {
 .dice-d20.rolling {
     animation: dice-shake 0.15s infinite;
 }
-
-.dice-label {
-    text-align: center;
-    font-size: 11px;
-    color: #c8b472;
-    margin-top: 4px;
-    text-shadow: 0 0 4px #000;
-}
