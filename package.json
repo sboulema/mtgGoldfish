@@ -23,7 +23,7 @@
     "gulp-terser": "^2.1.0"
   },
   "dependencies": {
-    "bootstrap": "5.3.8",
+    "bootstrap": "5.3.9",
     "knuth-shuffle": "1.0.8",
     "mana-font": "1.18.0"
   }
